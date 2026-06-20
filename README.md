@@ -20,12 +20,14 @@
 ## 🛠 Tech Stack
 
 ### Frontend
+
 - **Framework:** [Next.js](https://nextjs.org/) (App Router)
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **Data Fetching:** [TanStack Query](https://tanstack.com/query) (React Query) for robust state management and caching.
 
 ### Backend
+
 - **Runtime:** [Node.js](https://nodejs.org/)
 - **Framework:** [Express.js](https://expressjs.com/)
 - **Language:** [TypeScript](https://www.typescriptlang.org/) for type-safe server-side logic.
@@ -45,6 +47,7 @@
 ## ⚙️ Getting Started
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm / yarn / pnpm
 
@@ -54,3 +57,4 @@
    ```bash
    git clone https://github.com/your-username/nabz.git
    cd nabz
+   ```

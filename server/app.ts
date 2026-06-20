@@ -12,6 +12,7 @@ import { logger, morganStream } from "./config/logger.js";
 import { responseMiddleware } from "./middlewares/response.middleware.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import routes from "./routes/index.js";
+import { setupSwagger } from "./config/swagger/index.js";
 
 const app: Application = express();
 
@@ -49,6 +50,8 @@ app.use(cookieParser());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api", routes);
+
+setupSwagger(app);
 
 app.use((_req, res) => {
   res.fail("Route not found", null, 404);
