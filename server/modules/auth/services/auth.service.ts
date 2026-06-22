@@ -28,7 +28,7 @@ import {
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
 
-export class AuthService {
+class AuthService {
   async register(data: RegisterInput): Promise<{ message: string }> {
     const existingUser = await Auth.findOne({ where: { email: data.email } });
 
@@ -263,3 +263,5 @@ export class AuthService {
     return { message: "رمز عبور با موفقیت بازیابی شد." };
   }
 }
+
+export const authService = new AuthService();

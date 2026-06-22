@@ -1,7 +1,7 @@
 import { Application } from "express";
 import swaggerUi from "swagger-ui-express";
 import { env } from "../env.js";
-import { authSwaggerDocs } from "./auth.swagger.js";
+import { authSwaggerDocs } from "@/modules/auth/swagger/auth.swagger.js";
 
 const swaggerOptions = {
   openapi: "3.0.0",
