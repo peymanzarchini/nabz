@@ -219,15 +219,29 @@ export const authSwaggerDocs = {
         },
         responses: {
           "200": {
-            description: "لینک بازیابی ارسال شد (در صورت وجود ایمیل)",
+            description: "لینک بازیابی ارسال شد",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ApiResponse" },
                 example: {
                   success: true,
-                  message: "اگر ایمیل معتبر باشد، لینک بازیابی ارسال شد.",
+                  message: "لینک بازیابی با موفقیت برای شما ارسال شد.",
                   body: null,
                   status: 200,
+                },
+              },
+            },
+          },
+          "404": {
+            description: "کاربری با این ایمیل یافت نشد",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ApiResponse" },
+                example: {
+                  success: false,
+                  message: "کاربری با این ایمیل یافت نشد.",
+                  body: null,
+                  status: 404,
                 },
               },
             },
@@ -351,6 +365,29 @@ export const authSwaggerDocs = {
             },
           },
           "401": { description: "رمز عبور فعلی اشتباه است" },
+        },
+      },
+    },
+    "/api/auth/logout": {
+      post: {
+        summary: "خروج از حساب کاربری (Logout)",
+        description: "پاک کردن کوکی‌های توکن دسترسی و رفرش توکن برای خروج کاربر از سیستم",
+        tags: ["Authentication"],
+        responses: {
+          "200": {
+            description: "خروج موفقیت‌آمیز",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ApiResponse" },
+                example: {
+                  success: true,
+                  message: "خروج با موفقیت انجام شد.",
+                  body: null,
+                  status: 200,
+                },
+              },
+            },
+          },
         },
       },
     },

@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { authService } from "../services/auth.service.js";
-import { setAccessTokenCookie, setRefreshTokenCookie } from "@/utils/cookie.js";
+import {
+  clearAccessTokenCookie,
+  clearRefreshTokenCookie,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+} from "@/utils/cookie.js";
 
 class AuthController {
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -90,6 +95,17 @@ class AuthController {
     try {
       const result = await authService.resetPassword(req.body);
       res.success(result.message, null);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      clearAccessTokenCookie(res);
+      clearRefreshTokenCookie(res);
+
+      res.success("خروج با موفقیت انجام شد.", null);
     } catch (error) {
       next(error);
     }
