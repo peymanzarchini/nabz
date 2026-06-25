@@ -9,6 +9,7 @@ export function validate(schema: z.ZodType<unknown>) {
         query: req.query,
         params: req.params,
       });
+      next();
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors = error.issues.map((e) => ({

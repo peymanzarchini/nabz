@@ -17,7 +17,7 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
 
   COOKIE_SECRET: z.string().default("super-secret-cookie"),
-  COOKIE_SAME_SITE: z.enum(["strict", "lax", "none"]).default("lax"),
+  COOKIE_SAME_SITE: z.enum(["strict", "lax", "none"]).default("strict"),
   COOKIE_DOMAIN: z.string().optional(),
 
   CLIENT_URL: z.string().default("http://localhost:3000"),

@@ -28,7 +28,7 @@ import {
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
 
-export class AuthService {
+class AuthService {
   async register(data: RegisterInput): Promise<{ message: string }> {
     const existingUser = await Auth.findOne({ where: { email: data.email } });
 
@@ -37,7 +37,7 @@ export class AuthService {
     }
 
     const otpCode: string = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt: Date = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt: Date = new Date(Date.now() + 1 * 60 * 1000);
 
     const otpRecord = await Otp.findOne({ where: { email: data.email } });
     if (otpRecord) {
@@ -72,35 +72,59 @@ export class AuthService {
   }
 
   async resendCode(email: string): Promise<{ message: string }> {
-    const otpRecord = await Otp.findOne({ where: { email } });
+    const normalizedEmail = email.toLowerCase().trim();
+    const otpRecord = await Otp.findOne({ where: { email: normalizedEmail } });
 
     if (!otpRecord) {
-      throw HttpError.notFound("درخواست معتبری برای این ایمیل یافت نشد.");
+      const existingUser = await Auth.findOne({ where: { email: normalizedEmail } });
+
+      if (!existingUser) {
+        throw HttpError.notFound(
+          "برای این ایمیل درخواست کدی ثبت نشده است. لطفاً ابتدا ثبت‌نام کنید.",
+        );
+      }
+
+      if (existingUser.isVerified) {
+        throw HttpError.badRequest("این حساب کاربری قبلاً تایید شده است. لطفاً وارد شوید.");
+      }
+
+      const newCode: string = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt: Date = new Date(Date.now() + 2 * 60 * 1000);
+
+      await Otp.create({ email: normalizedEmail, code: newCode, expiresAt, attempts: 1 });
+      await sendVerificationEmail(normalizedEmail, newCode);
+
+      return { message: "کد تایید جدید ارسال شد (تلاش 1 از ۳)" };
     }
 
     if (otpRecord.attempts >= 3) {
       await otpRecord.destroy();
-      await Auth.destroy({ where: { email, isVerified: false } });
+      await Auth.destroy({ where: { email: normalizedEmail, isVerified: false } });
       throw HttpError.badRequest("تعداد دفعات ارسال کد به پایان رسید. لطفاً مجدداً ثبت‌نام کنید.");
     }
 
     const newCode: string = Math.floor(100000 + Math.random() * 900000).toString();
-
     await otpRecord.update({
       code: newCode,
       attempts: otpRecord.attempts + 1,
-      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      expiresAt: new Date(Date.now() + 2 * 60 * 1000),
     });
 
-    await sendVerificationEmail(email, newCode);
+    await sendVerificationEmail(normalizedEmail, newCode);
 
     return { message: `کد تایید جدید ارسال شد (تلاش ${otpRecord.attempts} از ۳)` };
   }
 
   async verifyEmail(email: string, code: string): Promise<{ message: string }> {
-    const otpRecord = await Otp.findOne({ where: { email } });
+    const normalizedEmail = email.toLowerCase().trim();
 
-    if (!otpRecord) throw HttpError.notFound("کد تایید یافت نشد");
+    const otpRecord = await Otp.findOne({ where: { email: normalizedEmail } });
+
+    if (!otpRecord) {
+      throw HttpError.notFound(
+        "درخواست کدی برای این ایمیل یافت نشد. لطفاً مجدداً ثبت‌نام کنید یا کد جدید درخواست کنید.",
+      );
+    }
 
     if (new Date() > otpRecord.expiresAt) {
       await otpRecord.destroy();
@@ -112,7 +136,7 @@ export class AuthService {
 
       if (otpRecord.attempts >= 5) {
         await otpRecord.destroy();
-        await Auth.destroy({ where: { email, isVerified: false } });
+        await Auth.destroy({ where: { email: normalizedEmail, isVerified: false } });
         throw HttpError.forbidden(
           "تعداد دفعات وارد کردن کد اشتباه بیش از حد مجاز است. لطفاً مجدداً ثبت‌نام کنید.",
         );
@@ -124,7 +148,7 @@ export class AuthService {
       );
     }
 
-    const user = await Auth.findOne({ where: { email } });
+    const user = await Auth.findOne({ where: { email: normalizedEmail } });
     if (!user) throw HttpError.notFound("کاربر مورد نظر یافت نشد.");
 
     await user.update({
@@ -230,18 +254,21 @@ export class AuthService {
   async forgotPassword(data: ForgotPasswordInput): Promise<{ message: string }> {
     const user = await Auth.findOne({ where: { email: data.email } });
 
-    if (!user) return { message: "اگر ایمیل معتبر باشد، لینک بازیابی ارسال شد." };
+    if (!user) {
+      throw HttpError.notFound("کاربری با این ایمیل یافت نشد.");
+    }
 
     const resetToken = generatePasswordResetToken({
       id: user.id,
       email: user.email,
       role: user.role,
     });
+
     const resetLink = `${env.clientUrl}/reset-password?token=${resetToken}`;
 
     await sendPasswordResetEmail(user.email, resetLink);
 
-    return { message: "اگر ایمیل معتبر باشد، لینک بازیابی ارسال شد." };
+    return { message: "لینک بازیابی با موفقیت برای شما ارسال شد." };
   }
 
   async resetPassword(data: ResetPasswordInput): Promise<{ message: string }> {
@@ -263,3 +290,5 @@ export class AuthService {
     return { message: "رمز عبور با موفقیت بازیابی شد." };
   }
 }
+
+export const authService = new AuthService();
