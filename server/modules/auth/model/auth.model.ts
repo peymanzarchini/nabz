@@ -97,7 +97,7 @@ Auth.init(
       validate: {
         notNull: { msg: "Phone number is required" },
         is: {
-          args: /^\+?[0-9\s\-()]{7,20}$/,
+          args: /^\+?[0-9\s\-()]{7,11}$/,
           msg: "Invalid phone number format",
         },
       },
