@@ -100,6 +100,17 @@ class AuthController {
     }
   }
 
+  async updateUserRole(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = Number(req.params.id);
+      const { role } = req.body;
+      const result = await authService.updateUserRole(userId, role);
+      res.success(result.message, null);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       clearAccessTokenCookie(res);

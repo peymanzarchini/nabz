@@ -391,5 +391,58 @@ export const authSwaggerDocs = {
         },
       },
     },
+    "/api/auth/users/{id}/role": {
+      patch: {
+        summary: "تغییر نقش کاربر (فقط ادمین)",
+        description: "این روت فقط برای مدیران است تا نقش کاربران را تغییر دهند",
+        tags: ["Authentication"],
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer" },
+            description: "آیدی کاربر",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["role"],
+                properties: {
+                  role: {
+                    type: "string",
+                    enum: ["admin", "support", "seller", "driver", "customer"],
+                    example: "driver",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "نقش تغییر کرد",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ApiResponse" },
+                example: {
+                  success: true,
+                  message: "نقش کاربر با موفقیت تغییر کرد.",
+                  body: null,
+                  status: 200,
+                },
+              },
+            },
+          },
+          "403": { description: "دسترسی غیرمجاز (شما ادمین نیستید)" },
+          "404": { description: "کاربر یافت نشد" },
+        },
+      },
+    },
   },
 };

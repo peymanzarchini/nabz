@@ -8,7 +8,7 @@ import {
   ResetPasswordInput,
 } from "../validations/auth.schema.js";
 import { Otp } from "../model/otp.model.js";
-import { UserStatus } from "@/types/index.js";
+import { UserRole, UserStatus } from "@/types/index.js";
 import {
   sendPasswordChangedNotification,
   sendPasswordResetEmail,
@@ -37,7 +37,7 @@ class AuthService {
     }
 
     const otpCode: string = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt: Date = new Date(Date.now() + 1 * 60 * 1000);
+    const expiresAt: Date = new Date(Date.now() + 2 * 60 * 1000);
 
     const otpRecord = await Otp.findOne({ where: { email: data.email } });
     if (otpRecord) {
@@ -288,6 +288,16 @@ class AuthService {
 
     await sendPasswordChangedNotification(user.email);
     return { message: "رمز عبور با موفقیت بازیابی شد." };
+  }
+
+  async updateUserRole(userId: number, role: UserRole): Promise<{ message: string }> {
+    const user = await Auth.findByPk(userId);
+    if (!user) throw HttpError.notFound("کاربر مورد نظر یافت نشد.");
+
+    user.role = role;
+    await user.save();
+
+    return { message: "نقش کاربر با موفقیت تغییر کرد." };
   }
 }
 

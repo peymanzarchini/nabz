@@ -8,8 +8,9 @@ import {
   registerSchema,
   resendSchema,
   resetPasswordSchema,
+  updateRoleSchema,
 } from "../validations/auth.schema.js";
-import { authenticate } from "@/middlewares/auth.middleware.js";
+import { adminOnly, authenticate } from "@/middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -25,5 +26,12 @@ router.post("/logout", authController.logout);
 router.use(authenticate);
 router.get("/profile", authController.getProfile);
 router.post("/change-password", validate(changePasswordSchema), authController.changePassword);
+
+router.patch(
+  "/users/:id/role",
+  adminOnly,
+  validate(updateRoleSchema),
+  authController.updateUserRole,
+);
 
 export default router;

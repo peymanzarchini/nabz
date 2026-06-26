@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { passwordRegex, phoneRegex } from "../constants/index.js";
+import { UserRole } from "@/types/index.js";
 
 export const registerSchema = z.object({
   body: z.object({
@@ -25,6 +26,10 @@ export const registerSchema = z.object({
     phoneNumber: z
       .string({ message: "Phone number is required" })
       .regex(phoneRegex, "Invalid phone number format"),
+    role: z
+      .enum([UserRole.CUSTOMER, UserRole.SELLER, UserRole.DRIVER])
+      .optional()
+      .default(UserRole.CUSTOMER),
   }),
 });
 
@@ -94,9 +99,25 @@ export const resendSchema = z.object({
   }),
 });
 
+export const updateRoleSchema = z.object({
+  params: z.object({
+    id: z.coerce.number(),
+  }),
+  body: z.object({
+    role: z.enum([
+      UserRole.ADMIN,
+      UserRole.SUPPORT,
+      UserRole.SELLER,
+      UserRole.DRIVER,
+      UserRole.CUSTOMER,
+    ]),
+  }),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>["body"];
 export type LoginInput = z.infer<typeof loginSchema>["body"];
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>["body"];
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>["body"];
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>["body"];
 export type ResendInput = z.infer<typeof resendSchema>["body"];
+export type UpdateRoleInput = z.infer<typeof updateRoleSchema>;
