@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRoutes from "@/modules/auth/routes/auth.routes.js";
+import marketPlaceRoutes from "@/modules/marketplace/routes/marketplace.routes.js";
 
 const router = Router();
 
@@ -11,5 +12,6 @@ router.get("/health", (_req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.use("/marketplace", marketPlaceRoutes);
 
 export default router;
