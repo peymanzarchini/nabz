@@ -2,6 +2,7 @@ import { Application } from "express";
 import swaggerUi from "swagger-ui-express";
 import { env } from "../env.js";
 import { authSwaggerDocs } from "@/modules/auth/swagger/auth.swagger.js";
+import { marketplaceSwaggerDocs } from "@/modules/marketplace/swagger/marketplace.swagger.js";
 
 const swaggerOptions = {
   openapi: "3.0.0",
@@ -44,6 +45,7 @@ const swaggerOptions = {
   },
   paths: {
     ...authSwaggerDocs.paths,
+    ...marketplaceSwaggerDocs.paths,
   },
 };
 
