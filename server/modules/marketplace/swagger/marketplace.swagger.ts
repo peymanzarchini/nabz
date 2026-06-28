@@ -172,6 +172,7 @@ export const marketplaceSwaggerDocs = {
         summary: "ساخت آگهی جدید (فقط فروشندگان)",
         description:
           "ارسال اطلاعات آگهی شامل ویژگی‌های داینامیک (specs) و اطلاعات تخفیف. قیمت نهایی (finalPrice) توسط سرور محاسبه می‌شود.",
+        consumes: ["multipart/form-data"],
         tags: ["Marketplace"],
         security: [{ BearerAuth: [] }],
         requestBody: {
