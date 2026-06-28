@@ -27,7 +27,7 @@ export const registerSchema = z.object({
       .string({ message: "Phone number is required" })
       .regex(phoneRegex, "Invalid phone number format"),
     role: z
-      .enum([UserRole.CUSTOMER, UserRole.SELLER, UserRole.DRIVER])
+      .enum([UserRole.CUSTOMER, UserRole.SELLER, UserRole.DRIVER, UserRole.SUPPORT])
       .optional()
       .default(UserRole.CUSTOMER),
   }),

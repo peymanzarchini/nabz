@@ -59,3 +59,5 @@ export function authorize(...roles: UserRole[]) {
 }
 
 export const adminOnly = authorize(UserRole.ADMIN);
+export const sellerAccess = authorize(UserRole.SELLER, UserRole.ADMIN);
+export const moderatorAccess = authorize(UserRole.ADMIN, UserRole.SUPPORT);

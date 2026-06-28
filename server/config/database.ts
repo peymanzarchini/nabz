@@ -2,7 +2,6 @@ import { Sequelize } from "@sequelize/core";
 import { MySqlDialect } from "@sequelize/mysql";
 import { env } from "./env.js";
 import { logger } from "./logger.js";
-import { setupAssociations } from "./associations.js";
 
 export const sequelize = new Sequelize({
   dialect: MySqlDialect,
@@ -28,8 +27,6 @@ export async function connectDB(): Promise<void> {
   try {
     await sequelize.authenticate();
     logger.info("✅ Database connection established successfully");
-
-    setupAssociations();
 
     if (env.isDev) {
       await sequelize.sync({ alter: true });
