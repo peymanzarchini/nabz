@@ -14,6 +14,7 @@ import { UserRole } from "@/types/index.js";
 import path from "path";
 import fs from "fs";
 import { logger } from "@/config/logger.js";
+import { Location } from "../models/location.model.js";
 
 class ListingService {
   async createListing(userId: number, data: CreateListingInput, images: Express.Multer.File[]) {
@@ -92,11 +93,16 @@ class ListingService {
       where = { ...where, price: priceFilter };
     }
 
-    if (isAmazingOffer !== undefined) {
+    if (isAmazingOffer === true) {
       where = {
         ...where,
-        isAmazingOffer,
+        isAmazingOffer: true,
         discountExpiry: { [Op.gt]: new Date() },
+      };
+    } else if (isAmazingOffer === false) {
+      where = {
+        ...where,
+        isAmazingOffer: false,
       };
     }
 
@@ -110,8 +116,17 @@ class ListingService {
       order,
       limit,
       offset,
+      attributes: {
+        exclude: ["cityId", "districtId", "categoryId"],
+      },
       include: [
         { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
+        {
+          model: Location,
+          as: "city",
+          attributes: ["id", "name", "slug"],
+        },
+        { model: Location, as: "district", attributes: ["id", "name", "slug"] },
       ],
     });
 
@@ -130,6 +145,9 @@ class ListingService {
 
   async getListingById(id: number, userId?: number, role?: UserRole) {
     const listing = await Listing.findByPk(id, {
+      attributes: {
+        exclude: ["cityId", "districtId", "categoryId"],
+      },
       include: [
         { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
         {
