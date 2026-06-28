@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import path from "path";
 
 import { env } from "./config/env.js";
+import { setupAssociations } from "./config/associations.js";
 import { closeDB, connectDB } from "./config/database.js";
 import { logger, morganStream } from "./config/logger.js";
 import { responseMiddleware } from "./middlewares/response.middleware.js";
@@ -61,6 +62,7 @@ app.use(errorHandler);
 
 const startServer = async (): Promise<void> => {
   try {
+    setupAssociations();
     await connectDB();
     app.listen(env.port, () => {
       logger.info(`🚀 Server running on port ${env.port}`);
