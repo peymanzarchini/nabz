@@ -427,6 +427,13 @@ export const marketplaceSwaggerDocs = {
                   comment: { type: "string", example: "کالا دقیقا مطابق توضیحات بود." },
                   pros: { type: "array", items: { type: "string" }, example: ["بسته‌بندی خوب"] },
                   cons: { type: "array", items: { type: "string" }, example: ["قیمت بالا"] },
+                  parentId: {
+                    type: "integer",
+                    nullable: true,
+                    example: null,
+                    description:
+                      "آیدی دیدگاه اصلی. فقط در صورت پاسخ دادن به دیدگاه دیگران ارسال شود.",
+                  },
                 },
               },
             },
@@ -436,6 +443,66 @@ export const marketplaceSwaggerDocs = {
           "201": { description: "دیدگاه ثبت شد" },
           "403": { description: "نظر دادن به آگهی خودتان ممنوع است" },
           "409": { description: "شما قبلا نظر داده‌اید" },
+        },
+      },
+    },
+    "/api/marketplace/reviews/pending": {
+      get: {
+        summary: "دریافت لیست دیدگاه‌های در انتظار تایید (ادمین/پشتیبان)",
+        tags: ["Marketplace"],
+        security: [{ BearerAuth: [] }],
+        responses: {
+          "200": {
+            description: "لیست دیدگاه‌ها",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/ApiResponse" } },
+            },
+          },
+        },
+      },
+    },
+    "/api/marketplace/reviews/{id}/status": {
+      patch: {
+        summary: "تایید یا رد دیدگاه (ادمین/پشتیبان)",
+        description: "در صورت رد کردن، ارسال دلیل الزامی است.",
+        tags: ["Marketplace"],
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer" },
+            description: "آیدی دیدگاه",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["status"],
+                properties: {
+                  status: {
+                    type: "string",
+                    enum: ["approved", "rejected"],
+                    example: "approved",
+                  },
+                  rejectionReason: {
+                    type: "string",
+                    nullable: true,
+                    example: "استفاده از الفاظ رکیک",
+                    description: "در صورت رد کردن، ذکر دلیل الزامی است",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          "200": { description: "وضعیت تغییر کرد" },
+          "400": { description: "دلیل رد شدن ارسال نشده است" },
         },
       },
     },

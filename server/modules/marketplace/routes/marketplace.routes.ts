@@ -20,7 +20,7 @@ import {
 import { categoryController } from "../controller/category.controller.js";
 import { createCategorySchema, updateCategorySchema } from "../validations/category.schema.js";
 import { reviewController } from "../controller/review.controller.js";
-import { createReviewSchema } from "../validations/review.schema.js";
+import { createReviewSchema, updateReviewStatusSchema } from "../validations/review.schema.js";
 import { createLocationSchema } from "../validations/location.schema.js";
 import { locationController } from "../controller/location.controller.js";
 
@@ -63,6 +63,13 @@ router.delete(
 router.post("/listings/:id/reviews", validate(createReviewSchema), reviewController.createReview);
 
 router.use(moderatorAccess);
+
+router.get("/reviews/pending", reviewController.getPendingReviews);
+router.patch(
+  "/reviews/:id/status",
+  validate(updateReviewStatusSchema),
+  reviewController.updateReviewStatus,
+);
 
 router.patch(
   "/listings/:id/status",
