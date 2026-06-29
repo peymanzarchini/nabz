@@ -146,7 +146,7 @@ class ListingService {
   async getListingById(id: number, userId?: number, role?: UserRole) {
     const listing = await Listing.findByPk(id, {
       attributes: {
-        exclude: ["cityId", "districtId", "categoryId"],
+        exclude: ["cityId", "districtId", "categoryId", "userId"],
       },
       include: [
         { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
@@ -180,10 +180,35 @@ class ListingService {
       throw HttpError.forbidden("شما فقط می‌توانید آگهی خودتان را ویرایش کنید.");
     }
 
+    let finalSpecs: ListingSpecs | null | undefined = listing.specs as ListingSpecs;
+
+    if (data.specs !== undefined) {
+      if (data.specs === null) {
+        finalSpecs = null;
+      } else {
+        const existingSpecs: ListingSpecs = (listing.specs || {}) as ListingSpecs;
+        const incomingSpecs = data.specs as ListingSpecs;
+        const mergedSpecs: ListingSpecs = { ...existingSpecs };
+
+        for (const key in incomingSpecs) {
+          if (Object.prototype.hasOwnProperty.call(incomingSpecs, key)) {
+            const incomingValue = incomingSpecs[key];
+            if (incomingValue === null) {
+              delete mergedSpecs[key];
+            } else {
+              mergedSpecs[key] = incomingValue;
+            }
+          }
+        }
+        finalSpecs = mergedSpecs;
+      }
+    }
+
     await listing.update({
       ...data,
-      specs: data.specs as ListingSpecs,
+      specs: finalSpecs,
     });
+
     return listing;
   }
 

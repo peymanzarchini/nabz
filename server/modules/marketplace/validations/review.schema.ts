@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const createReviewSchema = z.object({
-  params: {
+  params: z.object({
     id: z.coerce.number(),
-  },
+  }),
   body: z.object({
     rating: z.number().int().min(1, "حداقل امتیاز ۱ است").max(5, "حداکثر امتیاز ۵ است"),
     title: z.string().trim().max(100).optional(),

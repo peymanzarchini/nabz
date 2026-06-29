@@ -68,10 +68,9 @@ export const updateListingSchema = z.object({
     title: z.string().trim().min(5).max(100).optional(),
     description: z.string().trim().min(10).optional(),
     price: z.coerce.number().min(0).optional(),
-    isNegotiable: z
-      .enum(["true", "false"])
-      .optional()
-      .transform((v) => v === "true"),
+
+    isNegotiable: z.boolean().optional(),
+
     condition: z.enum([ListingCondition.NEW, ListingCondition.USED]).optional(),
 
     cityId: z.coerce.number().int().positive().optional(),
@@ -81,40 +80,11 @@ export const updateListingSchema = z.object({
 
     stock: z.coerce.number().int().min(0).optional().nullable(),
 
-    specs: z
-      .string()
-      .optional()
-      .nullable()
-      .transform((val, ctx) => {
-        if (!val) return undefined;
-        try {
-          return JSON.parse(val);
-        } catch (e) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "فرمت specs باید یک JSON معتبر باشد",
-          });
-          return z.NEVER;
-        }
-      }),
+    specs: z.record(z.string(), z.any()).optional().nullable(),
 
     discountPercentage: z.coerce.number().int().min(0).max(100).optional().nullable(),
-    discountExpiry: z
-      .string()
-      .optional()
-      .nullable()
-      .transform((val, ctx) => {
-        if (!val) return undefined;
-        const date = new Date(val);
-        if (isNaN(date.getTime())) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "فرمت تاریخ تخفیف نامعتبر است",
-          });
-          return z.NEVER;
-        }
-        return date;
-      }),
+
+    discountExpiry: z.coerce.date().optional().nullable(),
 
     status: z.enum([ListingStatus.SOLD]).optional(),
   }),

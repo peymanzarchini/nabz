@@ -1,7 +1,12 @@
 import { HttpError } from "@/utils/httpError.js";
 import { Category } from "../models/category.model.js";
 import { CreateCategoryInput, UpdateCategoryInput } from "../validations/category.schema.js";
-import { SpecsSchema } from "../types/index.js";
+import {
+  PartialSpecFieldSchema,
+  SpecFieldSchema,
+  SpecsSchema,
+  UpdateSpecsSchemaPayload,
+} from "../types/index.js";
 
 class CategoryService {
   async createCategory(data: CreateCategoryInput) {
@@ -56,12 +61,42 @@ class CategoryService {
       if (existing) throw HttpError.conflict("این اسلاگ قبلا استفاده شده است.");
     }
 
+    let finalSpecsSchema: SpecsSchema | null = category.specsSchema as SpecsSchema | null;
+
+    if (data.specsSchema !== undefined) {
+      if (data.specsSchema === null) {
+        finalSpecsSchema = null;
+      } else {
+        const existingSchema: SpecsSchema = (category.specsSchema || {}) as SpecsSchema;
+        const incomingSchema = data.specsSchema as UpdateSpecsSchemaPayload;
+
+        const mergedSchema: SpecsSchema = { ...existingSchema };
+
+        for (const key in incomingSchema) {
+          if (Object.prototype.hasOwnProperty.call(incomingSchema, key)) {
+            const incomingField: PartialSpecFieldSchema | null = incomingSchema[key];
+
+            if (incomingField === null) {
+              // اگر مقدار یک فیلد رو null فرستاد، یعنی می‌خواد اون فیلد رو حذف کنه
+              delete mergedSchema[key];
+            } else {
+              const existingField: SpecFieldSchema | undefined = mergedSchema[key];
+
+              mergedSchema[key] = {
+                ...(existingField || {}),
+                ...incomingField,
+              } as SpecFieldSchema;
+            }
+          }
+        }
+
+        finalSpecsSchema = mergedSchema;
+      }
+    }
+
     await category.update({
       ...data,
-      specsSchema:
-        data.specsSchema !== undefined
-          ? (data.specsSchema as SpecsSchema | null)
-          : category.specsSchema,
+      specsSchema: finalSpecsSchema as SpecsSchema | null,
     });
 
     return category;
