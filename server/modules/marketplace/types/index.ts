@@ -28,3 +28,9 @@ export type ListingSpecs = Record<string, SpecValue>;
 export type PartialSpecFieldSchema = Partial<SpecFieldSchema>;
 
 export type UpdateSpecsSchemaPayload = Record<string, PartialSpecFieldSchema | null>;
+
+export enum ReviewStatus {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}

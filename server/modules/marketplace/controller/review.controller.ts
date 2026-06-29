@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { reviewService } from "../services/review.service.js";
-import { CreateReviewInput } from "../validations/review.schema.js";
+import { CreateReviewInput, UpdateReviewStatusInput } from "../validations/review.schema.js";
 
 class ReviewController {
   async createReview(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -22,6 +22,27 @@ class ReviewController {
       const listingId = Number(req.params.id);
       const result = await reviewService.getListingReviews(listingId);
       res.success("لیست دیدگاه‌ها.", result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPendingReviews(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await reviewService.getPendingReviews();
+      res.success("لیست دیدگاه‌های در انتظار تایید.", result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateReviewStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await reviewService.updateReviewStatus(
+        Number(req.params.id),
+        req.body as UpdateReviewStatusInput,
+      );
+      res.success("وضعیت دیدگاه تغییر کرد.", result);
     } catch (error) {
       next(error);
     }

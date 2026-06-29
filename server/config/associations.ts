@@ -42,4 +42,10 @@ export function setupAssociations() {
     inverse: "district",
   });
   Listing.belongsTo(Location, { foreignKey: "districtId", as: "district" });
+
+  Review.hasMany(Review, {
+    foreignKey: "parentId",
+    as: "replies",
+    inverse: "parent",
+  });
 }

@@ -6,14 +6,18 @@ import {
   Model,
 } from "@sequelize/core";
 import { sequelize } from "@/config/database.js";
+import { ReviewStatus } from "../types/index.js";
 
 export class Review extends Model<InferAttributes<Review>, InferCreationAttributes<Review>> {
   declare id: CreationOptional<number>;
-  declare rating: number;
+  declare rating: CreationOptional<number | null>;
   declare title: CreationOptional<string | null>;
   declare comment: string;
   declare pros: CreationOptional<string[]>;
   declare cons: CreationOptional<string[]>;
+  declare status: CreationOptional<ReviewStatus>;
+  declare rejectionReason: CreationOptional<string | null>;
+  declare parentId: CreationOptional<number | null>;
   declare userId: number;
   declare listingId: number;
   declare readonly createdAt: CreationOptional<Date>;
@@ -29,8 +33,9 @@ Review.init(
     },
     rating: {
       type: DataTypes.TINYINT,
-      allowNull: false,
-      validate: { min: 1, max: 5, notNull: { msg: "امتیاز الزامی است" } },
+      allowNull: true,
+      defaultValue: null,
+      validate: { min: 1, max: 5 },
     },
     title: {
       type: DataTypes.STRING(100),
@@ -51,6 +56,21 @@ Review.init(
       allowNull: true,
       defaultValue: [],
     },
+    status: {
+      type: DataTypes.ENUM(ReviewStatus.PENDING, ReviewStatus.APPROVED, ReviewStatus.REJECTED),
+      allowNull: false,
+      defaultValue: ReviewStatus.PENDING,
+    },
+    rejectionReason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
+    parentId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -66,7 +86,10 @@ Review.init(
     indexes: [
       { fields: ["userId"] },
       { fields: ["listingId"] },
-      { fields: ["userId", "listingId"], unique: true },
+      { fields: ["status"] },
+      {
+        fields: ["parentId"],
+      },
     ],
   },
 );
