@@ -24,3 +24,7 @@ export type SpecsSchema = Record<string, SpecFieldSchema>;
 export type SpecValue = string | number | boolean | string[] | null | undefined;
 
 export type ListingSpecs = Record<string, SpecValue>;
+
+export type PartialSpecFieldSchema = Partial<SpecFieldSchema>;
+
+export type UpdateSpecsSchemaPayload = Record<string, PartialSpecFieldSchema | null>;

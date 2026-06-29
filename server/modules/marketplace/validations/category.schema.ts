@@ -39,7 +39,10 @@ export const updateCategorySchema = z.object({
       .optional(),
     parentId: z.coerce.number().optional().nullable(),
     icon: z.string().optional().nullable(),
-    specsSchema: z.record(z.string(), specFieldSchema).optional().nullable(),
+    specsSchema: z
+      .record(z.string(), z.union([specFieldSchema.partial(), z.null()]))
+      .optional()
+      .nullable(),
   }),
 });
 

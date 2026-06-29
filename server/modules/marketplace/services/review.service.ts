@@ -41,6 +41,9 @@ class ReviewService {
   async getListingReviews(listingId: number) {
     const reviews = await Review.findAll({
       where: { listingId },
+      attributes: {
+        exclude: ["userId", "listingId"],
+      },
       include: [{ model: Auth, as: "user", attributes: ["id", "firstName", "lastName", "avatar"] }],
       order: [["createdAt", "DESC"]],
     });
