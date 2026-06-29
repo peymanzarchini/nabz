@@ -34,3 +34,8 @@ export enum ReviewStatus {
   APPROVED = "approved",
   REJECTED = "rejected",
 }
+
+export enum ConversationStatus {
+  ACTIVE = "active",
+  CLOSED = "closed",
+}
