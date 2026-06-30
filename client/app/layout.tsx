@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/lib/providers/ThemeProvider";
 import "./globals.css";
 import { iransans } from "@/components/fonts/iransans";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
@@ -17,19 +18,27 @@ export default function RootLayout({
     <html
       lang="fa-IR"
       dir="rtl"
+      suppressHydrationWarning
       className={`${iransans.variable} ${iransans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <QueryProvider>
-          {children}
-          <Toaster
-            richColors
-            position="top-center"
-            dir="rtl"
-            closeButton
-            className="font-iransans"
-          />
-        </QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            {children}
+            <Toaster
+              richColors
+              position="top-center"
+              dir="rtl"
+              closeButton
+              className="font-iransans"
+            />
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
