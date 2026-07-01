@@ -74,7 +74,14 @@ class ListingService {
     }
 
     if (categoryId) {
-      where = { ...where, categoryId };
+      const subCategories = await Category.findAll({
+        where: { parentId: categoryId },
+        attributes: ["id"],
+      });
+
+      const categoryIds = [categoryId, ...subCategories.map((sub) => sub.id)];
+
+      where = { ...where, categoryId: { [Op.in]: categoryIds } };
     }
 
     if (condition) {
