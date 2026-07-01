@@ -1,8 +1,12 @@
+import FeaturesSection from "@/modules/home/components/Features";
+import HeroSection from "@/modules/home/components/Hero";
+
 const HomePage = () => {
   return (
-    <div className="flex items-center justify-center">
-      <h1>نبض ورژن1</h1>
-    </div>
+    <>
+      <HeroSection />
+      <FeaturesSection />
+    </>
   );
 };
 
