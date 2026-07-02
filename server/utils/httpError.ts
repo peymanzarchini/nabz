@@ -12,39 +12,39 @@ export class HttpError extends Error {
     Object.setPrototypeOf(this, HttpError.prototype);
   }
 
-  static badRequest(message: string = "Bad request"): HttpError {
+  static badRequest(message: string = "درخواست نامعتبر است"): HttpError {
     return new HttpError(message, 400);
   }
 
-  static unAuthorized(message: string = "Unauthorized"): HttpError {
+  static unAuthorized(message: string = "احراز هویت نشده‌اید"): HttpError {
     return new HttpError(message, 401);
   }
 
-  static forbidden(message: string = "Forbidden"): HttpError {
+  static forbidden(message: string = "دسترسی غیرمجاز"): HttpError {
     return new HttpError(message, 403);
   }
 
-  static notFound(message: string = "Resource not found"): HttpError {
+  static notFound(message: string = "منبع مورد نظر یافت نشد"): HttpError {
     return new HttpError(message, 404);
   }
 
-  static conflict(message: string = "Resource already exists"): HttpError {
+  static conflict(message: string = "منبع از قبل وجود دارد"): HttpError {
     return new HttpError(message, 409);
   }
 
-  static unprocessable(message: string = "Unprocessable entity"): HttpError {
+  static unprocessable(message: string = "داده‌ها قابل پردازش نیستند"): HttpError {
     return new HttpError(message, 422);
   }
 
-  static tooManyRequests(message: string = "Too many requests"): HttpError {
+  static tooManyRequests(message: string = "درخواست‌ها بیش از حد مجاز است"): HttpError {
     return new HttpError(message, 429);
   }
 
-  static internal(message: string = "Internal server error"): HttpError {
+  static internal(message: string = "خطای داخلی سرور"): HttpError {
     return new HttpError(message, 500);
   }
 
-  static serviceUnavailable(message: string = "Service unavailable"): HttpError {
+  static serviceUnavailable(message: string = "سرویس در دسترس نیست"): HttpError {
     return new HttpError(message, 503);
   }
 }

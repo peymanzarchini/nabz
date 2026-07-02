@@ -13,7 +13,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, next: N
   logger.error("Error caught by handler", err);
 
   let statusCode = 500;
-  let message = "Internal Server Error";
+  let message = "خطای داخلی سرور";
 
   if (err instanceof ValidationError) {
     statusCode = 400;
@@ -23,20 +23,20 @@ export function errorHandler(err: unknown, _req: Request, res: Response, next: N
     message = err.errors.map((e) => e.message).join(" | ");
   } else if (err instanceof ForeignKeyConstraintError) {
     statusCode = 400;
-    message = "The reference ID is invalid or does not exist.";
+    message = "آیدی ارجاع داده شده نامعتبر است یا وجود ندارد.";
   } else if (err instanceof DatabaseError) {
     statusCode = 503;
-    message = "The database service is unavailable. Please try again later.";
+    message = "سرویس دیتابیس در دسترس نیست. لطفاً بعداً تلاش کنید.";
   } else if (err instanceof HttpError) {
     statusCode = err.statusCode;
     message = err.message;
   } else if (typeof err === "object" && err !== null && "statusCode" in err) {
     const expressErr = err as { statusCode?: number; message?: string };
     statusCode = expressErr.statusCode || 500;
-    message = expressErr.message || "Internal Server Error";
+    message = expressErr.message || "خطای داخلی سرور";
 
     if (message.includes("JSON")) {
-      message = "Invalid JSON format in request body";
+      message = "فرمت JSON در بدنه درخواست نامعتبر است";
       statusCode = 400;
     }
   }

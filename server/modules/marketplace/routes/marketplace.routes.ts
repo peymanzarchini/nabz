@@ -44,12 +44,8 @@ router.get("/listings", validate(getListingQuerySchema), listingController.getAl
 router.get("/listings/:id", validate(idParamSchema), listingController.getListingById);
 router.get("/listings/:id/reviews", reviewController.getListingReviews);
 
-// ==========================================
-// 🔒 روت‌های نیاز به لاگین (کاربر تایید شده)
-// ==========================================
 router.use(authenticate);
 
-// 📱 چت و پیام‌رسانی
 router.post(
   "/conversations",
   validate(startConversationSchema),
@@ -67,7 +63,6 @@ router.get(
   conversationController.getConversationMessages,
 );
 
-// 🛒 آگهی‌ها (فقط فروشندگان)
 router.post(
   "/listings",
   sellerAccess,
@@ -94,15 +89,10 @@ router.delete(
   listingController.deleteListingImage,
 );
 
-// 💬 دیدگاه‌ها (ثبت نظر برای آگهی)
 router.post("/listings/:id/reviews", validate(createReviewSchema), reviewController.createReview);
 
-// ==========================================
-// 🛡️ روت‌های پشتیبان و ادمین (مدیریت محتوا)
-// ==========================================
 router.use(moderatorAccess);
 
-// مدیریت دیدگاه‌ها (تایید/رد کامنت‌ها)
 router.get("/reviews/pending", reviewController.getPendingReviews);
 router.patch(
   "/reviews/:id/status",
@@ -110,31 +100,24 @@ router.patch(
   reviewController.updateReviewStatus,
 );
 
-// مدیریت آگهی‌ها (تایید/رد آگهی‌ها)
 router.patch(
   "/listings/:id/status",
   validate(updateListingStatusSchema),
   listingController.updateListingStatus,
 );
 
-// ==========================================
-// 👑 روت‌های ادمین (تنها مدیران ارشد)
-// ==========================================
 router.use(adminOnly);
 
-// مدیریت دسته‌بندی‌ها
 router.post("/categories", validate(createCategorySchema), categoryController.createCategory);
 router.patch("/categories/:id", validate(updateCategorySchema), categoryController.updateCategory);
 router.delete("/categories/:id", categoryController.deleteCategory);
 
-// مدیریت ویژگی‌های ویژه آگهی‌ها (پیشنهاد شگفت‌انگیز)
 router.patch(
   "/listings/:id/offer",
   validate(toggleAmazingOfferSchema),
   listingController.toggleAmazingOffer,
 );
 
-// مدیریت مکان‌ها
 router.post("/locations", validate(createLocationSchema), locationController.createLocation);
 
 export default router;
