@@ -16,7 +16,7 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
     }
 
     if (!token) {
-      throw HttpError.unAuthorized("Access token is required");
+      throw HttpError.unAuthorized("توکن دسترسی الزامی است");
     }
 
     const decoded = jwt.verify(token, env.jwt.secret) as AuthenticatedJwtPayload;
@@ -29,12 +29,12 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      next(HttpError.unAuthorized("Token has expired"));
+      next(HttpError.unAuthorized("توکن منقضی شده است"));
       return;
     }
 
     if (error instanceof jwt.JsonWebTokenError) {
-      next(HttpError.unAuthorized("Invalid token"));
+      next(HttpError.unAuthorized("توکن نامعتبر است"));
       return;
     }
 
@@ -45,12 +45,12 @@ export function authenticate(req: Request, _res: Response, next: NextFunction): 
 export function authorize(...roles: UserRole[]) {
   return (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.user) {
-      next(HttpError.unAuthorized("Authentication required"));
+      next(HttpError.unAuthorized("احراز هویت الزامی است"));
       return;
     }
 
     if (!roles.includes(req.user.role)) {
-      next(HttpError.forbidden("You do not have permission to access this resource"));
+      next(HttpError.forbidden("شما دسترسی به این بخش را ندارید"));
       return;
     }
 

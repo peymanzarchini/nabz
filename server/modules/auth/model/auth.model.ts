@@ -44,20 +44,20 @@ Auth.init(
       type: DataTypes.STRING(50),
       allowNull: false,
       validate: {
-        notNull: { msg: "First name is required" },
-        notEmpty: { msg: "First name cannot be empty" },
-        len: { args: [2, 50], msg: "First name must be between 2 and 50 characters" },
+        notNull: { msg: "نام الزامی است" },
+        notEmpty: { msg: "نام نمی‌تواند خالی باشد" },
+        len: { args: [2, 50], msg: "نام باید بین ۲ تا ۵۰ کاراکتر باشد" },
       },
     },
     lastName: {
       type: DataTypes.STRING(50),
       allowNull: false,
       validate: {
-        notNull: { msg: "Last name is required" },
-        notEmpty: { msg: "Last name cannot be empty" },
+        notNull: { msg: "نام خانوادگی الزامی است" },
+        notEmpty: { msg: "نام خانوادگی نمی‌تواند خالی باشد" },
         len: {
           args: [2, 50],
-          msg: "Last name must be between 2 and 50 characters",
+          msg: "نام خانوادگی باید بین ۲ تا ۵۰ کاراکتر باشد",
         },
       },
     },
@@ -69,8 +69,8 @@ Auth.init(
         msg: "This email is already registered",
       },
       validate: {
-        notNull: { msg: "Email is required" },
-        isEmail: { msg: "Invalid email format" },
+        notNull: { msg: "ایمیل الزامی است" },
+        isEmail: { msg: "فرمت ایمیل نامعتبر است" },
       },
       set(value: string) {
         this.setDataValue("email", value.toLowerCase().trim());
@@ -80,10 +80,10 @@ Auth.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: { msg: "Password is required" },
+        notNull: { msg: "رمز عبور الزامی است" },
         len: {
           args: [8, 255],
-          msg: "Password must be at least 8 characters",
+          msg: "رمز عبور باید حداقل ۸ کاراکتر باشد",
         },
       },
     },
@@ -95,10 +95,10 @@ Auth.init(
         msg: "This phone number is already registered",
       },
       validate: {
-        notNull: { msg: "Phone number is required" },
+        notNull: { msg: "شماره موبایل الزامی است" },
         is: {
           args: /^\+?[0-9\s\-()]{7,11}$/,
-          msg: "Invalid phone number format",
+          msg: "فرمت شماره موبایل نامعتبر است",
         },
       },
     },

@@ -14,6 +14,7 @@ const Logo = ({ width = 70, height = 70 }: LogoProps) => {
         src={lightLogo}
         alt="Nabz Logo"
         fill
+        sizes={`${width}px`}
         className="object-contain block dark:hidden"
         priority
       />
@@ -22,6 +23,7 @@ const Logo = ({ width = 70, height = 70 }: LogoProps) => {
         src={darkLogo}
         alt="Nabz Logo"
         fill
+        sizes={`${width}px`}
         className="object-contain hidden dark:block"
         priority
       />

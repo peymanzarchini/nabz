@@ -4,9 +4,9 @@ import { features } from "../data";
 
 const FeaturesSection = () => {
   return (
-    <section className="py-10 relative">
+    <section className=" pt-5 pb-25 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 max-w-2xl mx-auto animate-slide-up">
+        <div className="text-center mb-8 max-w-2xl mx-auto animate-slide-up">
           <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
             خدمات بی‌نهایت، در یک نگاه
           </h2>

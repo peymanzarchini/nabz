@@ -206,7 +206,7 @@ class AuthService {
       const decoded = verifyRefreshToken(refreshToken);
       const user = await Auth.findByPk(decoded.id);
       if (!user) {
-        throw HttpError.unAuthorized("User not found");
+        throw HttpError.unAuthorized("کاربر یافت نشد");
       }
 
       const tokenPayload = {
@@ -223,7 +223,7 @@ class AuthService {
       if (error instanceof HttpError) {
         throw error;
       }
-      throw HttpError.unAuthorized("Invalid or expired refresh token");
+      throw HttpError.unAuthorized("رفرش توکن نامعتبر است یا منقضی شده است");
     }
   }
 
@@ -231,7 +231,7 @@ class AuthService {
     const user = await Auth.findByPk(userId);
 
     if (!user) {
-      throw HttpError.notFound("User not found");
+      throw HttpError.notFound("کاربر یافت نشد");
     }
 
     return formatAuthResponse(user);
