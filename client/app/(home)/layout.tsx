@@ -1,3 +1,4 @@
+import Footer from "@/modules/home/components/Footer";
 import Header from "@/modules/home/components/Header";
 
 const MainLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
@@ -5,6 +6,7 @@ const MainLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     <>
       <Header />
       {children}
+      <Footer />
     </>
   );
 };
