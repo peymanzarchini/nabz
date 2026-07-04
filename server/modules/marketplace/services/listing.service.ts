@@ -124,7 +124,7 @@ class ListingService {
       limit,
       offset,
       attributes: {
-        exclude: ["cityId", "districtId", "categoryId"],
+        exclude: ["cityId", "districtId", "categoryId", "userId"],
       },
       include: [
         { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
@@ -134,6 +134,11 @@ class ListingService {
           attributes: ["id", "name", "slug"],
         },
         { model: Location, as: "district", attributes: ["id", "name", "slug"] },
+        {
+          model: Auth,
+          as: "user",
+          attributes: ["id", "firstName", "lastName"],
+        },
       ],
     });
 

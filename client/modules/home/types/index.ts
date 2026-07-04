@@ -8,7 +8,13 @@ export interface GetCategory {
   subcategories: GetCategory[];
 }
 
-type SpecValue = string | number | boolean | null;
+export type SpecValue = string | number | boolean | null;
+
+export interface ListingSeller {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
 
 export interface GetListing {
   id: number;
@@ -39,7 +45,7 @@ export interface GetListing {
     id: number;
     name: string;
     slug: string;
-    specsSchema: null;
+    specsSchema: string[] | null;
   };
   city: {
     id: number;
@@ -50,5 +56,33 @@ export interface GetListing {
     id: number;
     name: string;
     slug: string;
-  };
+  } | null;
+  user: ListingSeller;
+}
+
+export interface Pagination {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface ListingsResponse {
+  items: GetListing[];
+  pagination: Pagination;
+}
+
+export interface ListingFilters {
+  search?: string;
+  categoryId?: number | null;
+  cityId?: number | null;
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  condition?: "new" | "used" | null;
+  isAmazingOffer?: boolean | null;
+  sort?: "newest" | "cheapest" | "expensive" | "top_rated";
+  page?: number;
+  limit?: number;
 }
