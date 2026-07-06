@@ -2,10 +2,11 @@ import { HttpError } from "@/utils/httpError.js";
 import { Category } from "../models/category.model.js";
 import { CreateCategoryInput, UpdateCategoryInput } from "../validations/category.schema.js";
 import {
-  PartialSpecFieldSchema,
-  SpecFieldSchema,
   SpecsSchema,
   UpdateSpecsSchemaPayload,
+  PartialSpecFieldSchema,
+  SpecFieldSchema,
+  CategoryWithSubs,
 } from "../types/index.js";
 
 class CategoryService {
@@ -16,6 +17,12 @@ class CategoryService {
     if (data.parentId) {
       const parent = await Category.findByPk(data.parentId);
       if (!parent) throw HttpError.notFound("دسته بندی والد یافت نشد.");
+
+      if (parent.parentId !== null) {
+        throw HttpError.badRequest(
+          "عمق دسته‌بندی نمی‌تواند بیشتر از ۳ سطح باشد (دسته اصلی > زیردسته > زیردسته ۲).",
+        );
+      }
     }
 
     return await Category.create({
@@ -24,11 +31,12 @@ class CategoryService {
       parentId: data.parentId || null,
       icon: data.icon || null,
       specsSchema: data.specsSchema as SpecsSchema | null,
+      hasSpecs: data.hasSpecs || false,
     });
   }
 
   async getAllCategories() {
-    return await Category.findAll({
+    const categories = await Category.findAll({
       where: { parentId: null },
       include: [
         {
@@ -50,6 +58,33 @@ class CategoryService {
       ],
       order: [["createdAt", "ASC"]],
     });
+
+    const isInheritSchema = (schema: unknown): schema is { inheritFrom: number } => {
+      return typeof schema === "object" && schema !== null && "inheritFrom" in schema;
+    };
+
+    const resolveInheritance = async (cats: CategoryWithSubs[]) => {
+      for (const cat of cats) {
+        if (isInheritSchema(cat.specsSchema)) {
+          const sourceCat = await Category.findByPk(cat.specsSchema.inheritFrom, {
+            attributes: ["specsSchema"],
+          });
+
+          if (sourceCat?.specsSchema) {
+            cat.specsSchema = sourceCat.specsSchema;
+          } else {
+            cat.specsSchema = null;
+          }
+        }
+
+        if (cat.subcategories && cat.subcategories.length > 0) {
+          await resolveInheritance(cat.subcategories);
+        }
+      }
+    };
+
+    await resolveInheritance(categories as CategoryWithSubs[]);
+    return categories;
   }
 
   async updateCategory(id: number, data: UpdateCategoryInput) {
@@ -77,11 +112,9 @@ class CategoryService {
             const incomingField: PartialSpecFieldSchema | null = incomingSchema[key];
 
             if (incomingField === null) {
-              // اگر مقدار یک فیلد رو null فرستاد، یعنی می‌خواد اون فیلد رو حذف کنه
               delete mergedSchema[key];
             } else {
               const existingField: SpecFieldSchema | undefined = mergedSchema[key];
-
               mergedSchema[key] = {
                 ...(existingField || {}),
                 ...incomingField,

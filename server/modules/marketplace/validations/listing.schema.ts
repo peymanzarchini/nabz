@@ -2,11 +2,58 @@
 import { z } from "zod";
 import { ListingCondition, ListingStatus } from "../types/index.js";
 
+const specValueSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+const specsObjectSchema = z.record(z.string(), specValueSchema);
+
+const variantSchema = z.object({
+  id: z.coerce.number().optional(),
+  specs: z.record(z.string(), z.string()).default({}),
+  price: z.coerce.number().min(0, "قیمت واریانت الزامی است"),
+  stock: z.coerce.number().int().min(0).default(0),
+  discountPercentage: z.coerce.number().int().min(0).max(100).optional().default(0),
+  discountExpiry: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((val) => (val ? new Date(val) : null)),
+  sku: z.string().optional().nullable(),
+});
+
+const parseJsonObject = (
+  val: string | null | undefined,
+  ctx: z.RefinementCtx,
+  errorMsg: string,
+) => {
+  if (!val) return {};
+  try {
+    return JSON.parse(val);
+  } catch (e) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: errorMsg });
+    return z.NEVER;
+  }
+};
+
+const parseJsonArray = (val: string | null | undefined, ctx: z.RefinementCtx, errorMsg: string) => {
+  if (!val) return [];
+  try {
+    return JSON.parse(val);
+  } catch (e) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: errorMsg });
+    return z.NEVER;
+  }
+};
+
 export const createListingSchema = z.object({
   body: z.object({
-    title: z.string().trim().min(5, "عنوان باید حداقل ۵ کاراکتر باشد").max(100),
-    description: z.string().trim().min(10, "توضیحات باید حداقل ۱۰ کاراکتر باشد"),
-    price: z.coerce.number().min(0, "قیمت نمی‌تواند منفی باشد"),
+    title: z
+      .string({ message: "عنوان الزامی است" })
+      .trim()
+      .min(5, "عنوان باید حداقل ۵ کاراکتر باشد")
+      .max(100),
+    description: z
+      .string({ message: "توضیحات الزامی است" })
+      .trim()
+      .min(10, "توضیحات باید حداقل ۱۰ کاراکتر باشد"),
     isNegotiable: z
       .enum(["true", "false"])
       .optional()
@@ -21,42 +68,19 @@ export const createListingSchema = z.object({
     categoryId: z.coerce.number().int().positive("آیدی دسته‌بندی معتبر نیست"),
     thumbnailIndex: z.coerce.number().int().min(0).optional().default(0),
 
-    stock: z.coerce.number().int().min(0).optional().nullable(),
-
     specs: z
       .string()
       .optional()
       .nullable()
-      .transform((val, ctx) => {
-        if (!val) return null;
-        try {
-          return JSON.parse(val);
-        } catch (e) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "فرمت specs باید یک JSON معتبر باشد",
-          });
-          return z.NEVER;
-        }
-      }),
+      .transform((val, ctx) => parseJsonObject(val, ctx, "فرمت specs باید یک JSON معتبر باشد"))
+      .pipe(specsObjectSchema),
 
-    discountPercentage: z.coerce.number().int().min(0).max(100).optional().nullable(),
-    discountExpiry: z
+    variants: z
       .string()
       .optional()
       .nullable()
-      .transform((val, ctx) => {
-        if (!val) return null;
-        const date = new Date(val);
-        if (isNaN(date.getTime())) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "فرمت تاریخ تخفیف نامعتبر است",
-          });
-          return z.NEVER;
-        }
-        return date;
-      }),
+      .transform((val, ctx) => parseJsonArray(val, ctx, "فرمت variants باید یک JSON معتبر باشد"))
+      .pipe(z.array(variantSchema)),
   }),
 });
 
@@ -67,10 +91,7 @@ export const updateListingSchema = z.object({
   body: z.object({
     title: z.string().trim().min(5).max(100).optional(),
     description: z.string().trim().min(10).optional(),
-    price: z.coerce.number().min(0).optional(),
-
     isNegotiable: z.boolean().optional(),
-
     condition: z.enum([ListingCondition.NEW, ListingCondition.USED]).optional(),
 
     cityId: z.coerce.number().int().positive().optional(),
@@ -78,13 +99,25 @@ export const updateListingSchema = z.object({
     latitude: z.coerce.number().optional().nullable(),
     longitude: z.coerce.number().optional().nullable(),
 
-    stock: z.coerce.number().int().min(0).optional().nullable(),
+    specs: z
+      .union([z.string(), specsObjectSchema])
+      .optional()
+      .nullable()
+      .transform((val, ctx) => {
+        if (typeof val === "string") return parseJsonObject(val, ctx, "فرمت specs نامعتبر است");
+        return val;
+      })
+      .pipe(specsObjectSchema.optional()),
 
-    specs: z.record(z.string(), z.any()).optional().nullable(),
-
-    discountPercentage: z.coerce.number().int().min(0).max(100).optional().nullable(),
-
-    discountExpiry: z.coerce.date().optional().nullable(),
+    variants: z
+      .union([z.string(), z.array(variantSchema)])
+      .optional()
+      .nullable()
+      .transform((val, ctx) => {
+        if (typeof val === "string") return parseJsonArray(val, ctx, "فرمت variants نامعتبر است");
+        return val;
+      })
+      .pipe(z.array(variantSchema).optional()),
 
     status: z.enum([ListingStatus.SOLD]).optional(),
   }),

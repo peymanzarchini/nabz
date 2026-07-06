@@ -2,15 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Star, BadgeCheck, Tag } from "lucide-react";
+import { MapPin, Star, BadgeCheck, Tag, Zap } from "lucide-react";
 import { GetListing } from "../types";
 
 const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: number }) => {
-  const numericPrice = Number(listing.finalPrice || listing.price);
-  const numericOldPrice = Number(listing.price);
-
-  const hasDiscount =
-    listing.discountPercentage && listing.discountPercentage > 0 && numericOldPrice > numericPrice;
+  const numericPrice = Number(listing.minPrice || 0);
   const isFree = numericPrice === 0;
   const isNew = listing.condition === "new";
   const locationText = [listing.city?.name, listing.district?.name].filter(Boolean).join("، ");
@@ -18,11 +14,10 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
   return (
     <Link
       href={`/listings/${listing.id}`}
-      className="group flex flex-col bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-zinc-200/60 dark:hover:shadow-black/30 cursor-pointer animate-slide-up"
+      className="group flex flex-col bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-black/20 cursor-pointer animate-slide-up"
       style={{ animationDelay: `${index * 40}ms` }}
     >
-      {/* بخش تصویر */}
-      <div className="relative aspect-5/4 bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
+      <div className="relative aspect-4/3 bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
         {listing.thumbnail ? (
           <Image
             src={listing.thumbnail}
@@ -37,25 +32,19 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
           </div>
         )}
 
-        {/* بج‌های شیک و مات */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
-          {hasDiscount && (
-            <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
-              {listing.discountPercentage}%
-            </span>
-          )}
-        </div>
-
-        <div className="absolute top-3 left-3">
-          <span
-            className={`text-[11px] font-medium px-2.5 py-1 rounded-md backdrop-blur-md ${isNew ? "bg-emerald-500/90 text-white" : "bg-zinc-900/70 text-zinc-100"}`}
-          >
-            {isNew ? "نو" : "دست دوم"}
+        {listing.isAmazingOffer && (
+          <span className="absolute top-3 right-3 bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-1">
+            <Zap className="h-3 w-3" /> شگفت‌انگیز
           </span>
-        </div>
+        )}
+
+        <span
+          className={`absolute top-3 left-3 text-[11px] font-medium px-2.5 py-1 rounded-md backdrop-blur-md ${isNew ? "bg-emerald-500/90 text-white" : "bg-zinc-900/70 text-zinc-100"}`}
+        >
+          {isNew ? "نو" : "دست دوم"}
+        </span>
       </div>
 
-      {/* بخش محتوا */}
       <div className="p-4 flex flex-col flex-1 gap-3">
         <h3 className="font-bold text-sm text-zinc-800 dark:text-zinc-100 line-clamp-2 leading-6 min-h-12 group-hover:text-primary transition-colors">
           {listing.title}
@@ -91,11 +80,6 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
           </div>
 
           <div className="flex flex-col items-end gap-0.5">
-            {hasDiscount && !isFree && (
-              <span className="text-[11px] text-zinc-400 line-through">
-                {numericOldPrice.toLocaleString("fa-IR")}
-              </span>
-            )}
             <div className="flex items-end gap-1">
               {isFree ? (
                 <span className="font-extrabold text-lg text-primary">توافقی</span>
@@ -108,6 +92,7 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
                 </>
               )}
             </div>
+            {!isFree && <span className="text-[10px] text-zinc-400">حداقل قیمت</span>}
           </div>
         </div>
       </div>

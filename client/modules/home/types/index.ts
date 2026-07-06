@@ -1,14 +1,26 @@
+export type SpecFieldType = "string" | "number" | "dropdown" | "boolean";
+
+export interface SpecFieldSchema {
+  label: string;
+  type: SpecFieldType;
+  options?: string[];
+  required?: boolean;
+  isVariant?: boolean;
+}
+
+export type SpecsSchema = Record<string, SpecFieldSchema>;
+
+export type SpecValue = string | number | boolean | null;
+
 export interface GetCategory {
   id: number;
   name: string;
   slug: string;
   parentId: number | null;
   icon: string;
-  specsSchema: string[] | null;
+  specsSchema: SpecFieldSchema | null;
   subcategories: GetCategory[];
 }
-
-export type SpecValue = string | number | boolean | null;
 
 export interface ListingSeller {
   id: number;
@@ -16,11 +28,21 @@ export interface ListingSeller {
   lastName: string;
 }
 
+export interface ListingVariant {
+  id: number;
+  specs: Record<string, string>;
+  price: number;
+  discountPercentage: number;
+  discountExpiry: string | null;
+  finalPrice: number;
+  stock: number;
+  sku: string | null;
+}
+
 export interface GetListing {
   id: number;
   title: string;
   description: string;
-  price: string;
   isNegotiable: boolean;
   condition: string;
   status: string;
@@ -28,15 +50,12 @@ export interface GetListing {
   longitude: string;
   thumbnail: string;
   images: string[];
-  stock: number;
   specs: Record<string, SpecValue>;
+  minPrice: number;
   averageRating: number;
   reviewCount: number;
   aiReviewSummary: null;
-  discountPercentage: number;
-  discountExpiry: string | null;
   isAmazingOffer: boolean;
-  finalPrice: string;
   rejectionReason: string | null;
   userId: number;
   createdAt: string;
@@ -45,7 +64,7 @@ export interface GetListing {
     id: number;
     name: string;
     slug: string;
-    specsSchema: string[] | null;
+    specsSchema: SpecsSchema | null;
   };
   city: {
     id: number;
@@ -58,6 +77,7 @@ export interface GetListing {
     slug: string;
   } | null;
   user: ListingSeller;
+  variants?: ListingVariant[];
 }
 
 export interface Pagination {

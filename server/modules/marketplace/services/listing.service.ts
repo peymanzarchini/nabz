@@ -7,7 +7,8 @@ import {
   UpdateListingStatusInput,
 } from "../validations/listing.schema.js";
 import { Listing } from "../models/listing.model.js";
-import { ListingSpecs, ListingStatus } from "../types/index.js";
+import { ListingVariant } from "../models/variant.model.js";
+import { ListingSpecs, ListingStatus, SpecValue } from "../types/index.js";
 import { InferAttributes, Op, Order, WhereOptions } from "@sequelize/core";
 import { Auth } from "@/modules/auth/model/auth.model.js";
 import { UserRole } from "@/types/index.js";
@@ -15,6 +16,7 @@ import path from "path";
 import fs from "fs";
 import { logger } from "@/config/logger.js";
 import { Location } from "../models/location.model.js";
+import { sequelize } from "@/config/database.js";
 
 class ListingService {
   async createListing(userId: number, data: CreateListingInput, images: Express.Multer.File[]) {
@@ -24,21 +26,57 @@ class ListingService {
     if (!images || images.length === 0) {
       throw HttpError.badRequest("حداقل یک تصویر برای آگهی الزامی است.");
     }
+    if (!data.variants || data.variants.length === 0) {
+      throw HttpError.badRequest("حداقل یک واریانت (قیمت) برای آگهی الزامی است.");
+    }
 
     const imagePaths = images.map((img) => `/uploads/${img.filename}`);
     const thumbnailIndex = data.thumbnailIndex < imagePaths.length ? data.thumbnailIndex : 0;
     const thumbnailPath = imagePaths[thumbnailIndex];
 
-    const listing = await Listing.create({
-      ...data,
-      specs: data.specs as ListingSpecs,
-      userId,
-      images: imagePaths,
-      thumbnail: thumbnailPath,
-      status: ListingStatus.PENDING,
-    });
+    const minPrice = Math.min(...data.variants.map((v) => v.price));
 
-    return listing;
+    return await sequelize.transaction(async (transaction) => {
+      const listing = await Listing.create(
+        {
+          title: data.title,
+          description: data.description,
+          isNegotiable: data.isNegotiable,
+          condition: data.condition,
+          cityId: data.cityId,
+          districtId: data.districtId,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          categoryId: data.categoryId,
+          thumbnail: thumbnailPath,
+          images: imagePaths,
+          specs: data.specs as ListingSpecs,
+          userId,
+          status: ListingStatus.PENDING,
+          minPrice,
+        },
+        { transaction },
+      );
+
+      const variantRecords = data.variants.map((v) => {
+        const hasDiscount = v.discountPercentage && v.discountPercentage > 0;
+        const finalPrice = hasDiscount ? v.price - (v.price * v.discountPercentage) / 100 : v.price;
+
+        return {
+          listingId: listing.id,
+          specs: v.specs,
+          price: v.price,
+          stock: v.stock,
+          discountPercentage: v.discountPercentage || 0,
+          discountExpiry: v.discountExpiry,
+          finalPrice: finalPrice,
+        };
+      });
+
+      await ListingVariant.bulkCreate(variantRecords, { transaction });
+
+      return listing;
+    });
   }
 
   async getAllListings(query: GetListingQuery) {
@@ -66,9 +104,7 @@ class ListingService {
         ...where,
         [Op.or]: [
           { title: { [Op.like]: `%${search}%` } },
-          {
-            description: { [Op.like]: `%${search}%` },
-          },
+          { description: { [Op.like]: `%${search}%` } },
         ],
       };
     }
@@ -80,7 +116,6 @@ class ListingService {
       });
 
       const categoryIds = [categoryId, ...subCategories.map((sub) => sub.id)];
-
       where = { ...where, categoryId: { [Op.in]: categoryIds } };
     }
 
@@ -96,26 +131,16 @@ class ListingService {
       const priceFilter: { [Op.gte]?: number; [Op.lte]?: number } = {};
       if (minPrice !== undefined) priceFilter[Op.gte] = minPrice;
       if (maxPrice !== undefined) priceFilter[Op.lte] = maxPrice;
-
-      where = { ...where, price: priceFilter };
+      where = { ...where, minPrice: priceFilter };
     }
 
     if (isAmazingOffer === true) {
-      where = {
-        ...where,
-        isAmazingOffer: true,
-        discountExpiry: { [Op.gt]: new Date() },
-      };
-    } else if (isAmazingOffer === false) {
-      where = {
-        ...where,
-        isAmazingOffer: false,
-      };
+      where = { ...where, isAmazingOffer: true };
     }
 
     let order: Order = [["createdAt", "DESC"]];
-    if (sort === "cheapest") order = [["finalPrice", "ASC"]];
-    else if (sort === "expensive") order = [["finalPrice", "DESC"]];
+    if (sort === "cheapest") order = [["minPrice", "ASC"]];
+    else if (sort === "expensive") order = [["minPrice", "DESC"]];
     else if (sort === "top_rated") order = [["averageRating", "DESC"]];
 
     const { rows, count } = await Listing.findAndCountAll({
@@ -123,21 +148,14 @@ class ListingService {
       order,
       limit,
       offset,
-      attributes: {
-        exclude: ["cityId", "districtId", "categoryId", "userId"],
-      },
       include: [
         { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
-        {
-          model: Location,
-          as: "city",
-          attributes: ["id", "name", "slug"],
-        },
+        { model: Location, as: "city", attributes: ["id", "name", "slug"] },
         { model: Location, as: "district", attributes: ["id", "name", "slug"] },
         {
           model: Auth,
           as: "user",
-          attributes: ["id", "firstName", "lastName"],
+          attributes: ["id", "firstName", "lastName", "avatar", "phoneNumber"],
         },
       ],
     });
@@ -157,20 +175,38 @@ class ListingService {
 
   async getListingById(id: number, userId?: number, role?: UserRole) {
     const listing = await Listing.findByPk(id, {
-      attributes: {
-        exclude: ["cityId", "districtId", "categoryId", "userId"],
-      },
       include: [
         { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
+        { model: Location, as: "city", attributes: ["id", "name", "slug"] },
+        { model: Location, as: "district", attributes: ["id", "name", "slug"] },
         {
           model: Auth,
           as: "user",
           attributes: ["id", "firstName", "lastName", "avatar", "phoneNumber"],
         },
+        { model: ListingVariant, as: "variants" },
       ],
     });
 
     if (!listing) throw HttpError.notFound("آگهی یافت نشد.");
+
+    const rawSchema = listing.category?.specsSchema as unknown;
+
+    if (
+      rawSchema &&
+      typeof rawSchema === "object" &&
+      "inheritFrom" in rawSchema &&
+      typeof (rawSchema as Record<string, unknown>).inheritFrom === "number"
+    ) {
+      const inheritData = rawSchema as { inheritFrom: number };
+      const sourceCat = await Category.findByPk(inheritData.inheritFrom, {
+        attributes: ["specsSchema"],
+      });
+
+      if (sourceCat?.specsSchema) {
+        listing.category?.setDataValue("specsSchema", sourceCat.specsSchema);
+      }
+    }
 
     if (listing.status !== ListingStatus.ACTIVE) {
       const isOwner = userId && listing.userId === userId;
@@ -192,19 +228,15 @@ class ListingService {
       throw HttpError.forbidden("شما فقط می‌توانید آگهی خودتان را ویرایش کنید.");
     }
 
-    let finalSpecs: ListingSpecs | null | undefined = listing.specs as ListingSpecs;
-
-    if (data.specs !== undefined) {
-      if (data.specs === null) {
-        finalSpecs = null;
-      } else {
+    return await sequelize.transaction(async (transaction) => {
+      if (data.specs !== undefined) {
         const existingSpecs: ListingSpecs = (listing.specs || {}) as ListingSpecs;
         const incomingSpecs = data.specs as ListingSpecs;
         const mergedSpecs: ListingSpecs = { ...existingSpecs };
 
         for (const key in incomingSpecs) {
           if (Object.prototype.hasOwnProperty.call(incomingSpecs, key)) {
-            const incomingValue = incomingSpecs[key];
+            const incomingValue: SpecValue = incomingSpecs[key];
             if (incomingValue === null) {
               delete mergedSpecs[key];
             } else {
@@ -212,16 +244,44 @@ class ListingService {
             }
           }
         }
-        finalSpecs = mergedSpecs;
+        listing.specs = mergedSpecs;
       }
-    }
 
-    await listing.update({
-      ...data,
-      specs: finalSpecs,
+      if (data.title) listing.title = data.title;
+      if (data.description) listing.description = data.description;
+      if (data.condition) listing.condition = data.condition;
+      if (data.cityId) listing.cityId = data.cityId;
+      if (data.districtId !== undefined) listing.districtId = data.districtId;
+      if (data.latitude !== undefined) listing.latitude = data.latitude;
+      if (data.longitude !== undefined) listing.longitude = data.longitude;
+
+      if (data.variants && data.variants.length > 0) {
+        await ListingVariant.destroy({ where: { listingId: listing.id }, transaction });
+
+        const variantRecords = data.variants.map((v) => {
+          const hasDiscount = v.discountPercentage && v.discountPercentage > 0;
+          const finalPrice = hasDiscount
+            ? v.price - (v.price * v.discountPercentage) / 100
+            : v.price;
+
+          return {
+            listingId: listing.id,
+            specs: v.specs,
+            price: v.price,
+            stock: v.stock,
+            discountPercentage: v.discountPercentage || 0,
+            discountExpiry: v.discountExpiry,
+            finalPrice: finalPrice,
+          };
+        });
+
+        await ListingVariant.bulkCreate(variantRecords, { transaction });
+        listing.minPrice = Math.min(...data.variants.map((v) => v.price));
+      }
+
+      await listing.save({ transaction });
+      return listing;
     });
-
-    return listing;
   }
 
   async deleteListing(id: number, userId: number, role: UserRole): Promise<{ message: string }> {
@@ -235,7 +295,6 @@ class ListingService {
     if (listing.images && listing.images.length > 0) {
       for (const imageUrl of listing.images) {
         const filePath = path.join(process.cwd(), imageUrl);
-
         try {
           if (fs.existsSync(filePath)) {
             await fs.promises.unlink(filePath);
@@ -271,7 +330,10 @@ class ListingService {
   }
 
   async toggleAmazingOffer(id: number, isAmazingOffer: boolean) {
-    const listing = await Listing.findByPk(id);
+    const listing = await Listing.findByPk(id, {
+      include: [{ model: ListingVariant, as: "variants" }],
+    });
+
     if (!listing) throw HttpError.notFound("آگهی یافت نشد.");
 
     if (isAmazingOffer === false) {
@@ -280,16 +342,21 @@ class ListingService {
       return { message: "پیشنهاد شگفت‌انگیز لغو شد." };
     }
 
-    if (!listing.discountPercentage || listing.discountPercentage < 15) {
-      throw HttpError.badRequest("قانون شگفت‌انگیز: کالا باید حداقل ۱۵٪ تخفیف داشته باشد.");
+    const variants = listing.variants;
+    if (!variants || variants.length === 0) {
+      throw HttpError.badRequest("این آگهی واریانتی برای بررسی تخفیف ندارد.");
     }
 
-    if (
-      !listing.discountExpiry ||
-      new Date(listing.discountExpiry) <= new Date(Date.now() + 60 * 60 * 1000)
-    ) {
+    const hasValidDiscount = variants.some(
+      (v: ListingVariant) =>
+        v.discountPercentage >= 15 &&
+        v.discountExpiry !== null &&
+        new Date(v.discountExpiry) > new Date(Date.now() + 60 * 60 * 1000),
+    );
+
+    if (!hasValidDiscount) {
       throw HttpError.badRequest(
-        "قانون شگفت‌انگیز: تاریخ انقضای تخفیف باید حداقل تا یک ساعت آینده معتبر باشد.",
+        "قانون شگفت‌انگیز: حداقل یکی از واریانت‌ها باید حداقل ۱۵٪ تخفیف با تاریخ اعتبار حداقل یک ساعت آینده داشته باشد.",
       );
     }
 
