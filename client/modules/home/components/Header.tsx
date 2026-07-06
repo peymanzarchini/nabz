@@ -10,6 +10,7 @@ import { Search, ChevronDown, Menu, X, ChevronLeft, Sun, Moon } from "lucide-rea
 import { useCategories } from "@/modules/home/hooks/useGetCategories";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
+import { categoryIcons } from "../constants/category-icon";
 
 const Header = () => {
   const { data: categories, isLoading } = useCategories();
@@ -83,31 +84,28 @@ const Header = () => {
                   {isLoading && (
                     <p className="text-sm text-muted-foreground p-2">در حال بارگذاری...</p>
                   )}
-                  {categories?.map((category) => (
-                    <div
-                      key={category.id}
-                      onMouseEnter={() => setActiveCategory(category)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-colors group ${
-                        activeCategory?.id === category.id
-                          ? "bg-primary/10 text-primary font-bold"
-                          : "hover:bg-secondary text-foreground"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">
-                          {category.icon === "vehicle"
-                            ? "🚗"
-                            : category.icon === "building"
-                              ? "🏢"
-                              : category.icon === "digital"
-                                ? "💻"
-                                : "📦"}
-                        </span>
-                        <span className="text-sm">{category.name}</span>
+                  {categories?.map((category) => {
+                    const Icon = categoryIcons[category.slug] ?? categoryIcons.default;
+
+                    return (
+                      <div
+                        key={category.id}
+                        onMouseEnter={() => setActiveCategory(category)}
+                        className={`flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-colors group ${
+                          activeCategory?.id === category.id
+                            ? "bg-primary/10 text-primary font-bold"
+                            : "hover:bg-secondary text-foreground"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icon className="h-5 w-5 text-primary" />
+                          <span className="text-sm">{category.name}</span>
+                        </div>
+
+                        <ChevronLeft className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
                       </div>
-                      <ChevronLeft className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div className="w-2/3 p-6">

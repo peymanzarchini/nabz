@@ -36,7 +36,8 @@ export const marketplaceSwaggerDocs = {
                   specsSchema: {
                     type: "object",
                     nullable: true,
-                    description: "ساختار فرم اختصاصی این دسته (فرم‌ساز داینامیک)",
+                    description:
+                      "ساختار فرم اختصاصی این دسته. isVariant: true یعنی قیمت را تغییر می‌دهد",
                     additionalProperties: {
                       type: "object",
                       properties: {
@@ -52,16 +53,27 @@ export const marketplaceSwaggerDocs = {
                           example: ["سفید", "مشکی", "قرمز"],
                         },
                         required: { type: "boolean", example: true },
+                        isVariant: {
+                          type: "boolean",
+                          example: true,
+                          description: "آیا این ویژگی باعث تغییر قیمت می‌شود؟",
+                        },
                       },
                     },
                     example: {
                       color: {
                         label: "رنگ",
                         type: "dropdown",
-                        options: ["سفید", "مشکی", "قرمز"],
+                        options: ["سفید", "مشکی"],
                         required: true,
+                        isVariant: true,
                       },
-                      mileage: { label: "کارکرد", type: "number", required: true },
+                      battery_health: {
+                        label: "سلامت باتری",
+                        type: "number",
+                        required: true,
+                        isVariant: false,
+                      },
                     },
                   },
                 },
@@ -171,7 +183,7 @@ export const marketplaceSwaggerDocs = {
       post: {
         summary: "ساخت آگهی جدید (فقط فروشندگان)",
         description:
-          "ارسال اطلاعات آگهی شامل ویژگی‌های داینامیک (specs) و اطلاعات تخفیف. قیمت نهایی (finalPrice) توسط سرور محاسبه می‌شود.",
+          "ارسال اطلاعات آگهی شامل ویژگی‌های داینامیک (specs) و واریانت‌های قیمت (variants). قیمت نهایی (finalPrice) توسط سرور محاسبه می‌شود.",
         consumes: ["multipart/form-data"],
         tags: ["Marketplace"],
         security: [{ BearerAuth: [] }],
@@ -181,53 +193,46 @@ export const marketplaceSwaggerDocs = {
             "multipart/form-data": {
               schema: {
                 type: "object",
-                required: ["title", "description", "price", "condition", "cityId", "categoryId"],
+                required: ["title", "description", "condition", "cityId", "categoryId", "variants"],
                 properties: {
-                  title: { type: "string", example: "فروش آیفون ۱۳ پرو" },
+                  title: { type: "string", example: "فروش آیفون ۱۷ پرو" },
                   description: { type: "string", example: "سالم بدون خط و خش" },
-                  price: { type: "number", example: 60000000 },
-                  isNegotiable: { type: "string", enum: ["true", "false"], example: "false" },
-                  condition: { type: "string", enum: ["new", "used"], example: "used" },
-                  cityId: { type: "number", example: 1, description: "آیدی شهر (مثلا آیدی تهران)" },
-                  districtId: {
+                  price: {
                     type: "number",
-                    nullable: true,
-                    example: 2,
-                    description: "آیدی محله",
+                    example: 60000000,
+                    description:
+                      "این فیلد در معماری جدید استفاده نمی شود، قیمت در variants تعریف می شود.",
                   },
+                  isNegotiable: { type: "string", enum: ["true", "false"], example: "false" },
+                  condition: { type: "string", enum: ["new", "used"], example: "new" },
+                  cityId: { type: "number", example: 1, description: "آیدی شهر" },
+                  districtId: { type: "number", nullable: true, example: 2 },
                   latitude: { type: "number", nullable: true, example: 35.6892 },
                   longitude: { type: "number", nullable: true, example: 51.389 },
-                  categoryId: { type: "number", example: 1 },
-                  thumbnailIndex: {
-                    type: "number",
-                    example: 0,
-                    description: "شماره عکس کاور (از 0)",
-                  },
+                  categoryId: { type: "number", example: 29 },
+                  thumbnailIndex: { type: "number", example: 0 },
                   stock: {
                     type: "number",
                     nullable: true,
                     example: 4,
-                    description: "موجودی انبار (برای املاک null بفرستید)",
+                    description: "این فیلد در variants تعریف می شود.",
                   },
+
                   specs: {
-                    type: "object",
-                    description:
-                      "ویژگی‌های داینامیک. کلیدها باید مطابق specsSchema دسته‌بندی باشند.",
-                    example: { color: "مشکی", mileage: 85000 },
-                  },
-                  discountPercentage: {
-                    type: "number",
-                    nullable: true,
-                    example: 20,
-                    description: "درصد تخفیف (مثلا 20 برای ۲۰٪)",
-                  },
-                  discountExpiry: {
                     type: "string",
-                    nullable: true,
-                    format: "date-time",
-                    example: "2026-12-31T23:59:59Z",
-                    description: "تاریخ انقضای تخفیف",
+                    description:
+                      'مشخصات ثابت کالا (باید به صورت JSON String ارسال شود). مثال: {"brand":"Apple","battery_health":100}',
+                    example: '{"brand":"Apple","battery_health":100}',
                   },
+
+                  variants: {
+                    type: "string",
+                    description:
+                      "آرایه واریانت‌ها (باید به صورت JSON String ارسال شود). حداقل یک واریانت الزامی است.",
+                    example:
+                      '[{"specs":{"color":"مشکی","storage":"256 گیگابایت"},"price":90000000,"stock":2},{"specs":{"color":"سفید","storage":"512 گیگابایت"},"price":105000000,"stock":1}]',
+                  },
+
                   images: { type: "array", items: { type: "string", format: "binary" } },
                 },
               },

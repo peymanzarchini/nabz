@@ -15,6 +15,7 @@ export class Category extends Model<InferAttributes<Category>, InferCreationAttr
   declare parentId: CreationOptional<number | null>;
   declare icon: CreationOptional<string | null>;
   declare specsSchema: CreationOptional<SpecsSchema | null>;
+  declare hasSpecs: CreationOptional<boolean>;
   declare readonly createdAt: CreationOptional<Date>;
   declare readonly updatedAt: CreationOptional<Date>;
 }
@@ -51,6 +52,11 @@ Category.init(
       allowNull: true,
       defaultValue: null,
       comment: "تعریف فیلدهای اختصاصی این دسته بندی برای فرانت اند (فرم ساز داینامیک)",
+    },
+    hasSpecs: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

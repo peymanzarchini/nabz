@@ -41,3 +41,8 @@ export async function getListings(params: ListingFilters): Promise<ListingsRespo
     },
   };
 }
+
+export async function getListingById(id: number): Promise<GetListing> {
+  const { data } = await api.get<ApiResponse<GetListing>>(`/marketplace/listings/${id}`);
+  return data.body;
+}

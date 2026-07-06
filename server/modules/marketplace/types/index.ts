@@ -1,3 +1,5 @@
+import { Category } from "../models/category.model.js";
+
 export enum ListingStatus {
   PENDING = "pending",
   ACTIVE = "active",
@@ -10,6 +12,18 @@ export enum ListingCondition {
   USED = "used",
 }
 
+export interface ListingVariant {
+  id: number;
+  listingId: number;
+  specs: Record<string, string>;
+  price: number;
+  discountPercentage: number;
+  discountExpiry: Date | null;
+  finalPrice: number;
+  stock: number;
+  sku: string | null;
+}
+
 export type SpecFieldType = "string" | "number" | "dropdown" | "boolean";
 
 export interface SpecFieldSchema {
@@ -17,6 +31,7 @@ export interface SpecFieldSchema {
   type: SpecFieldType;
   options?: string[];
   required?: boolean;
+  isVariant?: boolean;
 }
 
 export type SpecsSchema = Record<string, SpecFieldSchema>;
@@ -39,3 +54,5 @@ export enum ConversationStatus {
   ACTIVE = "active",
   CLOSED = "closed",
 }
+
+export type CategoryWithSubs = Category & { subcategories?: CategoryWithSubs[] };

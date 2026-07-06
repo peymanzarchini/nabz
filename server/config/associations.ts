@@ -5,6 +5,7 @@ import { Listing } from "@/modules/marketplace/models/listing.model.js";
 import { Location } from "@/modules/marketplace/models/location.model.js";
 import { Message } from "@/modules/marketplace/models/message.model.js";
 import { Review } from "@/modules/marketplace/models/review.model.js";
+import { ListingVariant } from "@/modules/marketplace/models/variant.model.js";
 
 export function setupAssociations() {
   // ==========================================
@@ -53,6 +54,8 @@ export function setupAssociations() {
     as: "conversations",
     inverse: "listing",
   });
+
+  Listing.hasMany(ListingVariant, { foreignKey: "listingId", as: "variants", inverse: "listing" });
 
   // ==========================================
   // 💬 بخش دیدگاه‌ها (Review)

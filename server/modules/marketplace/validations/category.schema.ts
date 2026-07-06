@@ -2,6 +2,10 @@ import { z } from "zod";
 
 const specFieldTypes = ["string", "number", "dropdown", "boolean"] as const;
 
+const inheritSchema = z.object({
+  inheritFrom: z.coerce.number().int().positive("آیدی دسته بندی برای ارث بری نامعتبر است."),
+});
+
 const specFieldSchema = z.object({
   label: z.string().min(1, "عنوان فیلد الزامی است"),
   type: z.enum(specFieldTypes, {
@@ -9,6 +13,7 @@ const specFieldSchema = z.object({
   }),
   options: z.array(z.string()).optional(),
   required: z.boolean().optional().default(false),
+  isVariant: z.boolean().optional().default(false),
 });
 
 export const createCategorySchema = z.object({
@@ -21,7 +26,11 @@ export const createCategorySchema = z.object({
       .regex(/^[a-z0-9-]+$/, "اسلاگ فقط می‌تواند شامل حروف کوچک، عدد و خط تیره باشد"),
     parentId: z.coerce.number().optional().nullable(),
     icon: z.string().optional().nullable(),
-    specsSchema: z.record(z.string(), specFieldSchema).optional().nullable(),
+    specsSchema: z
+      .union([z.record(z.string(), specFieldSchema), inheritSchema])
+      .optional()
+      .nullable(),
+    hasSpecs: z.boolean().optional().default(false),
   }),
 });
 
@@ -40,9 +49,10 @@ export const updateCategorySchema = z.object({
     parentId: z.coerce.number().optional().nullable(),
     icon: z.string().optional().nullable(),
     specsSchema: z
-      .record(z.string(), z.union([specFieldSchema.partial(), z.null()]))
+      .union([z.record(z.string(), z.union([specFieldSchema.partial(), z.null()])), inheritSchema])
       .optional()
       .nullable(),
+    hasSpecs: z.boolean().optional(),
   }),
 });
 
