@@ -7,7 +7,7 @@ import { HttpError } from "@/utils/httpError.js";
 import { StartConversationInput, SendMessageInput } from "../validations/conversation.schema.js";
 
 class ConversationService {
-  async startOrGetConversation(userId: number, data: StartConversationInput) {
+  async startOrGetConversation(userId: string, data: StartConversationInput) {
     const { listingId, message } = data;
 
     const listing = await Listing.findByPk(listingId);
@@ -53,7 +53,7 @@ class ConversationService {
     }
   }
 
-  async sendMessage(userId: number, data: SendMessageInput) {
+  async sendMessage(userId: string, data: SendMessageInput) {
     const { conversationId } = data.params;
     const { content } = data.body;
 
@@ -76,7 +76,7 @@ class ConversationService {
     return message;
   }
 
-  async getUserConversations(userId: number) {
+  async getUserConversations(userId: string) {
     const conversations = await Conversation.findAll({
       where: {
         [Op.or]: [{ buyerId: userId }, { sellerId: userId }],
@@ -88,7 +88,7 @@ class ConversationService {
     return conversations;
   }
 
-  async getConversationMessages(conversationId: number, userId: number) {
+  async getConversationMessages(conversationId: string, userId: string) {
     const conversation = await Conversation.findByPk(conversationId);
     if (!conversation) throw HttpError.notFound("گفت‌وگو یافت نشد.");
 

@@ -8,7 +8,7 @@ export const createLocationSchema = z.object({
       .trim()
       .min(2, "اسلاگ الزامی است")
       .regex(/^[a-z0-9-]+$/, "اسلاگ فقط حروف کوچک، عدد و خط تیره"),
-    parentId: z.coerce.number().int().optional().nullable(),
+    parentId: z.uuid("آیدی وارد شده نامعتبر است."),
   }),
 });
 

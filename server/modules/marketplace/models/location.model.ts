@@ -8,10 +8,10 @@ import {
 import { sequelize } from "@/config/database.js";
 
 export class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare name: string;
   declare slug: string;
-  declare parentId: CreationOptional<number | null>;
+  declare parentId: CreationOptional<string | null>;
   declare readonly createdAt: CreationOptional<Date>;
   declare readonly updatedAt: CreationOptional<Date>;
 }
@@ -19,9 +19,9 @@ export class Location extends Model<InferAttributes<Location>, InferCreationAttr
 Location.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING(100),
@@ -35,7 +35,7 @@ Location.init(
       validate: { notEmpty: true },
     },
     parentId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
     },

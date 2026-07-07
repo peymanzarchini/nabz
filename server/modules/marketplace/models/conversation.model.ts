@@ -12,10 +12,10 @@ export class Conversation extends Model<
   InferAttributes<Conversation>,
   InferCreationAttributes<Conversation>
 > {
-  declare id: CreationOptional<number>;
-  declare listingId: number;
-  declare buyerId: number;
-  declare sellerId: number;
+  declare id: CreationOptional<string>;
+  declare listingId: string;
+  declare buyerId: string;
+  declare sellerId: string;
   declare status: CreationOptional<ConversationStatus>;
   declare lastMessageAt: CreationOptional<Date>;
   declare readonly createdAt: CreationOptional<Date>;
@@ -25,20 +25,20 @@ export class Conversation extends Model<
 Conversation.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     listingId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     buyerId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     sellerId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     status: {

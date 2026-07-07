@@ -101,7 +101,7 @@ export const resendSchema = z.object({
 
 export const updateRoleSchema = z.object({
   params: z.object({
-    id: z.coerce.number(),
+    id: z.uuid("آیدی کاربر باید از نوع UUID باشد"),
   }),
   body: z.object({
     role: z.enum([

@@ -37,7 +37,7 @@ const ListingsPage = () => {
   const filters = useMemo<ListingFilters>(() => {
     return {
       search: searchParams.get("search") || "",
-      categoryId: searchParams.get("categoryId") ? Number(searchParams.get("categoryId")) : null,
+      categoryId: searchParams.get("categoryId") || null,
       minPrice: searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : null,
       maxPrice: searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : null,
       condition: (searchParams.get("condition") as "new" | "used" | null) || null,

@@ -7,7 +7,7 @@ import { CreateReviewInput, UpdateReviewStatusInput } from "../validations/revie
 import { ReviewStatus } from "../types/index.js";
 
 class ReviewService {
-  async createReview(userId: number, listingId: number, data: CreateReviewInput) {
+  async createReview(userId: string, listingId: string, data: CreateReviewInput) {
     return await sequelize.transaction(async (t) => {
       const listing = await Listing.findByPk(listingId, { transaction: t });
       if (!listing) throw HttpError.notFound("آگهی مورد نظر یافت نشد.");
@@ -57,7 +57,7 @@ class ReviewService {
     });
   }
 
-  async getListingReviews(listingId: number) {
+  async getListingReviews(listingId: string) {
     const reviews = await Review.findAll({
       where: {
         listingId,
@@ -98,7 +98,7 @@ class ReviewService {
     return reviews;
   }
 
-  async updateReviewStatus(reviewId: number, data: UpdateReviewStatusInput) {
+  async updateReviewStatus(reviewId: string, data: UpdateReviewStatusInput) {
     const review = await Review.findByPk(reviewId);
     if (!review) throw HttpError.notFound("دیدگاه یافت نشد.");
 

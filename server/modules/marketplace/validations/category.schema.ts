@@ -24,7 +24,7 @@ export const createCategorySchema = z.object({
       .trim()
       .min(2, "اسلاگ الزامی است")
       .regex(/^[a-z0-9-]+$/, "اسلاگ فقط می‌تواند شامل حروف کوچک، عدد و خط تیره باشد"),
-    parentId: z.coerce.number().optional().nullable(),
+    parentId: z.uuid().optional().nullable(),
     icon: z.string().optional().nullable(),
     specsSchema: z
       .union([z.record(z.string(), specFieldSchema), inheritSchema])
@@ -36,7 +36,7 @@ export const createCategorySchema = z.object({
 
 export const updateCategorySchema = z.object({
   params: z.object({
-    id: z.coerce.number(),
+    id: z.uuid("آیدی دسته‌بندی نامعتبر است"),
   }),
   body: z.object({
     name: z.string().trim().min(2).optional(),
@@ -46,7 +46,7 @@ export const updateCategorySchema = z.object({
       .min(2)
       .regex(/^[a-z0-9-]+$/)
       .optional(),
-    parentId: z.coerce.number().optional().nullable(),
+    parentId: z.uuid().optional().nullable(),
     icon: z.string().optional().nullable(),
     specsSchema: z
       .union([z.record(z.string(), z.union([specFieldSchema.partial(), z.null()])), inheritSchema])

@@ -59,7 +59,7 @@ const Filters = ({ filters, onChange, onReset }: FiltersProps) => {
         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-200">دسته‌بندی</label>
         <Combobox
           value={filters.categoryId ? String(filters.categoryId) : ""}
-          onValueChange={(val) => onChange({ categoryId: val ? Number(val) : null, page: 1 })}
+          onValueChange={(val) => onChange({ categoryId: val || null, page: 1 })}
         >
           <ComboboxTrigger className="h-11 w-full flex items-center justify-between px-4 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm font-normal text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-700">
             <span>{currentCategoryLabel}</span>

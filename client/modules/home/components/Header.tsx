@@ -23,7 +23,7 @@ const Header = () => {
   const [mounted, setMounted] = useState<boolean>(false);
 
   const [activeCategory, setActiveCategory] = useState<CategoryItem | null>(null);
-  const [activeMobileCategory, setActiveMobileCategory] = useState<number | null>(null);
+  const [activeMobileCategory, setActiveMobileCategory] = useState<string | null>(null);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -206,7 +206,6 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* ✅ دکمه همبرگر موبایل (بزرگ‌تر، شیشه‌ای، گوشه سمت چپ) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden flex items-center justify-center w-12 h-12 rounded-xl border border-border/30 bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm text-foreground hover:bg-secondary transition-all duration-200 cursor-pointer"

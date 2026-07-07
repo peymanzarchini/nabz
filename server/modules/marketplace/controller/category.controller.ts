@@ -23,7 +23,7 @@ class CategoryController {
 
   async updateCategory(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const result = await categoryService.updateCategory(id, req.body as UpdateCategoryInput);
       res.success("دسته‌بندی با موفقیت ویرایش شد.", result);
     } catch (error) {
@@ -33,7 +33,7 @@ class CategoryController {
 
   async deleteCategory(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const result = await categoryService.deleteCategory(id);
       res.success(result.message, null);
     } catch (error) {

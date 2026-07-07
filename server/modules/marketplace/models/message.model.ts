@@ -8,9 +8,9 @@ import {
 import { sequelize } from "@/config/database.js";
 
 export class Message extends Model<InferAttributes<Message>, InferCreationAttributes<Message>> {
-  declare id: CreationOptional<number>;
-  declare conversationId: number;
-  declare senderId: number;
+  declare id: CreationOptional<string>;
+  declare conversationId: string;
+  declare senderId: string;
   declare content: string;
   declare isRead: CreationOptional<boolean>;
   declare readonly createdAt: CreationOptional<Date>;
@@ -19,9 +19,13 @@ export class Message extends Model<InferAttributes<Message>, InferCreationAttrib
 
 Message.init(
   {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    conversationId: { type: DataTypes.INTEGER, allowNull: false },
-    senderId: { type: DataTypes.INTEGER, allowNull: false },
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    conversationId: { type: DataTypes.UUID, allowNull: false },
+    senderId: { type: DataTypes.UUID, allowNull: false },
     content: { type: DataTypes.TEXT, allowNull: false, validate: { notEmpty: true } },
     isRead: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     createdAt: DataTypes.DATE,
@@ -31,13 +35,6 @@ Message.init(
     sequelize,
     modelName: "Message",
     tableName: "messages",
-    indexes: [
-      {
-        fields: ["conversationId"],
-      },
-      {
-        fields: ["isRead"],
-      },
-    ],
+    indexes: [{ fields: ["conversationId"] }, { fields: ["isRead"] }],
   },
 );

@@ -17,9 +17,10 @@ import fs from "fs";
 import { logger } from "@/config/logger.js";
 import { Location } from "../models/location.model.js";
 import { sequelize } from "@/config/database.js";
+import { generateSlug } from "@/utils/slugify.js";
 
 class ListingService {
-  async createListing(userId: number, data: CreateListingInput, images: Express.Multer.File[]) {
+  async createListing(userId: string, data: CreateListingInput, images: Express.Multer.File[]) {
     const category = await Category.findByPk(data.categoryId);
     if (!category) throw HttpError.notFound("دسته‌بندی مورد نظر یافت نشد.");
 
@@ -36,11 +37,14 @@ class ListingService {
 
     const minPrice = Math.min(...data.variants.map((v) => v.price));
 
+    const slug = generateSlug(data.title);
+
     return await sequelize.transaction(async (transaction) => {
       const listing = await Listing.create(
         {
           title: data.title,
           description: data.description,
+          slug,
           isNegotiable: data.isNegotiable,
           condition: data.condition,
           cityId: data.cityId,
@@ -173,40 +177,45 @@ class ListingService {
     };
   }
 
-  async getListingById(id: number, userId?: number, role?: UserRole) {
-    const listing = await Listing.findByPk(id, {
+  async getListingById(idOrSlug: string, userId?: string, role?: UserRole) {
+    const isUUID =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+        idOrSlug,
+      );
+
+    const whereCondition = isUUID ? { id: idOrSlug } : { slug: idOrSlug };
+
+    const listing = await Listing.findOne({
+      where: whereCondition,
       include: [
-        { model: Category, as: "category", attributes: ["id", "name", "slug", "specsSchema"] },
-        { model: Location, as: "city", attributes: ["id", "name", "slug"] },
-        { model: Location, as: "district", attributes: ["id", "name", "slug"] },
+        {
+          model: Category,
+          as: "category",
+          attributes: ["id", "name", "slug", "specsSchema"],
+        },
+        {
+          model: Location,
+          as: "city",
+          attributes: ["id", "name", "slug"],
+        },
+        {
+          model: Location,
+          as: "district",
+          attributes: ["id", "name", "slug"],
+        },
         {
           model: Auth,
           as: "user",
           attributes: ["id", "firstName", "lastName", "avatar", "phoneNumber"],
         },
-        { model: ListingVariant, as: "variants" },
+        {
+          model: ListingVariant,
+          as: "variants",
+        },
       ],
     });
 
     if (!listing) throw HttpError.notFound("آگهی یافت نشد.");
-
-    const rawSchema = listing.category?.specsSchema as unknown;
-
-    if (
-      rawSchema &&
-      typeof rawSchema === "object" &&
-      "inheritFrom" in rawSchema &&
-      typeof (rawSchema as Record<string, unknown>).inheritFrom === "number"
-    ) {
-      const inheritData = rawSchema as { inheritFrom: number };
-      const sourceCat = await Category.findByPk(inheritData.inheritFrom, {
-        attributes: ["specsSchema"],
-      });
-
-      if (sourceCat?.specsSchema) {
-        listing.category?.setDataValue("specsSchema", sourceCat.specsSchema);
-      }
-    }
 
     if (listing.status !== ListingStatus.ACTIVE) {
       const isOwner = userId && listing.userId === userId;
@@ -217,10 +226,26 @@ class ListingService {
       }
     }
 
+    const rawSchema = listing.category?.specsSchema as unknown;
+    if (
+      rawSchema &&
+      typeof rawSchema === "object" &&
+      "inheritFrom" in rawSchema &&
+      typeof (rawSchema as Record<string, unknown>).inheritFrom === "number"
+    ) {
+      const inheritData = rawSchema as { inheritFrom: string };
+      const sourceCat = await Category.findByPk(inheritData.inheritFrom, {
+        attributes: ["specsSchema"],
+      });
+      if (sourceCat?.specsSchema) {
+        listing.category?.setDataValue("specsSchema", sourceCat.specsSchema);
+      }
+    }
+
     return listing;
   }
 
-  async updateListing(id: number, userId: number, role: UserRole, data: UpdateListingInput) {
+  async updateListing(id: string, userId: string, role: UserRole, data: UpdateListingInput) {
     const listing = await Listing.findByPk(id);
     if (!listing) throw HttpError.notFound("آگهی یافت نشد");
 
@@ -284,7 +309,7 @@ class ListingService {
     });
   }
 
-  async deleteListing(id: number, userId: number, role: UserRole): Promise<{ message: string }> {
+  async deleteListing(id: string, userId: string, role: UserRole): Promise<{ message: string }> {
     const listing = await Listing.findByPk(id);
     if (!listing) throw HttpError.notFound("آگهی یافت نشد");
 
@@ -311,7 +336,7 @@ class ListingService {
   }
 
   async updateListingStatus(
-    id: number,
+    id: string,
     data: UpdateListingStatusInput,
   ): Promise<{ message: string }> {
     const listing = await Listing.findByPk(id);
@@ -329,7 +354,7 @@ class ListingService {
     return { message: "وضعیت آگهی با موفقیت تغییر کرد." };
   }
 
-  async toggleAmazingOffer(id: number, isAmazingOffer: boolean) {
+  async toggleAmazingOffer(id: string, isAmazingOffer: boolean) {
     const listing = await Listing.findByPk(id, {
       include: [{ model: ListingVariant, as: "variants" }],
     });
@@ -372,7 +397,7 @@ class ListingService {
     return { message: "کالا با موفقیت به پیشنهادهای شگفت‌انگیز اضافه شد!" };
   }
 
-  async deleteListingImage(id: number, userId: number, role: UserRole, imageUrl: string) {
+  async deleteListingImage(id: string, userId: string, role: UserRole, imageUrl: string) {
     const listing = await Listing.findByPk(id);
     if (!listing) throw HttpError.notFound("آگهی یافت نشد.");
 

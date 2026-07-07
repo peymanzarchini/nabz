@@ -32,13 +32,11 @@ const RatingStars = ({ rating }: { rating: number }) => {
   );
 };
 
-const ListingDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = use(params);
-  const listingId = Number(id);
-  const { data: listing, isLoading, isError } = useListingDetails(listingId);
+const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> }) => {
+  const { slug } = use(params);
+  const productSlug = slug[slug.length - 1];
+  const { data: listing, isLoading, isError } = useListingDetails(productSlug);
   const [selectedVariant, setSelectedVariant] = useState<ListingVariant | null>(null);
-
-  console.log(listing);
 
   if (isLoading) {
     return (
@@ -82,7 +80,6 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => 
   };
 
   const numericPrice = getNumericPrice();
-
   const hasVariants = listing.variants && listing.variants.length > 1;
   const isFree = numericPrice === 0;
   const isNew = listing.condition === "new";
@@ -96,16 +93,13 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => 
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
           <div className="lg:col-span-3 space-y-6">
             <ListingGallery images={listing.images} title={listing.title} />
-
             <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
               <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100 mb-4">توضیحات</h2>
               <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-7 whitespace-pre-line">
                 {listing.description}
               </p>
             </div>
-
             <ListingSpecs specs={listing.specs} specsSchema={listing.category?.specsSchema} />
-
             {lat && lng && <ListingMap lat={lat} lng={lng} cityName={listing.city?.name || ""} />}
           </div>
 
@@ -145,7 +139,6 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => 
                 </span>
               </div>
 
-              {/* واریانت‌ها */}
               {hasVariants && listing.variants && (
                 <div className="mb-6 pb-6 border-b border-zinc-100 dark:border-zinc-800">
                   <ListingVariants
@@ -156,7 +149,6 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => 
                 </div>
               )}
 
-              {/* قیمت */}
               <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4 mb-6">
                 <div className="flex items-end gap-1">
                   {isFree ? (
@@ -190,7 +182,6 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => 
               </Button>
             </div>
 
-            {/* باکس فروشنده */}
             {listing.user && (
               <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
                 <h3 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-4">

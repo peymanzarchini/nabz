@@ -4,7 +4,7 @@ import { ReviewStatus } from "../types/index.js";
 export const createReviewSchema = z
   .object({
     params: z.object({
-      id: z.coerce.number(),
+      id: z.uuid("آیدی وارد شده نامعتبر است"),
     }),
     body: z.object({
       rating: z
@@ -18,7 +18,7 @@ export const createReviewSchema = z
       comment: z.string().trim().min(5, "متن دیدگاه حداقل باید ۵ کاراکتر باشد"),
       pros: z.array(z.string()).optional(),
       cons: z.array(z.string()).optional(),
-      parentId: z.coerce.number().int().positive().optional().nullable(),
+      parentId: z.uuid("آیدی وارد شده نامعتبر است"),
     }),
   })
   .refine(
@@ -37,7 +37,7 @@ export const createReviewSchema = z
 export const updateReviewStatusSchema = z
   .object({
     params: z.object({
-      id: z.coerce.number(),
+      id: z.uuid("آیدی وارد شده نامعتبر است"),
     }),
     body: z.object({
       status: z.enum([ReviewStatus.APPROVED, ReviewStatus.REJECTED]),
