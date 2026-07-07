@@ -9,7 +9,7 @@ import { sequelize } from "@/config/database.js";
 import { ReviewStatus } from "../types/index.js";
 
 export class Review extends Model<InferAttributes<Review>, InferCreationAttributes<Review>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare rating: CreationOptional<number | null>;
   declare title: CreationOptional<string | null>;
   declare comment: string;
@@ -17,9 +17,9 @@ export class Review extends Model<InferAttributes<Review>, InferCreationAttribut
   declare cons: CreationOptional<string[]>;
   declare status: CreationOptional<ReviewStatus>;
   declare rejectionReason: CreationOptional<string | null>;
-  declare parentId: CreationOptional<number | null>;
-  declare userId: number;
-  declare listingId: number;
+  declare parentId: CreationOptional<string | null>;
+  declare userId: string;
+  declare listingId: string;
   declare readonly createdAt: CreationOptional<Date>;
   declare readonly updatedAt: CreationOptional<Date>;
 }
@@ -27,9 +27,9 @@ export class Review extends Model<InferAttributes<Review>, InferCreationAttribut
 Review.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     rating: {
       type: DataTypes.TINYINT,
@@ -67,15 +67,15 @@ Review.init(
       defaultValue: null,
     },
     parentId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    listingId: { type: DataTypes.INTEGER, allowNull: false },
+    listingId: { type: DataTypes.UUID, allowNull: false },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   },

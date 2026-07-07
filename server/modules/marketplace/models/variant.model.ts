@@ -11,8 +11,8 @@ export class ListingVariant extends Model<
   InferAttributes<ListingVariant>,
   InferCreationAttributes<ListingVariant>
 > {
-  declare id: CreationOptional<number>;
-  declare listingId: number;
+  declare id: CreationOptional<string>;
+  declare listingId: string;
   declare specs: Record<string, string>;
   declare price: number;
   declare discountPercentage: CreationOptional<number>;
@@ -25,11 +25,11 @@ export class ListingVariant extends Model<
 ListingVariant.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
-    listingId: { type: DataTypes.INTEGER, allowNull: false },
+    listingId: { type: DataTypes.UUID, allowNull: false },
     specs: { type: DataTypes.JSON, allowNull: false, defaultValue: {} },
     price: { type: DataTypes.BIGINT, allowNull: false, validate: { min: 0 } },
     discountPercentage: {

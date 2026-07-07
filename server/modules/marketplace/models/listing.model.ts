@@ -14,15 +14,16 @@ import { Location } from "./location.model.js";
 import { Auth } from "@/modules/auth/model/auth.model.js";
 
 export class Listing extends Model<InferAttributes<Listing>, InferCreationAttributes<Listing>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare title: string;
   declare description: string;
+  declare slug: string;
   declare isNegotiable: boolean;
   declare condition: ListingCondition;
   declare status: CreationOptional<ListingStatus>;
 
-  declare cityId: number;
-  declare districtId: CreationOptional<number | null>;
+  declare cityId: string;
+  declare districtId: CreationOptional<string | null>;
   declare latitude: CreationOptional<number | null>;
   declare longitude: CreationOptional<number | null>;
 
@@ -39,8 +40,8 @@ export class Listing extends Model<InferAttributes<Listing>, InferCreationAttrib
 
   declare isAmazingOffer: CreationOptional<boolean>;
   declare rejectionReason: CreationOptional<string | null>;
-  declare categoryId: number;
-  declare userId: number;
+  declare categoryId: string;
+  declare userId: string;
   declare readonly createdAt: CreationOptional<Date>;
   declare readonly updatedAt: CreationOptional<Date>;
 
@@ -54,9 +55,9 @@ export class Listing extends Model<InferAttributes<Listing>, InferCreationAttrib
 Listing.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     title: {
       type: DataTypes.STRING(100),
@@ -67,6 +68,12 @@ Listing.init(
       type: DataTypes.TEXT,
       allowNull: false,
       validate: { notEmpty: { msg: "Description is required" } },
+    },
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: { notEmpty: true },
     },
     isNegotiable: {
       type: DataTypes.BOOLEAN,
@@ -87,8 +94,8 @@ Listing.init(
       defaultValue: ListingStatus.PENDING,
     },
 
-    cityId: { type: DataTypes.INTEGER, allowNull: false },
-    districtId: { type: DataTypes.INTEGER, allowNull: true },
+    cityId: { type: DataTypes.UUID, allowNull: false },
+    districtId: { type: DataTypes.UUID, allowNull: true },
     latitude: { type: DataTypes.DECIMAL(10, 8), allowNull: true },
     longitude: { type: DataTypes.DECIMAL(11, 8), allowNull: true },
 
@@ -119,8 +126,8 @@ Listing.init(
       defaultValue: null,
     },
 
-    categoryId: { type: DataTypes.INTEGER, allowNull: false },
-    userId: { type: DataTypes.INTEGER, allowNull: false },
+    categoryId: { type: DataTypes.UUID, allowNull: false },
+    userId: { type: DataTypes.UUID, allowNull: false },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   },

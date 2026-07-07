@@ -20,6 +20,7 @@ import {
   createListingSchema,
   deleteListingImageSchema,
   getListingQuerySchema,
+  idOrSlugParamSchema,
   idParamSchema,
   toggleAmazingOfferSchema,
   updateListingSchema,
@@ -35,13 +36,10 @@ import {
 
 const router = Router();
 
-// ==========================================
-// 🌐 روت‌های عمومی (بدون نیاز به احراز هویت)
-// ==========================================
 router.get("/categories", categoryController.getAllCategories);
 router.get("/locations", locationController.getAllLocations);
 router.get("/listings", validate(getListingQuerySchema), listingController.getAllListings);
-router.get("/listings/:id", validate(idParamSchema), listingController.getListingById);
+router.get("/listings/:id", validate(idOrSlugParamSchema), listingController.getListingById);
 router.get("/listings/:id/reviews", reviewController.getListingReviews);
 
 router.use(authenticate);

@@ -13,23 +13,23 @@ export type SpecsSchema = Record<string, SpecFieldSchema>;
 export type SpecValue = string | number | boolean | null;
 
 export interface GetCategory {
-  id: number;
+  id: string;
   name: string;
   slug: string;
-  parentId: number | null;
+  parentId: string | null;
   icon: string;
   specsSchema: SpecFieldSchema | null;
   subcategories: GetCategory[];
 }
 
 export interface ListingSeller {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
 }
 
 export interface ListingVariant {
-  id: number;
+  id: string;
   specs: Record<string, string>;
   price: number;
   discountPercentage: number;
@@ -40,8 +40,9 @@ export interface ListingVariant {
 }
 
 export interface GetListing {
-  id: number;
+  id: string;
   title: string;
+  slug: string;
   description: string;
   isNegotiable: boolean;
   condition: string;
@@ -57,22 +58,22 @@ export interface GetListing {
   aiReviewSummary: null;
   isAmazingOffer: boolean;
   rejectionReason: string | null;
-  userId: number;
+  userId: string;
   createdAt: string;
   updatedAt: string;
   category: {
-    id: number;
+    id: string;
     name: string;
     slug: string;
     specsSchema: SpecsSchema | null;
   };
   city: {
-    id: number;
+    id: string;
     name: string;
     slug: string;
   };
   district: {
-    id: number;
+    id: string;
     name: string;
     slug: string;
   } | null;
@@ -96,8 +97,8 @@ export interface ListingsResponse {
 
 export interface ListingFilters {
   search?: string;
-  categoryId?: number | null;
-  cityId?: number | null;
+  categoryId?: string | null;
+  cityId?: string | null;
   minPrice?: number | null;
   maxPrice?: number | null;
   condition?: "new" | "used" | null;

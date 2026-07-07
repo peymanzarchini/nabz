@@ -40,7 +40,7 @@ class ListingController {
 
   async getListingById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const result = await listingService.getListingById(id, req.user?.id, req.user?.role);
       res.success("جزئیات آگهی.", result);
     } catch (error) {
@@ -50,7 +50,7 @@ class ListingController {
 
   async updateListing(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const result = await listingService.updateListing(
         id,
         req.user!.id,
@@ -65,7 +65,7 @@ class ListingController {
 
   async deleteListing(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const result = await listingService.deleteListing(id, req.user!.id, req.user!.role);
       res.success(result.message, null);
     } catch (error) {
@@ -75,7 +75,7 @@ class ListingController {
 
   async updateListingStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const result = await listingService.updateListingStatus(
         id,
         req.body as UpdateListingStatusInput,
@@ -88,7 +88,7 @@ class ListingController {
 
   async toggleAmazingOffer(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const { isAmazingOffer } = req.body as { isAmazingOffer: boolean };
       const result = await listingService.toggleAmazingOffer(id, isAmazingOffer);
       res.success(result.message, null);
@@ -99,7 +99,7 @@ class ListingController {
 
   async deleteListingImage(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id as string;
       const { imageUrl } = req.body as { imageUrl: string };
       const result = await listingService.deleteListingImage(
         id,

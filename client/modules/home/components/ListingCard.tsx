@@ -13,7 +13,7 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
 
   return (
     <Link
-      href={`/listings/${listing.id}`}
+      href={`/listings/${listing.category?.slug || "unknown"}/${listing.slug}`}
       className="group flex flex-col bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-black/20 cursor-pointer animate-slide-up"
       style={{ animationDelay: `${index * 40}ms` }}
     >

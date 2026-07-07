@@ -5,7 +5,7 @@ import { CreateReviewInput, UpdateReviewStatusInput } from "../validations/revie
 class ReviewController {
   async createReview(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const listingId = Number(req.params.id);
+      const listingId = req.params.id as string;
       const result = await reviewService.createReview(
         req.user!.id,
         listingId,
@@ -19,7 +19,7 @@ class ReviewController {
 
   async getListingReviews(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const listingId = Number(req.params.id);
+      const listingId = req.params.id as string;
       const result = await reviewService.getListingReviews(listingId);
       res.success("لیست دیدگاه‌ها.", result);
     } catch (error) {
@@ -39,7 +39,7 @@ class ReviewController {
   async updateReviewStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const result = await reviewService.updateReviewStatus(
-        Number(req.params.id),
+        req.params.id as string,
         req.body as UpdateReviewStatusInput,
       );
       res.success("وضعیت دیدگاه تغییر کرد.", result);

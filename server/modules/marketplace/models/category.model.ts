@@ -9,10 +9,10 @@ import { sequelize } from "@/config/database.js";
 import { SpecsSchema } from "../types/index.js";
 
 export class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare name: string;
   declare slug: string;
-  declare parentId: CreationOptional<number | null>;
+  declare parentId: CreationOptional<string | null>;
   declare icon: CreationOptional<string | null>;
   declare specsSchema: CreationOptional<SpecsSchema | null>;
   declare hasSpecs: CreationOptional<boolean>;
@@ -23,9 +23,9 @@ export class Category extends Model<InferAttributes<Category>, InferCreationAttr
 Category.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING(100),
@@ -39,7 +39,7 @@ Category.init(
       validate: { notEmpty: true },
     },
     parentId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: true,
       defaultValue: null,
     },

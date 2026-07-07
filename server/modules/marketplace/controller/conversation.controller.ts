@@ -38,7 +38,7 @@ class ConversationController {
 
   async getConversationMessages(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const conversationId = Number(req.params.conversationId);
+      const conversationId = req.params.conversationId as string;
       const result = await conversationService.getConversationMessages(
         conversationId,
         req.user!.id,

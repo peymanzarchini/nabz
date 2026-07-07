@@ -11,7 +11,7 @@ import { UserRole, UserStatus } from "@/types/index.js";
 import { sequelize } from "@/config/database.js";
 
 export class Auth extends Model<InferAttributes<Auth>, InferCreationAttributes<Auth>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare firstName: string;
   declare lastName: string;
   declare email: string;
@@ -36,9 +36,9 @@ export class Auth extends Model<InferAttributes<Auth>, InferCreationAttributes<A
 Auth.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     firstName: {
       type: DataTypes.STRING(50),

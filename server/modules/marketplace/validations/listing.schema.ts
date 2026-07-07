@@ -60,12 +60,12 @@ export const createListingSchema = z.object({
       .transform((v) => v === "true"),
     condition: z.enum([ListingCondition.NEW, ListingCondition.USED]),
 
-    cityId: z.coerce.number().int().positive("شهر الزامی است"),
-    districtId: z.coerce.number().int().positive().optional().nullable(),
+    cityId: z.uuid("آیدی شهر نامعتبر است"),
+    districtId: z.uuid().optional().nullable(),
     latitude: z.coerce.number().optional().nullable(),
     longitude: z.coerce.number().optional().nullable(),
 
-    categoryId: z.coerce.number().int().positive("آیدی دسته‌بندی معتبر نیست"),
+    categoryId: z.uuid("آیدی دسته بندی نامعتبر است."),
     thumbnailIndex: z.coerce.number().int().min(0).optional().default(0),
 
     specs: z
@@ -86,7 +86,7 @@ export const createListingSchema = z.object({
 
 export const updateListingSchema = z.object({
   params: z.object({
-    id: z.coerce.number().int().positive(),
+    id: z.uuid("آیدی آگهی نامعتبر است"),
   }),
   body: z.object({
     title: z.string().trim().min(5).max(100).optional(),
@@ -94,8 +94,8 @@ export const updateListingSchema = z.object({
     isNegotiable: z.boolean().optional(),
     condition: z.enum([ListingCondition.NEW, ListingCondition.USED]).optional(),
 
-    cityId: z.coerce.number().int().positive().optional(),
-    districtId: z.coerce.number().int().positive().optional().nullable(),
+    cityId: z.uuid().optional(),
+    districtId: z.uuid().optional().nullable(),
     latitude: z.coerce.number().optional().nullable(),
     longitude: z.coerce.number().optional().nullable(),
 
@@ -143,14 +143,20 @@ export const getListingQuerySchema = z.object({
 
 export const idParamSchema = z.object({
   params: z.object({
-    id: z.coerce.number().int().positive(),
+    id: z.uuid("آیدی وارد شده نامعتبر است"),
+  }),
+});
+
+export const idOrSlugParamSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, "آیدی یا اسلاگ الزامی است"),
   }),
 });
 
 export const updateListingStatusSchema = z
   .object({
     params: z.object({
-      id: z.coerce.number().int().positive(),
+      id: z.uuid("آیدی وارد شده نامعتبر است"),
     }),
     body: z.object({
       status: z.enum([ListingStatus.ACTIVE, ListingStatus.REJECTED, ListingStatus.SOLD]),
@@ -176,7 +182,7 @@ export const updateListingStatusSchema = z
 
 export const toggleAmazingOfferSchema = z.object({
   params: z.object({
-    id: z.coerce.number().int().positive(),
+    id: z.uuid("آیدی وارد شده نامعتبر است"),
   }),
   body: z.object({
     isAmazingOffer: z.boolean(),
@@ -185,7 +191,7 @@ export const toggleAmazingOfferSchema = z.object({
 
 export const deleteListingImageSchema = z.object({
   params: z.object({
-    id: z.coerce.number().int().positive(),
+    id: z.uuid("آیدی وارد شده نامعتبر است"),
   }),
   body: z.object({
     imageUrl: z.string().startsWith("/uploads/", "آدرس عکس نامعتبر است"),

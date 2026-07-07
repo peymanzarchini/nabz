@@ -227,7 +227,7 @@ class AuthService {
     }
   }
 
-  async getProfile(userId: number): Promise<AuthResponse> {
+  async getProfile(userId: string): Promise<AuthResponse> {
     const user = await Auth.findByPk(userId);
 
     if (!user) {
@@ -237,7 +237,7 @@ class AuthService {
     return formatAuthResponse(user);
   }
 
-  async changePassword(userId: number, data: ChangePasswordInput): Promise<{ message: string }> {
+  async changePassword(userId: string, data: ChangePasswordInput): Promise<{ message: string }> {
     const user = await Auth.withScope("withPassword").findByPk(userId);
     if (!user) throw HttpError.notFound("کاربر یافت نشد.");
 
@@ -290,7 +290,7 @@ class AuthService {
     return { message: "رمز عبور با موفقیت بازیابی شد." };
   }
 
-  async updateUserRole(userId: number, role: UserRole): Promise<{ message: string }> {
+  async updateUserRole(userId: string, role: UserRole): Promise<{ message: string }> {
     const user = await Auth.findByPk(userId);
     if (!user) throw HttpError.notFound("کاربر مورد نظر یافت نشد.");
 

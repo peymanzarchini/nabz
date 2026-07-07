@@ -10,7 +10,7 @@ export const useListings = (filters: ListingFilters) => {
   });
 };
 
-export const useListingDetails = (id: number) => {
+export const useListingDetails = (id: string) => {
   return useQuery({
     queryKey: ["listing-details", id],
     queryFn: () => getListingById(id),

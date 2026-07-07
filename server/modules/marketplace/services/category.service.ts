@@ -87,7 +87,7 @@ class CategoryService {
     return categories;
   }
 
-  async updateCategory(id: number, data: UpdateCategoryInput) {
+  async updateCategory(id: string, data: UpdateCategoryInput) {
     const category = await Category.findByPk(id);
     if (!category) throw HttpError.notFound("دسته بندی یافت نشد.");
 
@@ -135,7 +135,7 @@ class CategoryService {
     return category;
   }
 
-  async deleteCategory(id: number): Promise<{ message: string }> {
+  async deleteCategory(id: string): Promise<{ message: string }> {
     const category = await Category.findByPk(id);
     if (!category) throw HttpError.notFound("دسته بندی یافت نشد.");
 

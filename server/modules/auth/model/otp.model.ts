@@ -9,7 +9,7 @@ import {
 import { sequelize } from "@/config/database.js";
 
 export class Otp extends Model<InferAttributes<Otp>, InferCreationAttributes<Otp>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare email: string;
   declare code: string;
   declare expiresAt: Date;
@@ -19,9 +19,9 @@ export class Otp extends Model<InferAttributes<Otp>, InferCreationAttributes<Otp
 Otp.init(
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement: true,
     },
     email: {
       type: DataTypes.STRING,
