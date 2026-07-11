@@ -128,8 +128,10 @@ export const getListingQuerySchema = z.object({
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(50).default(10),
     search: z.string().trim().optional(),
-    categoryId: z.coerce.number().int().optional(),
-    cityId: z.coerce.number().int().optional(),
+
+    categoryId: z.uuid("آیدی دسته بندی نامعتبر است").optional(),
+    cityId: z.uuid("آیدی شهر نامعتبر است").optional(),
+
     minPrice: z.coerce.number().min(0).optional(),
     maxPrice: z.coerce.number().min(0).optional(),
     condition: z.enum([ListingCondition.NEW, ListingCondition.USED]).optional(),

@@ -27,6 +27,29 @@ export const verifyOtpSchema = z.object({
   code: z.string().length(6, "کد تایید باید دقیقاً ۶ رقم باشد"),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.email("فرمت ایمیل نامعتبر است"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(10, "توکن بازیابی نامعتبر است"),
+    newPassword: z
+      .string()
+      .min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/,
+        "رمز عبور باید شامل حروف بزرگ، کوچک و عدد باشد",
+      ),
+    confirmPassword: z.string().min(8, "تکرار رمز عبور الزامی است"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "رمز عبور و تکرار آن یکسان نیستند",
+    path: ["confirmPassword"],
+  });
+
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 export type LoginEmailData = z.infer<typeof loginEmailSchema>;
 export type SendOtpData = z.infer<typeof sendOtpSchema>;
 export type VerifyOtpData = z.infer<typeof verifyOtpSchema>;

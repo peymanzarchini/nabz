@@ -18,6 +18,7 @@ import { logger } from "@/config/logger.js";
 import { Location } from "../models/location.model.js";
 import { sequelize } from "@/config/database.js";
 import { generateSlug } from "@/utils/slugify.js";
+import { getRecursiveCategoryIds } from "@/utils/getRecursiveCategoryIds.js";
 
 class ListingService {
   async createListing(userId: string, data: CreateListingInput, images: Express.Multer.File[]) {
@@ -114,12 +115,7 @@ class ListingService {
     }
 
     if (categoryId) {
-      const subCategories = await Category.findAll({
-        where: { parentId: categoryId },
-        attributes: ["id"],
-      });
-
-      const categoryIds = [categoryId, ...subCategories.map((sub) => sub.id)];
+      const categoryIds = await getRecursiveCategoryIds(categoryId);
       where = { ...where, categoryId: { [Op.in]: categoryIds } };
     }
 

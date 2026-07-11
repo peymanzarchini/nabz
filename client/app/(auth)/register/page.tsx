@@ -19,6 +19,7 @@ import { Loader2, MailCheck, RefreshCw, ShieldCheck } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -204,9 +205,8 @@ const RegisterPage = () => {
             <Label htmlFor="password" className="text-gray-700">
               رمز عبور
             </Label>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               dir="ltr"
               {...registerForm.register("password")}
               className={inputClass}
