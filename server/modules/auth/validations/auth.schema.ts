@@ -114,6 +114,23 @@ export const updateRoleSchema = z.object({
   }),
 });
 
+export const sendPhoneOtpSchema = z.object({
+  body: z.object({
+    phoneNumber: z
+      .string({ message: "شماره موبایل الزامی است" })
+      .regex(phoneRegex, "فرمت شماره موبایل نامعتبر است"),
+  }),
+});
+
+export const loginWithOtpSchema = z.object({
+  body: z.object({
+    phoneNumber: z
+      .string({ message: "شماره موبایل الزامی است" })
+      .regex(phoneRegex, "فرمت شماره موبایل نامعتبر است"),
+    code: z.string({ message: "کد تایید الزامی است" }).length(6, "کد تایید باید ۶ رقم باشد"),
+  }),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>["body"];
 export type LoginInput = z.infer<typeof loginSchema>["body"];
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>["body"];
@@ -121,3 +138,5 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>["body"];
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>["body"];
 export type ResendInput = z.infer<typeof resendSchema>["body"];
 export type UpdateRoleInput = z.infer<typeof updateRoleSchema>;
+export type SendPhoneOtpInput = z.infer<typeof sendPhoneOtpSchema>["body"];
+export type LoginWithOtpInput = z.infer<typeof loginWithOtpSchema>["body"];

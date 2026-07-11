@@ -161,6 +161,29 @@ class AuthService {
     return { message: "حساب کاربری شما با موفقیت فعال شد." };
   }
 
+  async sendPhoneOtp(phoneNumber: string): Promise<{ message: string }> {
+    const user = await Auth.findOne({ where: { phoneNumber } });
+    if (!user) throw HttpError.notFound("کاربری با این شماره موبایل یافت نشد.");
+    if (!user.isVerified || user.status !== UserStatus.ACTIVE) {
+      throw HttpError.forbidden("حساب کاربری شما فعال نیست یا مسدود شده است.");
+    }
+
+    const otpCode: string = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt: Date = new Date(Date.now() + 2 * 60 * 1000);
+
+    await Otp.destroy({ where: { phoneNumber } });
+
+    await Otp.create({ phoneNumber, code: otpCode, expiresAt, attempts: 1 });
+
+    logger.info(`\n========================================`);
+    logger.info(`📱 [DEV MODE] Phone OTP`);
+    logger.info(`To: ${phoneNumber}`);
+    logger.info(`🔢 Code: ${otpCode}`);
+    logger.info(`========================================\n`);
+
+    return { message: "کد تایید با موفقیت به شماره موبایل ارسال شد." };
+  }
+
   async login(data: LoginInput): Promise<LoginResponse> {
     const { identifier, password } = data;
 
@@ -191,6 +214,48 @@ class AuthService {
       role: user.role,
     };
 
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    return {
+      user: formatAuthResponse(user),
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async loginWithOtp(phoneNumber: string, code: string): Promise<LoginResponse> {
+    const otpRecord = await Otp.findOne({ where: { phoneNumber } });
+
+    if (!otpRecord) {
+      throw HttpError.notFound(
+        "درخواست کدی برای این شماره یافت نشد. لطفاً مجدداً درخواست کد کنید.",
+      );
+    }
+
+    if (new Date() > otpRecord.expiresAt) {
+      await otpRecord.destroy();
+      throw HttpError.badRequest("کد تایید منقضی شده است. لطفاً کد جدید درخواست کنید.");
+    }
+
+    if (otpRecord.code !== code) {
+      otpRecord.attempts += 1;
+      if (otpRecord.attempts >= 5) {
+        await otpRecord.destroy();
+        throw HttpError.forbidden("تعداد دفعات وارد کردن کد اشتباه بیش از حد مجاز است.");
+      }
+      await otpRecord.save();
+      throw HttpError.badRequest(
+        `کد وارد شده اشتباه است. ${5 - otpRecord.attempts} تلاش دیگر باقی مانده است.`,
+      );
+    }
+
+    const user = await Auth.findOne({ where: { phoneNumber } });
+    if (!user) throw HttpError.notFound("کاربر یافت نشد.");
+
+    await otpRecord.destroy();
+
+    const payload = { id: user.id, email: user.email, role: user.role };
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
