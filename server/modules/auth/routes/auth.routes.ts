@@ -5,9 +5,11 @@ import {
   changePasswordSchema,
   forgotPasswordSchema,
   loginSchema,
+  loginWithOtpSchema,
   registerSchema,
   resendSchema,
   resetPasswordSchema,
+  sendPhoneOtpSchema,
   updateRoleSchema,
 } from "../validations/auth.schema.js";
 import { adminOnly, authenticate } from "@/middlewares/auth.middleware.js";
@@ -22,6 +24,8 @@ router.post("/refresh", authController.refreshToken);
 router.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
 router.post("/reset-password", validate(resetPasswordSchema), authController.resetPassword);
 router.post("/logout", authController.logout);
+router.post("/send-phone-otp", validate(sendPhoneOtpSchema), authController.sendPhoneOtp);
+router.post("/login-with-otp", validate(loginWithOtpSchema), authController.loginWithOtp);
 
 router.use(authenticate);
 router.get("/profile", authController.getProfile);

@@ -1,9 +1,9 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
 import { DecodedToken } from "@/types";
 
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get("accessToken")?.value;
+  const token = request.cookies.get("access_token")?.value;
   const { pathname } = request.nextUrl;
 
   let isAuthenticated = false;
@@ -12,11 +12,12 @@ export function proxy(request: NextRequest) {
     try {
       const decoded = jwtDecode<DecodedToken>(token);
       const currentTime = Date.now() / 1000;
+
       if (decoded.exp && decoded.exp > currentTime) {
         isAuthenticated = true;
       } else {
         const response = NextResponse.next();
-        response.cookies.delete("accessToken");
+        response.cookies.delete("access_token");
         return response;
       }
     } catch (error) {
@@ -25,13 +26,13 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  const isPublicPath = pathname === "/";
+  const guestOnlyRoutes = ["/login", "/register"];
 
   if (pathname.startsWith("/dashboard") && !isAuthenticated) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isPublicPath && isAuthenticated) {
+  if (guestOnlyRoutes.includes(pathname) && isAuthenticated) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -39,5 +40,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

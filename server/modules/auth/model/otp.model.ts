@@ -10,7 +10,8 @@ import { sequelize } from "@/config/database.js";
 
 export class Otp extends Model<InferAttributes<Otp>, InferCreationAttributes<Otp>> {
   declare id: CreationOptional<string>;
-  declare email: string;
+  declare email: string | null;
+  declare phoneNumber: string | null;
   declare code: string;
   declare expiresAt: Date;
   declare attempts: CreationOptional<number>;
@@ -25,7 +26,11 @@ Otp.init(
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
     },
     code: {
       type: DataTypes.STRING(6),

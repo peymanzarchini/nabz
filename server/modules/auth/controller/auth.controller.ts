@@ -102,7 +102,7 @@ class AuthController {
 
   async updateUserRole(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = Number(req.params.id);
+      const userId = req.params.id as string;
       const { role } = req.body;
       const result = await authService.updateUserRole(userId, role);
       res.success(result.message, null);
@@ -117,6 +117,28 @@ class AuthController {
       clearRefreshTokenCookie(res);
 
       res.success("خروج با موفقیت انجام شد.", null);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async sendPhoneOtp(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await authService.sendPhoneOtp(req.body.phoneNumber);
+      res.success(result.message, null);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async loginWithOtp(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await authService.loginWithOtp(req.body.phoneNumber, req.body.code);
+
+      setAccessTokenCookie(res, result.accessToken);
+      setRefreshTokenCookie(res, result.refreshToken);
+
+      res.success("ورود با موفقیت انجام شد", result.user);
     } catch (error) {
       next(error);
     }

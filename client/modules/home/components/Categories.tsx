@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { ApiErrorResponse } from "@/types";
 import { toast } from "sonner";
 import { ArrowLeft, Grid3X3 } from "lucide-react";
-import { getEmoji } from "../constants";
+import { categoryIcons } from "../constants/category-icon";
 
 const CategoriesSection = () => {
   const { data: categories, isLoading, isError, error } = useCategories();
@@ -67,39 +67,26 @@ const CategoriesSection = () => {
 
         {!isLoading && categories && categories.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categories.map((category, index: number) => (
-              <div
-                key={category.id}
-                className="group bg-white/50 dark:bg-gray-900/40 backdrop-blur-xl border border-border/30 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-accent/10 animate-slide-up"
-                style={{ animationDelay: `${index * 80}ms` }}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">{getEmoji(category.icon)}</span>
-                  <Link
-                    href={`/listings?categoryId=${category.id}`}
-                    className="font-bold text-lg text-foreground group-hover:text-accent transition-colors"
-                  >
-                    {category.name}
-                  </Link>
-                </div>
-
-                {category.subcategories && category.subcategories.length > 0 ? (
-                  <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-                    {category.subcategories.map((sub) => (
-                      <Link
-                        key={sub.id}
-                        href={`/listings?categoryId=${sub.id}`}
-                        className="text-sm text-muted-foreground hover:text-accent transition-colors"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
+            {categories.map((category, index: number) => {
+              const Icon = categoryIcons[category.slug] ?? categoryIcons.default;
+              return (
+                <div
+                  key={category.id}
+                  className="group bg-white/50 dark:bg-gray-900/40 backdrop-blur-xl border border-border/30 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-accent/10 animate-slide-up"
+                  style={{ animationDelay: `${index * 80}ms` }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <Icon className="h-5 w-5 text-primary" />
+                    <Link
+                      href={`/listings?categoryId=${category.id}`}
+                      className="font-bold text-lg text-foreground group-hover:text-accent transition-colors"
+                    >
+                      {category.name}
+                    </Link>
                   </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground/60">زیردسته‌ای ندارد</p>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

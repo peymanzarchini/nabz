@@ -4,6 +4,7 @@ import "./globals.css";
 import { iransans } from "@/components/fonts/iransans";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
 import { Toaster } from "sonner";
+import { AuthProvider } from "@/lib/providers/AuthProvider";
 
 export const metadata: Metadata = {
   title: "نبض",
@@ -29,14 +30,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            {children}
-            <Toaster
-              richColors
-              position="top-center"
-              dir="rtl"
-              closeButton
-              className="font-iransans"
-            />
+            <AuthProvider>
+              {children}
+              <Toaster
+                richColors
+                position="top-center"
+                dir="rtl"
+                closeButton
+                className="font-iransans"
+              />
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>
