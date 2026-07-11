@@ -24,6 +24,7 @@ import {
 } from "@/modules/auth/validations";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/providers/AuthProvider";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const LoginPage = () => {
   const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
@@ -191,9 +192,8 @@ const LoginPage = () => {
                 فراموشی رمز؟
               </Link>
             </div>
-            <Input
+            <PasswordInput
               id="password"
-              type="password"
               dir="ltr"
               {...emailForm.register("password")}
               className={inputClass}
