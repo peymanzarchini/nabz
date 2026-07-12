@@ -8,9 +8,6 @@ import { Review } from "@/modules/marketplace/models/review.model.js";
 import { ListingVariant } from "@/modules/marketplace/models/variant.model.js";
 
 export function setupAssociations() {
-  // ==========================================
-  // 🧑 بخش کاربران (Auth)
-  // ==========================================
   Auth.hasMany(Listing, { foreignKey: "userId", as: "listings", inverse: "user" });
   Auth.hasMany(Review, { foreignKey: "userId", as: "reviews", inverse: "user" });
 
@@ -20,23 +17,12 @@ export function setupAssociations() {
     as: "sellerConversations",
     inverse: "seller",
   });
-
   Auth.hasMany(Message, { foreignKey: "senderId", as: "sentMessages", inverse: "sender" });
 
-  // ==========================================
-  // 🏷️ بخش دسته‌بندی‌ها (Category)
-  // ==========================================
-
   Category.hasMany(Category, { foreignKey: "parentId", as: "subcategories", inverse: "parent" });
-
   Category.hasMany(Listing, { foreignKey: "categoryId", as: "listings", inverse: "category" });
 
-  // ==========================================
-  // 📍 بخش مکان‌ها (Location)
-  // ==========================================
-
   Location.hasMany(Location, { foreignKey: "parentId", as: "districts", inverse: "city" });
-
   Location.hasMany(Listing, { foreignKey: "cityId", as: "cityListings", inverse: "city" });
   Location.hasMany(Listing, {
     foreignKey: "districtId",
@@ -44,28 +30,16 @@ export function setupAssociations() {
     inverse: "district",
   });
 
-  // ==========================================
-  // 🛒 بخش آگهی‌ها (Listing)
-  // ==========================================
-
   Listing.hasMany(Review, { foreignKey: "listingId", as: "reviews", inverse: "listing" });
   Listing.hasMany(Conversation, {
     foreignKey: "listingId",
     as: "conversations",
     inverse: "listing",
   });
-
   Listing.hasMany(ListingVariant, { foreignKey: "listingId", as: "variants", inverse: "listing" });
-
-  // ==========================================
-  // 💬 بخش دیدگاه‌ها (Review)
-  // ==========================================
 
   Review.hasMany(Review, { foreignKey: "parentId", as: "replies", inverse: "parent" });
 
-  // ==========================================
-  // 📱 بخش چت و پیام‌رسانی (Chat)
-  // ==========================================
   Conversation.hasMany(Message, {
     foreignKey: "conversationId",
     as: "messages",
