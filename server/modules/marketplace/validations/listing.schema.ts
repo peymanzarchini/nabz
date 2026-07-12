@@ -6,7 +6,7 @@ const specValueSchema = z.union([z.string(), z.number(), z.boolean(), z.null()])
 const specsObjectSchema = z.record(z.string(), specValueSchema);
 
 const variantSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.string().optional(),
   specs: z.record(z.string(), z.string()).default({}),
   price: z.coerce.number().min(0, "قیمت واریانت الزامی است"),
   stock: z.coerce.number().int().min(0).default(0),

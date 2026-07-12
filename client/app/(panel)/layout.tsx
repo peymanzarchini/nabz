@@ -4,58 +4,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  PackagePlus,
-  ListOrdered,
-  MessageSquare,
-  Settings,
-  ShieldCheck,
-  Menu,
-  X,
-  LogOut,
-  Sun,
-  Moon,
-  ChevronDown,
-} from "lucide-react";
+import { Settings, Menu, X, LogOut, Sun, Moon, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/Logo";
 import { useTheme } from "next-themes";
-
-const panelLinks = [
-  {
-    href: "/dashboard",
-    label: "نمای کلی",
-    icon: LayoutDashboard,
-    roles: ["admin", "seller", "customer"],
-  },
-  {
-    href: "/dashboard/listings",
-    label: "آگهی‌های من",
-    icon: ListOrdered,
-    roles: ["seller", "admin"],
-  },
-  {
-    href: "/dashboard/create-listing",
-    label: "ثبت آگهی جدید",
-    icon: PackagePlus,
-    roles: ["seller", "admin"],
-  },
-  {
-    href: "/dashboard/messages",
-    label: "پیام‌ها",
-    icon: MessageSquare,
-    roles: ["admin", "seller", "customer"],
-  },
-  { href: "/dashboard/admin", label: "مدیریت سایت", icon: ShieldCheck, roles: ["admin"] },
-  {
-    href: "/dashboard/settings",
-    label: "تنظیمات",
-    icon: Settings,
-    roles: ["admin", "seller", "customer"],
-  },
-];
+import { panelLinks } from "@/modules/panel/data";
 
 const DashLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, loading, logout } = useAuth();

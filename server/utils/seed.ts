@@ -356,7 +356,7 @@ const oldCategories = [
 ];
 
 const oldLocations = [
-  { id: 1, name: "تهران", slug: "tehran", parentId: null },
+  { id: 1, name: "تهران", slug: "tehran", parentId: null, latitude: 35.6892, longitude: 51.389 },
   { id: 2, name: "چهارباغ", slug: "chaharbagh", parentId: 1 },
 ];
 
