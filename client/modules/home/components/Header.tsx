@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
 import { categoryIcons } from "../constants/category-icon";
 import { useAuth } from "@/lib/providers/AuthProvider";
+import { getCategoryIcon } from "@/utils/icon-map";
 
 const Header = () => {
   const { data: categories, isLoading } = useCategories();
@@ -97,7 +98,7 @@ const Header = () => {
                     <p className="text-sm text-muted-foreground p-2">در حال بارگذاری...</p>
                   )}
                   {categories?.map((category) => {
-                    const Icon = categoryIcons[category.slug] ?? categoryIcons.default;
+                    const Icon = getCategoryIcon(category.icon);
 
                     return (
                       <div

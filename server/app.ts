@@ -14,7 +14,6 @@ import { responseMiddleware } from "./middlewares/response.middleware.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import routes from "./routes/index.js";
 import { setupSwagger } from "./config/swagger/index.js";
-import { runSeedIfEmpty } from "./utils/seed.js";
 
 const app: Application = express();
 
@@ -65,8 +64,6 @@ const startServer = async (): Promise<void> => {
   try {
     setupAssociations();
     await connectDB();
-
-    await runSeedIfEmpty();
 
     app.listen(env.port, () => {
       logger.info(`🚀 Server running on port ${env.port}`);

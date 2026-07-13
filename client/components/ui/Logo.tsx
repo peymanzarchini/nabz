@@ -12,7 +12,8 @@ const Logo = ({ width = 70, height = 70 }: LogoProps) => {
   return (
     <Link
       href={"/"}
-      className="relative shrink-0"
+      // کلاس block اضافه شد تا تگ a در فلکس‌باکس‌ها ارتفاع صفر نگیرد
+      className="relative block shrink-0"
       style={{ width: `${width}px`, height: `${height}px` }}
     >
       <Image

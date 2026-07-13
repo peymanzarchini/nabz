@@ -126,7 +126,7 @@ const LoginPage = () => {
     "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50";
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-2xl shadow-black/10">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl p-8 shadow-2xl shadow-black/10">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-black text-gray-900">ورود به نبض</h1>
         <p className="text-sm text-gray-500 mt-2">به حساب کاربری خود وارد شوید</p>
