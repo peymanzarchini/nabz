@@ -9,20 +9,16 @@ const api = axios.create({
   },
 });
 
-type FailedQueueItem = {
-  resolve: (value?: unknown) => void;
-  reject: (reason?: unknown) => void;
-};
-
 let isRefreshing = false;
-let failedQueue: FailedQueueItem[] = [];
+let failedQueue: Array<{ resolve: (value?: unknown) => void; reject: (reason?: unknown) => void }> =
+  [];
 
-const processQueue = (error: unknown, token: string | null = null) => {
+const processQueue = (error: unknown) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(token);
+      prom.resolve(undefined);
     }
   });
   failedQueue = [];
@@ -36,18 +32,17 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/")
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/register") &&
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("/auth/profile")
     ) {
       if (isRefreshing) {
-        return new Promise<unknown>(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then(() => {
-            return api(originalRequest);
-          })
-          .catch((err: unknown) => {
-            return Promise.reject(err);
-          });
+          .then(() => api(originalRequest))
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
@@ -55,15 +50,10 @@ api.interceptors.response.use(
 
       try {
         await api.post("/auth/refresh");
-
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError, null);
-
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
+        processQueue(refreshError);
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

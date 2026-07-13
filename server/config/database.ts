@@ -29,7 +29,7 @@ export async function connectDB(): Promise<void> {
     logger.info("✅ Database connection established successfully");
 
     if (env.isDev) {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ force: true });
       logger.info("🔄 Database synchronized (development mode)");
     }
   } catch (error) {

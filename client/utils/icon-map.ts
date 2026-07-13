@@ -1,0 +1,52 @@
+import {
+  Car,
+  Building2,
+  Smartphone,
+  Laptop,
+  Home,
+  Sofa,
+  Shirt,
+  HeartPulse,
+  Dumbbell,
+  BookOpen,
+  Baby,
+  PawPrint,
+  Factory,
+  Tractor,
+  Wrench,
+  Briefcase,
+  Tv,
+  Camera,
+  Gamepad2,
+  Bike,
+  Package,
+  LucideIcon,
+} from "lucide-react";
+
+export const iconMap: Record<string, LucideIcon> = {
+  car: Car,
+  "building-2": Building2,
+  smartphone: Smartphone,
+  laptop: Laptop,
+  home: Home,
+  sofa: Sofa,
+  shirt: Shirt,
+  "heart-pulse": HeartPulse,
+  dumbbell: Dumbbell,
+  "book-open": BookOpen,
+  baby: Baby,
+  "paw-print": PawPrint,
+  factory: Factory,
+  tractor: Tractor,
+  wrench: Wrench,
+  briefcase: Briefcase,
+  tv: Tv,
+  camera: Camera,
+  "gamepad-2": Gamepad2,
+  bike: Bike,
+  package: Package,
+};
+
+export const getCategoryIcon = (iconName?: string | null): LucideIcon => {
+  return iconMap[iconName || ""] || Package;
+};

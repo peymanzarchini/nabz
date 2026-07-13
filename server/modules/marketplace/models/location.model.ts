@@ -11,6 +11,8 @@ export class Location extends Model<InferAttributes<Location>, InferCreationAttr
   declare id: CreationOptional<string>;
   declare name: string;
   declare slug: string;
+  declare latitude: CreationOptional<number | null>;
+  declare longitude: CreationOptional<number | null>;
   declare parentId: CreationOptional<string | null>;
   declare readonly createdAt: CreationOptional<Date>;
   declare readonly updatedAt: CreationOptional<Date>;
@@ -36,6 +38,16 @@ Location.init(
     },
     parentId: {
       type: DataTypes.UUID,
+      allowNull: true,
+      defaultValue: null,
+    },
+    latitude: {
+      type: DataTypes.DECIMAL(10, 8),
+      allowNull: true,
+      defaultValue: null,
+    },
+    longitude: {
+      type: DataTypes.DECIMAL(11, 8),
       allowNull: true,
       defaultValue: null,
     },

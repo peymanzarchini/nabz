@@ -8,6 +8,7 @@ export const registerSchema = z.object({
     .string()
     .regex(/^\+?[0-9]{10,15}$/, "فرمت شماره موبایل نامعتبر است (مثال: 09123456789)"),
   password: z.string().min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد"),
+  role: z.enum(["customer", "seller", "driver"]),
 });
 
 export const verifySchema = z.object({

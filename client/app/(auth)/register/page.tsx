@@ -121,7 +121,7 @@ const RegisterPage = () => {
     "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50";
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-2xl shadow-black/10">
+    <div className="w-full  bg-white rounded-xl overflow-y-auto p-8 shadow-2xl shadow-black/10">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-black text-gray-900">
           {step === 1 ? "ثبت‌نام در نبض" : "تایید حساب کاربری"}
@@ -163,59 +163,78 @@ const RegisterPage = () => {
               )}
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="email" className="text-gray-700">
+                ایمیل
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                dir="ltr"
+                {...registerForm.register("email")}
+                className={inputClass}
+              />
+              {registerForm.formState.errors.email && (
+                <p className="text-xs text-red-500 mt-1">
+                  {registerForm.formState.errors.email.message}
+                </p>
+              )}
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="email" className="text-gray-700">
-              ایمیل
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              dir="ltr"
-              {...registerForm.register("email")}
-              className={inputClass}
-            />
-            {registerForm.formState.errors.email && (
-              <p className="text-xs text-red-500 mt-1">
-                {registerForm.formState.errors.email.message}
-              </p>
-            )}
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="phoneNumber" className="text-gray-700">
+                شماره موبایل
+              </Label>
+              <Input
+                id="phoneNumber"
+                type="tel"
+                dir="ltr"
+                placeholder="09123456789"
+                {...registerForm.register("phoneNumber")}
+                className={inputClass}
+              />
+              {registerForm.formState.errors.phoneNumber && (
+                <p className="text-xs text-red-500 mt-1">
+                  {registerForm.formState.errors.phoneNumber.message}
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="phoneNumber" className="text-gray-700">
-              شماره موبایل
-            </Label>
-            <Input
-              id="phoneNumber"
-              type="tel"
-              dir="ltr"
-              placeholder="09123456789"
-              {...registerForm.register("phoneNumber")}
-              className={inputClass}
-            />
-            {registerForm.formState.errors.phoneNumber && (
-              <p className="text-xs text-red-500 mt-1">
-                {registerForm.formState.errors.phoneNumber.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="password" className="text-gray-700">
-              رمز عبور
-            </Label>
-            <PasswordInput
-              id="password"
-              dir="ltr"
-              {...registerForm.register("password")}
-              className={inputClass}
-            />
-            {registerForm.formState.errors.password && (
-              <p className="text-xs text-red-500 mt-1">
-                {registerForm.formState.errors.password.message}
-              </p>
-            )}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="role" className="text-gray-700 ">
+                نقش کاربری
+              </Label>
+              <select
+                id="role"
+                {...registerForm.register("role")}
+                className={
+                  inputClass + "w-full px-3 cursor-pointer appearance-none text-sm font-medium"
+                }
+              >
+                <option value="customer">مشتری (خریدار)</option>
+                <option value="seller">فروشنده</option>
+                <option value="driver">راننده (پیک)</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="password" className="text-gray-700">
+                رمز عبور
+              </Label>
+              <PasswordInput
+                id="password"
+                dir="ltr"
+                {...registerForm.register("password")}
+                className={inputClass}
+              />
+              {registerForm.formState.errors.password && (
+                <p className="text-xs text-red-500 mt-1">
+                  {registerForm.formState.errors.password.message}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* کپچا */}
@@ -254,7 +273,7 @@ const RegisterPage = () => {
           <Button
             type="submit"
             size="lg"
-            className="w-full h-12 text-base font-bold cursor-pointer bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg"
+            className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base font-bold cursor-pointer bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg rounded-sm mt-10"
             disabled={registerForm.formState.isSubmitting}
           >
             {registerForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
@@ -321,7 +340,7 @@ const RegisterPage = () => {
           <Button
             type="submit"
             size="lg"
-            className="w-full h-12 text-base font-bold bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg cursor-pointer"
+            className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base font-bold bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg cursor-pointer rounded-sm"
             disabled={verifyForm.formState.isSubmitting || !isTimerActive}
           >
             {verifyForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
