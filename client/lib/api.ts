@@ -4,9 +4,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 let isRefreshing = false;
@@ -15,11 +13,8 @@ let failedQueue: Array<{ resolve: (value?: unknown) => void; reject: (reason?: u
 
 const processQueue = (error: unknown) => {
   failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(undefined);
-    }
+    if (error) prom.reject(error);
+    else prom.resolve(undefined);
   });
   failedQueue = [];
 };
@@ -32,10 +27,7 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/login") &&
-      !originalRequest.url?.includes("/auth/register") &&
-      !originalRequest.url?.includes("/auth/refresh") &&
-      !originalRequest.url?.includes("/auth/profile")
+      !originalRequest.url?.includes("/auth/refresh")
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -54,6 +46,11 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
+
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("app-logout"));
+        }
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

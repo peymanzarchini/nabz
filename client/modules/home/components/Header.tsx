@@ -76,7 +76,7 @@ const Header = () => {
           <div className="relative h-full">
             <Button
               variant="outline"
-              className="h-full gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-primary font-medium transition-colors cursor-pointer"
+              className="h-full gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-primary font-medium transition-colors cursor-pointer rounded-sm"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
@@ -104,7 +104,7 @@ const Header = () => {
                       <div
                         key={category.id}
                         onMouseEnter={() => setActiveCategory(category)}
-                        className={`flex items-center justify-between px-4 py-3 rounded-xl cursor-pointer transition-colors group ${
+                        className={`flex items-center justify-between px-4 py-3 rounded-sm cursor-pointer transition-colors group ${
                           activeCategory?.id === category.id
                             ? "bg-primary/10 text-primary font-bold"
                             : "hover:bg-secondary text-foreground"
@@ -170,7 +170,7 @@ const Header = () => {
             )}
           </div>
 
-          <InputGroup className="h-full">
+          <InputGroup className="h-full rounded-sm">
             <InputGroupAddon>
               <Search className="h-5 w-5 text-muted-foreground mr-5" />
             </InputGroupAddon>
@@ -210,14 +210,14 @@ const Header = () => {
                 <>
                   <Link
                     href="/dashboard"
-                    className="px-5 py-2 rounded-md bg-linear-to-r from-violet-600 to-teal-500 text-white shadow-md shadow-primary/20 transition-all duration-200 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5 cursor-pointer text-sm font-bold flex items-center gap-2"
+                    className="px-5 py-2 rounded-sm bg-linear-to-r from-violet-600 to-teal-500 text-white shadow-md shadow-primary/20 transition-all duration-200 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5 cursor-pointer text-sm font-bold flex items-center gap-2"
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     داشبورد
                   </Link>
                   <button
                     onClick={logout}
-                    className="px-5 py-2 rounded-md border border-red-400 text-red-500 transition-all duration-200 hover:bg-red-50 cursor-pointer text-sm font-bold flex items-center gap-2"
+                    className="px-5 py-2 rounded-sm border border-red-400 text-red-500 transition-all duration-200 hover:bg-red-50 cursor-pointer text-sm font-bold flex items-center gap-2"
                   >
                     خروج
                     <LogOut className="h-4 w-4 rotate-180" />

@@ -140,6 +140,15 @@ export const getListingQuerySchema = z.object({
       .optional()
       .transform((v) => v === "true"),
     sort: z.enum(["newest", "cheapest", "expensive", "top_rated"]).optional().default("newest"),
+    userId: z.uuid().optional(),
+    status: z
+      .enum([
+        ListingStatus.PENDING,
+        ListingStatus.ACTIVE,
+        ListingStatus.REJECTED,
+        ListingStatus.SOLD,
+      ])
+      .optional(),
   }),
 });
 

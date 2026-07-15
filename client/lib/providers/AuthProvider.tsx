@@ -31,6 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    const handleForceLogout = () => {
+      setUser(null);
+      router.push("/login");
+    };
+
+    window.addEventListener("app-logout", handleForceLogout);
+    return () => window.removeEventListener("app-logout", handleForceLogout);
+  }, [router]);
+
   const logout = async () => {
     try {
       await api.post("/auth/logout");

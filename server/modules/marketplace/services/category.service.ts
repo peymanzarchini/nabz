@@ -18,10 +18,13 @@ class CategoryService {
       const parent = await Category.findByPk(data.parentId);
       if (!parent) throw HttpError.notFound("دسته بندی والد یافت نشد.");
 
-      if (parent.parentId !== null) {
-        throw HttpError.badRequest(
-          "عمق دسته‌بندی نمی‌تواند بیشتر از ۳ سطح باشد (دسته اصلی > زیردسته > زیردسته ۲).",
-        );
+      if (parent.parentId) {
+        const grandParent = await Category.findByPk(parent.parentId);
+        if (grandParent && grandParent.parentId) {
+          throw HttpError.badRequest(
+            "عمق دسته‌بندی نمی‌تواند بیشتر از ۳ سطح باشد (دسته اصلی > زیردسته > زیردسته ۲).",
+          );
+        }
       }
     }
 

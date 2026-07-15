@@ -14,7 +14,7 @@ interface Props {
   removeVariant: (id: string) => void;
 }
 
-export default function VariantsForm({
+const VariantsForm = ({
   variantSpecsSchema,
   variants,
   currentVariant,
@@ -22,7 +22,7 @@ export default function VariantsForm({
   setCurrentVariant,
   addVariant,
   removeVariant,
-}: Props) {
+}: Props) => {
   const inputClass =
     "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
   const selectClass = inputClass + " w-full px-3 appearance-none cursor-pointer";
@@ -45,6 +45,15 @@ export default function VariantsForm({
                 <span className="text-violet-600 dark:text-violet-400 font-bold mr-1">
                   {v.price.toLocaleString("fa-IR")} تومان
                 </span>
+                {v.discountPercentage > 0 && (
+                  <span className="text-xs text-red-500 mr-2">
+                    (با {v.discountPercentage}% تخفیف تا{" "}
+                    {v.discountExpiry
+                      ? new Date(v.discountExpiry).toLocaleDateString("fa-IR")
+                      : "نامشخص"}
+                    )
+                  </span>
+                )}
               </span>
               <button
                 type="button"
@@ -77,8 +86,9 @@ export default function VariantsForm({
               </select>
             </div>
           ))}
+
           <div>
-            <Label className="text-xs text-zinc-600 dark:text-zinc-300">قیمت (تومان) *</Label>
+            <Label className="text-xs text-zinc-600 dark:text-zinc-300">قیمت پایه (تومان) *</Label>
             <Input
               type="number"
               className={inputClass + " text-sm h-10"}
@@ -100,6 +110,48 @@ export default function VariantsForm({
             />
           </div>
         </div>
+
+        {/* بخش تخفیف مدت‌دار */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-zinc-100 dark:border-zinc-700 mt-3">
+          <div>
+            <Label className="text-xs text-zinc-600 dark:text-zinc-300">
+              درصد تخفیف (۰ تا ۱۰۰)
+            </Label>
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              className={inputClass + " text-sm h-10"}
+              value={currentVariant.discountPercentage || ""}
+              onChange={(e) =>
+                setCurrentVariant((prev) => ({
+                  ...prev,
+                  discountPercentage: Number(e.target.value),
+                }))
+              }
+              placeholder="مثلا: 20"
+            />
+          </div>
+          <div>
+            <Label className="text-xs text-zinc-600 dark:text-zinc-300">تاریخ پایان تخفیف</Label>
+            <Input
+              type="date"
+              className={inputClass + " text-sm h-10"}
+              value={
+                currentVariant.discountExpiry
+                  ? new Date(currentVariant.discountExpiry).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={(e) =>
+                setCurrentVariant((prev) => ({
+                  ...prev,
+                  discountExpiry: e.target.value ? new Date(e.target.value).toISOString() : null,
+                }))
+              }
+            />
+          </div>
+        </div>
+
         <Button
           type="button"
           variant="outline"
@@ -112,4 +164,6 @@ export default function VariantsForm({
       </div>
     </section>
   );
-}
+};
+
+export default VariantsForm;

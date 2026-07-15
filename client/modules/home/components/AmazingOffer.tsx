@@ -51,7 +51,7 @@ export const AmazingOffersSection = () => {
           <Link href="/listings?isAmazingOffer=true">
             <Button
               variant="outline"
-              className="border-primary/30 hover:bg-primary/10 rounded-xl group cursor-pointer"
+              className="border-primary/30 hover:bg-primary/10 rounded-sm group cursor-pointer"
             >
               مشاهده همه
               <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />

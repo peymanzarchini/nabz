@@ -10,6 +10,7 @@ import { useCategories } from "@/modules/home/hooks/useGetCategories";
 import { GetCategory } from "@/modules/home/types";
 import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import CategoryFormModal from "@/modules/panel/components/CategoryFormModal";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 const AdminCategoriesPage = () => {
   const { data: categories, isLoading } = useCategories();
@@ -17,6 +18,9 @@ const AdminCategoriesPage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<GetCategory | null>(null);
+
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const openCreateModal = () => {
     setEditingCategory(null);
@@ -28,14 +32,18 @@ const AdminCategoriesPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("آیا از حذف این دسته‌بندی مطمئن هستید؟")) return;
+  const handleDeleteConfirm = async () => {
+    if (!deleteTargetId) return;
+    setIsDeleting(true);
     try {
-      await api.delete(`/marketplace/categories/${id}`);
+      await api.delete(`/marketplace/categories/${deleteTargetId}`);
       toast.success("دسته‌بندی حذف شد.");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      setDeleteTargetId(null);
     } catch (error) {
       toast.error(getApiErrorMessage(error));
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -51,7 +59,10 @@ const AdminCategoriesPage = () => {
   };
   flatten(categories);
 
-  const parentOptions = categories || [];
+  const parentOptions = flatCategories.map(({ cat, level }) => ({
+    id: cat.id,
+    name: `${"— ".repeat(level)}${cat.name}`,
+  }));
 
   return (
     <div>
@@ -108,13 +119,13 @@ const AdminCategoriesPage = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openEditModal(cat)}
-                        className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                        className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => handleDelete(cat.id)}
-                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                        onClick={() => setDeleteTargetId(cat.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -135,6 +146,15 @@ const AdminCategoriesPage = () => {
           onSuccess={() => queryClient.invalidateQueries({ queryKey: ["categories"] })}
         />
       )}
+
+      <ConfirmModal
+        isOpen={!!deleteTargetId}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={handleDeleteConfirm}
+        title="حذف دسته‌بندی"
+        message="آیا از حذف این دسته‌بندی مطمئن هستید؟ توجه کنید که اگر این دسته دارای زیردسته باشد، عملیات حذف ناموفق خواهد بود."
+        isLoading={isDeleting}
+      />
     </div>
   );
 };
