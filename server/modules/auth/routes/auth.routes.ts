@@ -10,10 +10,12 @@ import {
   resendSchema,
   resetPasswordSchema,
   sendPhoneOtpSchema,
+  updateProfileSchema,
   updateRoleSchema,
 } from "../validations/auth.schema.js";
 import { adminOnly, authenticate } from "@/middlewares/auth.middleware.js";
 import rateLimit from "express-rate-limit";
+import { uploadAvatar } from "@/middlewares/upload.middleware.js";
 
 const router = Router();
 
@@ -49,6 +51,7 @@ router.post("/login-with-otp", validate(loginWithOtpSchema), authController.logi
 router.use(authenticate);
 router.get("/profile", authController.getProfile);
 router.post("/change-password", validate(changePasswordSchema), authController.changePassword);
+router.patch("/profile", uploadAvatar, validate(updateProfileSchema), authController.updateProfile);
 
 router.patch(
   "/users/:id/role",

@@ -112,6 +112,15 @@ class ListingController {
       next(error);
     }
   }
+
+  async getDashboardStats(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const stats = await listingService.getDashboardStats(req.user!.id, req.user!.role);
+      res.success("آمار دریافتی", stats);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const listingController = new ListingController();

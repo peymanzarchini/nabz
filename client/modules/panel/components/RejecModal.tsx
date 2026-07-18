@@ -27,7 +27,7 @@ const RejectModal = ({ isLoading, isOpen, onClose, onConfirm }: RejectModalProps
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-slide-up">
+      <div className="relative bg-white dark:bg-zinc-900 rounded-sm shadow-2xl w-full max-w-md p-6 animate-slide-up">
         <button
           onClick={onClose}
           className="absolute top-4 left-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
@@ -50,14 +50,14 @@ const RejectModal = ({ isLoading, isOpen, onClose, onConfirm }: RejectModalProps
         <div className="flex gap-3 mt-6">
           <Button
             variant="outline"
-            className="flex-1 dark:border-zinc-700 dark:text-zinc-200"
+            className="flex-1 dark:border-zinc-700 dark:text-zinc-200 rounded-sm"
             onClick={onClose}
           >
             انصراف
           </Button>
           <Button
             variant="destructive"
-            className="flex-1 cursor-pointer"
+            className="flex-1 cursor-pointer rounded-sm"
             onClick={handleConfirm}
             disabled={reason.trim().length < 5 || isLoading}
           >

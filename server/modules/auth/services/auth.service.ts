@@ -6,6 +6,7 @@ import {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateProfileInput,
 } from "../validations/auth.schema.js";
 import { Otp } from "../model/otp.model.js";
 import { UserRole, UserStatus } from "@/types/index.js";
@@ -27,6 +28,7 @@ import {
 } from "@/utils/jwt.js";
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
+import bcrypt from "bcrypt";
 
 class AuthService {
   async register(data: RegisterInput): Promise<{ message: string }> {
@@ -309,8 +311,10 @@ class AuthService {
     const isMatch = await user.validPassword(data.currentPassword);
     if (!isMatch) throw HttpError.unAuthorized("رمز عبور فعلی اشتباه است.");
 
-    user.password = data.newPassword;
-    await user.save();
+    const hashedPassword = await bcrypt.hash(data.newPassword, 12);
+
+    user.password = hashedPassword;
+    await user.save({ hooks: false });
 
     await sendPasswordChangedNotification(user.email);
     return { message: "رمز عبور با موفقیت تغییر کرد." };
@@ -363,6 +367,22 @@ class AuthService {
     await user.save();
 
     return { message: "نقش کاربر با موفقیت تغییر کرد." };
+  }
+
+  async updateProfile(
+    userId: string,
+    data: UpdateProfileInput,
+    avatar?: string,
+  ): Promise<AuthResponse> {
+    const user = await Auth.findByPk(userId);
+    if (!user) throw HttpError.notFound("کاربر یافت نشد");
+
+    if (data.firstName) user.firstName = data.firstName;
+    if (data.lastName) user.lastName = data.lastName;
+    if (avatar) user.avatar = `/uploads/${avatar}`;
+
+    await user.save();
+    return formatAuthResponse(user);
   }
 }
 

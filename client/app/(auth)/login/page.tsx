@@ -136,7 +136,7 @@ const LoginPage = () => {
         <button
           type="button"
           onClick={() => switchMethod("email")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-sm cursor-pointer text-sm font-medium transition-all ${
             loginMethod === "email"
               ? "bg-white text-violet-600 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
@@ -148,7 +148,7 @@ const LoginPage = () => {
         <button
           type="button"
           onClick={() => switchMethod("phone")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-medium transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm cursor-pointer font-medium transition-all ${
             loginMethod === "phone"
               ? "bg-white text-violet-600 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
