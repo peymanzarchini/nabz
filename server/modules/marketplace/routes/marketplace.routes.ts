@@ -71,6 +71,7 @@ router.post(
 router.patch(
   "/listings/:id",
   sellerAccess,
+  uploadListingImages,
   validate(updateListingSchema),
   listingController.updateListing,
 );

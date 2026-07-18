@@ -34,7 +34,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleForceLogout = () => {
       setUser(null);
-      router.push("/login");
+
+      if (typeof window !== "undefined" && window.location.pathname.startsWith("/dashboard")) {
+        router.push("/login");
+      }
     };
 
     window.addEventListener("app-logout", handleForceLogout);
@@ -48,8 +51,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout failed", error);
     } finally {
       setUser(null);
-      router.push("/");
-      router.refresh();
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     }
   };
 

@@ -26,6 +26,7 @@ export interface ListingSeller {
   id: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
 }
 
 export interface ListingVariant {

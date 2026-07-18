@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -24,27 +24,43 @@ import SpecsForm from "@/modules/panel/components/SpecsForm";
 import VariantsForm from "@/modules/panel/components/VariantsForm";
 import { FormValues, GetLocation } from "@/modules/panel/types";
 
-const LocationMap = dynamic(() => import("@/modules/panel/components/LocationMap"), {
+const MapPickerModal = dynamic(() => import("@/modules/panel/components/MapPickerModal"), {
   ssr: false,
-  loading: () => (
-    <div className="h-full w-full bg-gray-50 dark:bg-zinc-800 animate-pulse rounded-xl" />
-  ),
 });
 
-const findCategoryInTree = (
+const findCategoryPath = (
   cats: GetCategory[] | undefined,
-  id: string,
-): GetCategory | undefined => {
-  if (!cats) return undefined;
+  targetId: string,
+  path: string[] = [],
+): string[] | null => {
+  if (!cats) return null;
   for (const c of cats) {
-    if (c.id === id) return c;
-    const found = findCategoryInTree(c.subcategories, id);
+    const newPath = [...path, c.id];
+    if (c.id === targetId) return newPath;
+    const found = findCategoryPath(c.subcategories, targetId, newPath);
     if (found) return found;
   }
-  return undefined;
+  return null;
 };
 
-const EditListingPage = () => {
+// تابع پیدا کردن مسیر موقعیت (استان و شهر)
+const findLocationPath = (
+  locs: GetLocation[] | undefined,
+  targetId: string,
+): { provinceId: string; cityId: string } | null => {
+  if (!locs) return null;
+  for (const prov of locs) {
+    if (prov.id === targetId) return { provinceId: prov.id, cityId: "" };
+    if (prov.districts) {
+      for (const city of prov.districts) {
+        if (city.id === targetId) return { provinceId: prov.id, cityId: city.id };
+      }
+    }
+  }
+  return null;
+};
+
+export default function EditListingPage() {
   const params = useParams();
   const router = useRouter();
   const listingId = params.id as string;
@@ -57,6 +73,9 @@ const EditListingPage = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
 
+  const [cat1, setCat1] = useState("");
+  const [cat2, setCat2] = useState("");
+  const [cat3, setCat3] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
   const [specs, setSpecs] = useState<Record<string, string | number | boolean | null>>({});
@@ -73,6 +92,8 @@ const EditListingPage = () => {
   });
 
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [address, setAddress] = useState("");
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   const {
     register,
@@ -87,38 +108,61 @@ const EditListingPage = () => {
   const selectedCityId = useWatch({ control, name: "cityId" });
   const selectedDistrictId = useWatch({ control, name: "districtId" });
 
+  // پر کردن فرم وقتی دیتا از سرور رسید
   useEffect(() => {
-    if (listing) {
+    if (listing && categories && locations) {
       reset({
         title: listing.title,
         description: listing.description,
         condition: listing.condition as "new" | "used",
         isNegotiable: listing.isNegotiable,
-        cityId: listing.city?.id || "",
-        districtId: listing.district?.id || "",
+        cityId: "",
+        districtId: "",
       });
 
       setExistingImages(listing.images || []);
+      if (listing.specs) setSpecs(listing.specs);
+      if (listing.variants && listing.variants.length > 0) setVariants(listing.variants);
 
       if (listing.latitude && listing.longitude) {
         setPosition({ lat: Number(listing.latitude), lng: Number(listing.longitude) });
       }
 
-      if (listing.specs) setSpecs(listing.specs);
-      if (listing.variants && listing.variants.length > 0) {
-        setVariants(listing.variants);
+      // پیدا کردن و ست کردن مسیر دسته‌بندی
+      if (listing.category) {
+        const catPath = findCategoryPath(categories, listing.category.id);
+        if (catPath) {
+          if (catPath[0]) setCat1(catPath[0]);
+          if (catPath[1]) setCat2(catPath[1]);
+          if (catPath[2]) setCat3(catPath[2]);
+          setSelectedCategoryId(listing.category.id);
+        }
       }
 
-      if (listing.category) {
-        setSelectedCategoryId(listing.category.id);
+      if (listing.city) {
+        const locPath = findLocationPath(locations, listing.city.id);
+        if (locPath) {
+          setValue("cityId", locPath.provinceId);
+          if (listing.district) {
+            const distPath = findLocationPath(locations, listing.district.id);
+            if (distPath) setValue("districtId", distPath.cityId);
+          }
+        }
       }
     }
-  }, [listing, reset]);
+  }, [listing, categories, locations, reset, setValue]);
 
-  const finalCategory = useMemo(
-    () => findCategoryInTree(categories, selectedCategoryId),
-    [categories, selectedCategoryId],
-  );
+  const finalCategory = useMemo(() => {
+    if (cat3)
+      return categories
+        ?.find((c) => c.id === cat1)
+        ?.subcategories?.find((c) => c.id === cat2)
+        ?.subcategories?.find((c) => c.id === cat3);
+    if (cat2)
+      return categories?.find((c) => c.id === cat1)?.subcategories?.find((c) => c.id === cat2);
+    if (cat1) return categories?.find((c) => c.id === cat1);
+    return null;
+  }, [cat1, cat2, cat3, categories]);
 
   const generalSpecsSchema = useMemo(() => {
     if (!finalCategory?.specsSchema) return {} as SpecsSchema;
@@ -198,6 +242,11 @@ const EditListingPage = () => {
 
   const removeVariant = (id: string) => setVariants((prev) => prev.filter((v) => v.id !== id));
 
+  const handleMapConfirm = (pos: { lat: number; lng: number }, addr: string) => {
+    setPosition(pos);
+    setAddress(addr);
+  };
+
   const onSubmit = async (data: FormValues) => {
     if (existingImages.length === 0 && images.length === 0)
       return toast.error("حداقل یک تصویر الزامی است.");
@@ -255,15 +304,29 @@ const EditListingPage = () => {
         <CategoryLocationForm
           categories={categories}
           locations={locations}
-          cat1={selectedCategoryId}
-          cat2=""
-          cat3=""
-          selectedCat1={finalCategory}
-          selectedCat2={undefined}
+          cat1={cat1}
+          cat2={cat2}
+          cat3={cat3}
+          selectedCat1={categories?.find((c) => c.id === cat1)}
+          selectedCat2={categories
+            ?.find((c) => c.id === cat1)
+            ?.subcategories?.find((c) => c.id === cat2)}
           selectedCityId={selectedCityId || ""}
           selectedDistrictId={selectedDistrictId || ""}
           handleCatChange={(level, id) => {
-            if (level === 1) setSelectedCategoryId(id);
+            if (level === 1) {
+              setCat1(id);
+              setCat2("");
+              setCat3("");
+            }
+            if (level === 2) {
+              setCat2(id);
+              setCat3("");
+            }
+            if (level === 3) {
+              setCat3(id);
+            }
+            setSelectedCategoryId(id);
             setSpecs({});
             setVariants([]);
           }}
@@ -274,8 +337,24 @@ const EditListingPage = () => {
           <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
             موقعیت دقیق روی نقشه
           </h2>
-          <div className="h-100 w-full rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 z-0 relative">
-            <LocationMap position={position} setPosition={setPosition} cityCenter={cityCenter} />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+              آدرس دقیق
+            </label>
+            <div
+              onClick={() => setIsMapOpen(true)}
+              className="mt-1.5 h-11 w-full bg-gray-50 border border-gray-200 dark:bg-zinc-800 dark:border-zinc-700 rounded-md flex items-center px-3 cursor-pointer hover:border-violet-500 transition-colors"
+            >
+              <span
+                className={`text-sm truncate ${address || listing?.latitude ? "text-zinc-900 dark:text-white" : "text-zinc-400"}`}
+              >
+                {address
+                  ? address
+                  : listing?.latitude
+                    ? `مختصات: ${listing.latitude}, ${listing.longitude}`
+                    : "برای انتخاب موقعیت کلیک کنید"}
+              </span>
+            </div>
           </div>
         </section>
 
@@ -290,11 +369,12 @@ const EditListingPage = () => {
                 className="relative aspect-square rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700"
               >
                 <Image
-                  src={`http://localhost:5000${imgUrl}`}
+                  src={imgUrl}
                   alt="existing"
                   fill
                   className="object-cover"
                   sizes="100%"
+                  unoptimized
                 />
                 <button
                   type="button"
@@ -305,13 +385,19 @@ const EditListingPage = () => {
                 </button>
               </div>
             ))}
-
             {imagePreviews.map((preview, index) => (
               <div
                 key={`new-${index}`}
                 className="relative aspect-square rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700"
               >
-                <Image src={preview} alt="preview" fill className="object-cover" sizes="100%" />
+                <Image
+                  src={preview}
+                  alt="preview"
+                  fill
+                  className="object-cover"
+                  sizes="100%"
+                  unoptimized
+                />
                 <button
                   type="button"
                   onClick={() => removeNewImage(index)}
@@ -321,8 +407,6 @@ const EditListingPage = () => {
                 </button>
               </div>
             ))}
-
-            {/* دکمه آپلود عکس جدید */}
             <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-violet-500 transition-colors text-zinc-500 dark:text-zinc-400">
               <ImagePlus className="h-8 w-8" />
               <span className="text-xs">افزودن عکس جدید</span>
@@ -362,22 +446,29 @@ const EditListingPage = () => {
             type="button"
             variant="ghost"
             onClick={() => router.back()}
-            className="dark:text-zinc-300"
+            className="dark:text-zinc-300 cursor-pointer rounded-sm"
           >
             انصراف
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-linear-to-r from-violet-600 to-teal-500 text-white"
+            className="bg-linear-to-r from-violet-600 to-teal-500 text-white cursor-pointer rounded-sm"
           >
             {isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
             ذخیره تغییرات
           </Button>
         </div>
       </form>
+
+      <MapPickerModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        onConfirm={handleMapConfirm}
+        cityCenter={cityCenter}
+        cityName={selectedCity?.name}
+        initialPosition={position}
+      />
     </div>
   );
-};
-
-export default EditListingPage;
+}

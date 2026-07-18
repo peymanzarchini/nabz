@@ -31,6 +31,8 @@ const MyListingsPage = () => {
     }
   };
 
+  console.log(listings);
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -104,6 +106,7 @@ const MyListingsPage = () => {
                                 className="w-full h-full object-cover"
                                 width={56}
                                 height={56}
+                                unoptimized
                               />
                             )}
                           </div>

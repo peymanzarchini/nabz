@@ -91,7 +91,10 @@ export const updateListingSchema = z.object({
   body: z.object({
     title: z.string().trim().min(5).max(100).optional(),
     description: z.string().trim().min(10).optional(),
-    isNegotiable: z.boolean().optional(),
+    isNegotiable: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((v) => v === "true"),
     condition: z.enum([ListingCondition.NEW, ListingCondition.USED]).optional(),
 
     cityId: z.uuid().optional(),

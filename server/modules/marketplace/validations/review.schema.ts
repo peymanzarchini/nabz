@@ -18,7 +18,7 @@ export const createReviewSchema = z
       comment: z.string().trim().min(5, "متن دیدگاه حداقل باید ۵ کاراکتر باشد"),
       pros: z.array(z.string()).optional(),
       cons: z.array(z.string()).optional(),
-      parentId: z.uuid("آیدی وارد شده نامعتبر است"),
+      parentId: z.uuid("آیدی وارد شده نامعتبر است").optional().nullable(),
     }),
   })
   .refine(

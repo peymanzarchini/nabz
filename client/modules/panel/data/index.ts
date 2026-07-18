@@ -41,6 +41,12 @@ export const panelLinks = [
     icon: Tags,
     roles: ["admin"],
   },
+  {
+    href: "/dashboard/admin/reviews",
+    label: "مدیریت دیدگاه‌ها",
+    icon: MessageSquare,
+    roles: ["admin"],
+  },
 
   {
     href: "/dashboard/settings",
