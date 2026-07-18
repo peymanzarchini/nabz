@@ -26,7 +26,7 @@ export default function ConfirmModal({
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-slide-up">
+      <div className="relative bg-white dark:bg-zinc-900 rounded-sm shadow-2xl w-full max-w-md p-6 animate-slide-up">
         <button
           onClick={onClose}
           className="absolute top-4 left-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
@@ -45,7 +45,7 @@ export default function ConfirmModal({
           <div className="flex gap-3 w-full">
             <Button
               variant="outline"
-              className="flex-1 h-11 rounded-lg dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 cursor-pointer"
+              className="flex-1 h-11 rounded-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 cursor-pointer"
               onClick={onClose}
               disabled={isLoading}
             >
@@ -53,7 +53,7 @@ export default function ConfirmModal({
             </Button>
             <Button
               variant="destructive"
-              className="flex-1 h-11 rounded-lg cursor-pointer"
+              className="flex-1 h-11 rounded-sm cursor-pointer"
               onClick={onConfirm}
               disabled={isLoading}
             >

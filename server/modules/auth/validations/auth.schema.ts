@@ -131,6 +131,13 @@ export const loginWithOtpSchema = z.object({
   }),
 });
 
+export const updateProfileSchema = z.object({
+  body: z.object({
+    firstName: z.string().trim().min(2, "نام الزامی است").optional(),
+    lastName: z.string().trim().min(2, "نام خانوادگی الزامی است").optional(),
+  }),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>["body"];
 export type LoginInput = z.infer<typeof loginSchema>["body"];
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>["body"];
@@ -140,3 +147,4 @@ export type ResendInput = z.infer<typeof resendSchema>["body"];
 export type UpdateRoleInput = z.infer<typeof updateRoleSchema>;
 export type SendPhoneOtpInput = z.infer<typeof sendPhoneOtpSchema>["body"];
 export type LoginWithOtpInput = z.infer<typeof loginWithOtpSchema>["body"];
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>["body"];

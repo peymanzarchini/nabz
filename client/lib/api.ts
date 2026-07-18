@@ -27,7 +27,10 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/refresh")
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/register") &&
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("/auth/profile")
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -46,11 +49,9 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError);
-
         if (typeof window !== "undefined") {
           window.dispatchEvent(new Event("app-logout"));
         }
-
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

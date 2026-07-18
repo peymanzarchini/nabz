@@ -44,6 +44,7 @@ router.get("/listings/:id/reviews", reviewController.getListingReviews);
 
 router.use(authenticate);
 
+router.get("/stats", listingController.getDashboardStats);
 router.post(
   "/conversations",
   validate(startConversationSchema),
@@ -60,6 +61,8 @@ router.get(
   validate(getConversationMessagesSchema),
   conversationController.getConversationMessages,
 );
+
+router.get("/conversations/unread-count", conversationController.getUnreadCount);
 
 router.post(
   "/listings",

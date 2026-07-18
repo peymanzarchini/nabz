@@ -21,6 +21,7 @@ export class Auth extends Model<InferAttributes<Auth>, InferCreationAttributes<A
   declare role: CreationOptional<UserRole>;
   declare status: CreationOptional<UserStatus>;
   declare isVerified: CreationOptional<boolean>;
+  declare lastSeen: CreationOptional<Date | null>;
   declare readonly createdAt: CreationOptional<Date>;
   declare readonly updatedAt: CreationOptional<Date>;
 
@@ -127,6 +128,11 @@ Auth.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    lastSeen: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
     },
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,

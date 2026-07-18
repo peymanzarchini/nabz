@@ -19,6 +19,7 @@ import { Location } from "../models/location.model.js";
 import { sequelize } from "@/config/database.js";
 import { generateSlug } from "@/utils/slugify.js";
 import { getRecursiveCategoryIds } from "@/utils/getRecursiveCategoryIds.js";
+import { Review } from "../models/review.model.js";
 
 class ListingService {
   async createListing(userId: string, data: CreateListingInput, images: Express.Multer.File[]) {
@@ -442,6 +443,22 @@ class ListingService {
       message: "عکس با موفقیت حذف شد.",
       newThumbnail: listing.thumbnail,
     };
+  }
+
+  async getDashboardStats(userId: string, role: string) {
+    const whereClause = role === "admin" ? {} : { userId };
+
+    const totalListings = await Listing.count({ where: whereClause });
+    const activeListings = await Listing.count({ where: { ...whereClause, status: "active" } });
+    const pendingListings = await Listing.count({ where: { ...whereClause, status: "pending" } });
+    const rejectedListings = await Listing.count({ where: { ...whereClause, status: "rejected" } });
+
+    let pendingReviews = 0;
+    if (role === "admin") {
+      pendingReviews = await Review.count({ where: { status: "pending" } });
+    }
+
+    return { totalListings, activeListings, pendingListings, rejectedListings, pendingReviews };
   }
 }
 

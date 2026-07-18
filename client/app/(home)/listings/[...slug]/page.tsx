@@ -10,6 +10,11 @@ import ListingGallery from "@/modules/home/components/ListingGallery";
 import ListingSpecs from "@/modules/home/components/ListingSpecs";
 import ListingVariants from "@/modules/home/components/ListingVariants";
 import ReviewsSection from "@/modules/home/components/ReviewsSection";
+import { useRouter } from "next/navigation";
+import api from "@/lib/api";
+import { toast } from "sonner";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
+import { AxiosError } from "axios";
 
 const ListingMap = dynamic(() => import("@/modules/home/components/ListingMap"), {
   ssr: false,
@@ -40,6 +45,8 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
   const [selectedVariant, setSelectedVariant] = useState<ListingVariant | null>(null);
   const [showContact, setShowContact] = useState<boolean>(false);
 
+  const router = useRouter();
+
   if (isLoading) {
     return (
       <div className="min-h-screen pt-28 pb-16 bg-zinc-50 dark:bg-zinc-950">
@@ -69,6 +76,23 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
       </div>
     );
   }
+
+  const handleStartChat = async () => {
+    try {
+      await api.post("/marketplace/conversations", {
+        listingId: listing.id,
+        message: "سلام، برای این آگهی علاقه‌مند هستم.",
+      });
+      toast.success("گفتگو شروع شد.");
+      router.push("/dashboard/messages");
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        router.push("/dashboard/messages");
+      } else {
+        toast.error(getApiErrorMessage(error));
+      }
+    }
+  };
 
   const getNumericPrice = () => {
     if (selectedVariant) {
@@ -176,6 +200,7 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
                 size="lg"
                 className="w-full h-12 text-base mb-3 cursor-pointer rounded-sm"
                 disabled={selectedVariant?.stock === 0}
+                onClick={handleStartChat}
               >
                 <MessageCircle className="h-5 w-5 ml-2" />
                 شروع گفتگو با فروشنده

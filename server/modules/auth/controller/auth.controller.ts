@@ -143,6 +143,16 @@ class AuthController {
       next(error);
     }
   }
+
+  async updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const avatar = req.file ? req.file.filename : undefined;
+      const result = await authService.updateProfile(req.user!.id, req.body, avatar);
+      res.success("پروفایل با موفقیت بروزرسانی شد", result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const authController = new AuthController();

@@ -23,4 +23,7 @@ export const getConversationMessagesSchema = z.object({
 });
 
 export type StartConversationInput = z.infer<typeof startConversationSchema>["body"];
-export type SendMessageInput = z.infer<typeof sendMessageSchema>;
+export type SendMessageInput = {
+  conversationId: string;
+  content: string;
+};
