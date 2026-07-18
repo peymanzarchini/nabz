@@ -15,7 +15,7 @@ import IconPicker from "@/components/ui/IconPicker";
 
 interface Props {
   category: GetCategory | null;
-  parentCategories: GetCategory[];
+  parentCategories: { id: string; name: string }[];
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -164,11 +164,11 @@ export default function CategoryFormModal({
   };
 
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-md";
+    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-sm";
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-zinc-900 rounded-sm shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800 sticky top-0 bg-white dark:bg-zinc-900 z-10">
           <h2 className="text-xl font-bold text-zinc-800 dark:text-white">
             {category ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی جدید"}
@@ -202,7 +202,7 @@ export default function CategoryFormModal({
               />
             </div>
             <div>
-              <Label>دسته والد (اختیاری)</Label>
+              <Label className="text-zinc-700 dark:text-zinc-200">دسته والد (اختیاری)</Label>
               <select
                 {...register("parentId")}
                 className={inputClass + " w-full px-3 cursor-pointer"}
@@ -221,12 +221,18 @@ export default function CategoryFormModal({
             </div>
           </div>
 
-          <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-4">
+          <div className="border border-zinc-200 dark:border-zinc-800 rounded-sm p-4 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-md font-bold text-zinc-700 dark:text-zinc-200">
                 فیلدهای مشخصات کالا
               </h3>
-              <Button type="button" size="sm" variant="outline" onClick={addSpecField}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={addSpecField}
+                className="rounded-sm! py-5 text-xs cursor-pointer"
+              >
                 <PlusCircle className="h-4 w-4 ml-2" /> افزودن فیلد
               </Button>
             </div>

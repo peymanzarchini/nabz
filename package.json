@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch server/app.ts",
     "build": "rimraf dist && tsc && tsc-alias",
-    "start": "node dist/server/app.js"
+    "start": "node dist/server/app.js",
+    "import-locations": "tsx server/utils/importLocations.ts"
   },
   "keywords": [],
   "author": "",

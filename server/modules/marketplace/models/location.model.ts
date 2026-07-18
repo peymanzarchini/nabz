@@ -33,7 +33,6 @@ Location.init(
     slug: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: { name: "unique_location_slug", msg: "Slug must be unique" },
       validate: { notEmpty: true },
     },
     parentId: {
@@ -58,6 +57,5 @@ Location.init(
     sequelize,
     modelName: "Location",
     tableName: "locations",
-    indexes: [{ fields: ["slug"], unique: true }, { fields: ["parentId"] }],
   },
 );

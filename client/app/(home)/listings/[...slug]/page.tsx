@@ -9,6 +9,7 @@ import { ListingVariant } from "@/modules/home/types";
 import ListingGallery from "@/modules/home/components/ListingGallery";
 import ListingSpecs from "@/modules/home/components/ListingSpecs";
 import ListingVariants from "@/modules/home/components/ListingVariants";
+import ReviewsSection from "@/modules/home/components/ReviewsSection";
 
 const ListingMap = dynamic(() => import("@/modules/home/components/ListingMap"), {
   ssr: false,
@@ -37,6 +38,7 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
   const productSlug = slug[slug.length - 1];
   const { data: listing, isLoading, isError } = useListingDetails(productSlug);
   const [selectedVariant, setSelectedVariant] = useState<ListingVariant | null>(null);
+  const [showContact, setShowContact] = useState<boolean>(false);
 
   if (isLoading) {
     return (
@@ -101,6 +103,7 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
             </div>
             <ListingSpecs specs={listing.specs} specsSchema={listing.category?.specsSchema} />
             {lat && lng && <ListingMap lat={lat} lng={lng} cityName={listing.city?.name || ""} />}
+            <ReviewsSection listingId={listing.id} />
           </div>
 
           <div className="space-y-6 lg:col-span-3">
@@ -171,14 +174,25 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
               <Button
                 size="lg"
-                className="w-full h-12 text-base mb-3"
+                className="w-full h-12 text-base mb-3 cursor-pointer rounded-sm"
                 disabled={selectedVariant?.stock === 0}
               >
                 <MessageCircle className="h-5 w-5 ml-2" />
                 شروع گفتگو با فروشنده
               </Button>
-              <Button variant="outline" size="lg" className="w-full h-12 text-base">
-                اطلاعات تماس
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full h-12 text-base cursor-pointer rounded-sm"
+                onClick={() => setShowContact(!showContact)}
+              >
+                {showContact ? (
+                  <span dir="ltr" className="font-bold tracking-wider">
+                    {listing.user.phoneNumber}
+                  </span>
+                ) : (
+                  "اطلاعات تماس"
+                )}
               </Button>
             </div>
 

@@ -119,6 +119,18 @@ class ListingService {
       where = { ...where, categoryId: { [Op.in]: categoryIds } };
     }
 
+    if (query.userId) {
+      where = { userId: query.userId };
+      if (query.status) {
+        where = { ...where, status: query.status };
+      }
+    } else {
+      where = { status: ListingStatus.ACTIVE };
+      if (query.status) {
+        where = { ...where, status: query.status };
+      }
+    }
+
     if (condition) {
       where = { ...where, condition };
     }

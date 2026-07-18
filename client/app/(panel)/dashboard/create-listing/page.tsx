@@ -95,10 +95,16 @@ const CreateListingPage = () => {
     return Object.fromEntries(Object.entries(schema).filter(([_, val]) => val.isVariant));
   }, [finalCategory]);
 
-  const selectedCity = useMemo(
-    () => locations?.find((loc) => loc.id === selectedCityId),
-    [locations, selectedCityId],
-  );
+  const selectedCity = useMemo(() => {
+    if (!locations) return undefined;
+    for (const prov of locations) {
+      if (prov.districts) {
+        const city = prov.districts.find((c) => c.id === selectedDistrictId);
+        if (city) return city;
+      }
+    }
+    return undefined;
+  }, [locations, selectedDistrictId]);
 
   const handleCatChange = (level: 1 | 2 | 3, id: string) => {
     if (level === 1) {
@@ -223,7 +229,6 @@ const CreateListingPage = () => {
           selectedCat2={selectedCat2}
           selectedCityId={selectedCityId}
           selectedDistrictId={selectedDistrictId}
-          selectedCity={selectedCity}
           handleCatChange={handleCatChange}
           setValue={setValue}
         />
@@ -236,7 +241,12 @@ const CreateListingPage = () => {
             برای تعیین موقعیت دقیق، روی نقشه کلیک کنید.
           </p>
           <div className="h-100 w-full rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 z-0 relative">
-            <LocationMap position={position} setPosition={setPosition} cityCenter={cityCenter} />
+            <LocationMap
+              position={position}
+              setPosition={setPosition}
+              cityCenter={cityCenter}
+              cityName={selectedCity?.name}
+            />
           </div>
           {position && (
             <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">

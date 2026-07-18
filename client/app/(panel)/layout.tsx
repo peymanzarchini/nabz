@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Settings, Menu, X, LogOut, Sun, Moon, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ const DashLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
+  const router = useRouter();
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -44,12 +45,12 @@ const DashLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) {
+    if (typeof window !== "undefined") {
+      router.push("/login");
+    }
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4">
-        <p className="text-lg font-semibold">لطفاً ابتدا وارد حساب کاربری خود شوید.</p>
-        <Link href="/login">
-          <Button>ورود به نبض</Button>
-        </Link>
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -160,7 +161,11 @@ const DashLayout = ({ children }: { children: React.ReactNode }) => {
             )}
 
             <Link href="/" target="_blank" className="hidden sm:block">
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-sm! py-4 text-xs cursor-pointer"
+              >
                 مشاهده سایت
               </Button>
             </Link>

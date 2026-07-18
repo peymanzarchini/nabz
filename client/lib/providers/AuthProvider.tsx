@@ -31,6 +31,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    const handleForceLogout = () => {
+      setUser(null);
+
+      if (typeof window !== "undefined" && window.location.pathname.startsWith("/dashboard")) {
+        router.push("/login");
+      }
+    };
+
+    window.addEventListener("app-logout", handleForceLogout);
+    return () => window.removeEventListener("app-logout", handleForceLogout);
+  }, [router]);
+
   const logout = async () => {
     try {
       await api.post("/auth/logout");
@@ -38,8 +51,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout failed", error);
     } finally {
       setUser(null);
-      router.push("/");
-      router.refresh();
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     }
   };
 

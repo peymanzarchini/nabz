@@ -26,6 +26,7 @@ export interface ListingSeller {
   id: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
 }
 
 export interface ListingVariant {
@@ -106,4 +107,6 @@ export interface ListingFilters {
   sort?: "newest" | "cheapest" | "expensive" | "top_rated";
   page?: number;
   limit?: number;
+  userId?: string;
+  status?: "pending" | "active" | "rejected" | "sold";
 }
