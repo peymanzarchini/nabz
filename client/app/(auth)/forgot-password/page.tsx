@@ -15,7 +15,7 @@ import { ForgotPasswordData, forgotPasswordSchema } from "@/modules/auth/validat
 import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 const ForgotPasswordPage = () => {
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
 
   const {
     register,
