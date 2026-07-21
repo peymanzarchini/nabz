@@ -121,6 +121,16 @@ class ListingController {
       next(error);
     }
   }
+
+  async searchSuggestions(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const query = req.query.q as string;
+      const results = await listingService.searchSuggestions(query);
+      res.success("Search suggestions", results);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const listingController = new ListingController();

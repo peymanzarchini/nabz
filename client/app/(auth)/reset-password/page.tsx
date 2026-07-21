@@ -52,7 +52,7 @@ const ResetPasswordPage = () => {
 
   if (!token) {
     return (
-      <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-2xl shadow-black/10 text-center">
+      <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10 text-center">
         <h1 className="text-2xl font-black text-red-600 mb-3">لینک نامعتبر است</h1>
         <p className="text-sm text-gray-500 mb-8">
           لینک بازیابی رمز عبور وجود ندارد یا خراب است. لطفاً دوباره درخواست دهید.
@@ -66,7 +66,7 @@ const ResetPasswordPage = () => {
 
   if (isSuccess) {
     return (
-      <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-2xl shadow-black/10 text-center">
+      <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10 text-center">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600">
             <ShieldCheck className="h-8 w-8" />
@@ -82,7 +82,7 @@ const ResetPasswordPage = () => {
   }
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-2xl shadow-black/10">
+    <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-black text-gray-900">رمز عبور جدید</h1>
         <p className="text-sm text-gray-500 mt-2">رمز عبور جدید خود را وارد کنید</p>

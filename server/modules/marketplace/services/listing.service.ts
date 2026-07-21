@@ -460,6 +460,23 @@ class ListingService {
 
     return { totalListings, activeListings, pendingListings, rejectedListings, pendingReviews };
   }
+
+  async searchSuggestions(query: string) {
+    if (!query || query.trim().length < 2) return [];
+
+    return await Listing.findAll({
+      where: {
+        status: ListingStatus.ACTIVE,
+        [Op.or]: [
+          { title: { [Op.like]: `%${query}%` } },
+          { description: { [Op.like]: `%${query}%` } },
+        ],
+      },
+      attributes: ["id", "slug", "title", "thumbnail", "minPrice"],
+      include: [{ model: Category, as: "category", attributes: ["slug"] }],
+      limit: 5,
+    });
+  }
 }
 
 export const listingService = new ListingService();
