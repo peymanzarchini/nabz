@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { ApiErrorResponse } from "@/types";
 import { toast } from "sonner";
 import { ArrowLeft, Grid3X3 } from "lucide-react";
-import { categoryIcons } from "../constants/category-icon";
+import { getCategoryIcon } from "@/utils/icon-map";
 
 const CategoriesSection = () => {
   const { data: categories, isLoading, isError, error } = useCategories();
@@ -26,7 +26,6 @@ const CategoriesSection = () => {
   return (
     <section className="py-16 md:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* هدر بخش */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4 animate-slide-up">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
@@ -68,7 +67,7 @@ const CategoriesSection = () => {
         {!isLoading && categories && categories.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.map((category, index: number) => {
-              const Icon = categoryIcons[category.slug] ?? categoryIcons.default;
+              const Icon = getCategoryIcon(category.icon);
               return (
                 <div
                   key={category.id}

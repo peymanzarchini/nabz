@@ -1,7 +1,7 @@
 "use client";
 
+import { useChatSocket } from "@/modules/panel/hooks/useChat";
 import { createContext, useContext } from "react";
-import { useChatSocket } from "@/modules/panel/hooks/useChatSocket";
 import { Socket } from "socket.io-client";
 
 const SocketContext = createContext<Socket | null>(null);

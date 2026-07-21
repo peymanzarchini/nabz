@@ -111,7 +111,6 @@ const VariantsForm = ({
           </div>
         </div>
 
-        {/* بخش تخفیف مدت‌دار */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-zinc-100 dark:border-zinc-700 mt-3">
           <div>
             <Label className="text-xs text-zinc-600 dark:text-zinc-300">

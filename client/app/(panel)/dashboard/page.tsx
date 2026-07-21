@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import {
   Loader2,
@@ -12,28 +11,12 @@ import {
   PackagePlus,
   TrendingUp,
 } from "lucide-react";
-import api from "@/lib/api";
 import { useAuth } from "@/lib/providers/AuthProvider";
-import { ApiResponse } from "@/types";
-
-interface Stats {
-  totalListings: number;
-  activeListings: number;
-  pendingListings: number;
-  rejectedListings: number;
-  pendingReviews: number;
-}
+import { useDashboardStats } from "@/modules/panel/hooks/useAdmin";
 
 const MainPage = () => {
   const { user } = useAuth();
-
-  const { data: stats, isLoading } = useQuery<Stats>({
-    queryKey: ["dashboard-stats"],
-    queryFn: async () => {
-      const { data } = await api.get<ApiResponse<Stats>>("/marketplace/stats");
-      return data.body;
-    },
-  });
+  const { data: stats, isLoading } = useDashboardStats();
 
   const statCards = [
     {
@@ -98,7 +81,6 @@ const MainPage = () => {
         <p className="text-sm text-zinc-500 mt-1">خلاصه فعالیت‌های شما در نبض</p>
       </div>
 
-      {/* کارت‌های آماری */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card, idx) => (
           <Link href={card.link} key={idx}>
@@ -119,7 +101,6 @@ const MainPage = () => {
         ))}
       </div>
 
-      {/* کارت‌های اختصاصی ادمین */}
       {user?.role === "admin" && (
         <div>
           <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 mb-4">مدیریت سیستم</h2>
@@ -145,7 +126,6 @@ const MainPage = () => {
         </div>
       )}
 
-      {/* میانبرهای سریع */}
       <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm">
         <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 mb-4">دسترسی سریع</h2>
         <div className="flex flex-wrap gap-3">

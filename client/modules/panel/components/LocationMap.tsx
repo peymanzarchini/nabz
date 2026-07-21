@@ -99,7 +99,6 @@ export default function LocationMap({
     }, 500);
   };
 
-  // وقتی کاربر روی یک نتیجه کلیک کرد
   const handleSelectResult = (result: SearchResult) => {
     const lat = parseFloat(result.lat);
     const lng = parseFloat(result.lon);
@@ -144,7 +143,6 @@ export default function LocationMap({
             )}
           </div>
 
-          {/* لیست نتایج جستجو */}
           {searchResults.length > 0 && (
             <div className="absolute top-12 right-0 left-0 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl max-h-60 overflow-y-auto z-1001">
               {searchResults.map((res, idx) => (
