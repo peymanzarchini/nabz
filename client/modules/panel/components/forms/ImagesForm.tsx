@@ -7,7 +7,7 @@ interface Props {
   removeImage: (index: number) => void;
 }
 
-export default function ImagesForm({ imagePreviews, handleImageChange, removeImage }: Props) {
+const ImagesForm = ({ imagePreviews, handleImageChange, removeImage }: Props) => {
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
@@ -49,4 +49,6 @@ export default function ImagesForm({ imagePreviews, handleImageChange, removeIma
       </div>
     </section>
   );
-}
+};
+
+export default ImagesForm;

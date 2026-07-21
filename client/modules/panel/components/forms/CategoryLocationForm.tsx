@@ -9,7 +9,7 @@ import {
   ComboboxList,
   ComboboxItem,
 } from "@/components/ui/combobox";
-import { GetLocation } from "../types";
+import { GetLocation } from "../../types";
 
 interface Props {
   categories?: GetCategory[];
@@ -25,7 +25,7 @@ interface Props {
   setValue: (name: "cityId" | "districtId", value: string) => void;
 }
 
-export default function CategoryLocationForm(props: Props) {
+const CategoryLocationForm = (props: Props) => {
   const [provSearch, setProvSearch] = useState("");
   const [citySearch, setCitySearch] = useState("");
 
@@ -33,24 +33,18 @@ export default function CategoryLocationForm(props: Props) {
     "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
   const selectClass = inputClass + " w-full px-3 appearance-none cursor-pointer";
 
-  // ۱. استخراج و مرتب‌سازی استان‌ها بر اساس حروف الفبای فارسی
   const provinces = [...(props.locations?.filter((l) => !l.parentId) || [])].sort((a, b) =>
     a.name.localeCompare(b.name, "fa"),
   );
-  // فیلتر کردن استان‌ها بر اساس جستجوی کاربر
   const filteredProvinces = provinces.filter((p) => p.name.includes(provSearch));
 
-  // ۲. پیدا کردن استان انتخاب شده
   const selectedProvince = provinces.find((p) => p.id === props.selectedCityId);
 
-  // ۳. استخراج و مرتب‌سازی شهرهای زیرمجموعه استان انتخاب شده
   const cities = [...(selectedProvince?.districts || [])].sort((a, b) =>
     a.name.localeCompare(b.name, "fa"),
   );
-  // فیلتر کردن شهرها بر اساس جستجوی کاربر
   const filteredCities = cities.filter((c) => c.name.includes(citySearch));
 
-  // پیدا کردن نام شهر انتخاب شده (برای نمایش در دکمه)
   const selectedCityName = cities.find((c) => c.id === props.selectedDistrictId)?.name;
 
   return (
@@ -59,7 +53,6 @@ export default function CategoryLocationForm(props: Props) {
         دسته‌بندی و موقعیت
       </h2>
 
-      {/* بخش دسته‌بندی‌ها (۳ سطحی) - بدون تغییر باقی می‌ماند */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <Label className="text-zinc-700 dark:text-zinc-200">دسته اصلی *</Label>
@@ -203,4 +196,6 @@ export default function CategoryLocationForm(props: Props) {
       </div>
     </section>
   );
-}
+};
+
+export default CategoryLocationForm;

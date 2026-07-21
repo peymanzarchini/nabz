@@ -20,7 +20,6 @@ import {
 import { useCategories } from "@/modules/home/hooks/useGetCategories";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
-import { categoryIcons } from "../constants/category-icon";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { getCategoryIcon } from "@/utils/icon-map";
 
@@ -285,13 +284,12 @@ const Header = () => {
               )}
             </div>
 
-            {/* لیست دسته‌بندی‌ها (اکاردئون) */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold px-3 mb-2">دسته‌بندی‌ها</p>
               {isLoading && <p className="text-sm text-muted-foreground p-3">در حال بارگذاری...</p>}
               {categories?.map((category) => {
                 const isOpen = activeMobileCategory === category.id;
-                const Icon = categoryIcons[category.slug] ?? categoryIcons.default;
+                const Icon = getCategoryIcon(category.icon);
                 return (
                   <div key={category.id} className="border-b border-border/20 last:border-0">
                     <div
@@ -349,7 +347,6 @@ const Header = () => {
               })}
             </div>
 
-            {/* دکمه‌های احراز هویت موبایل */}
             <div className="flex flex-col gap-3 pt-4 border-t border-border/30">
               {!loading &&
                 (user ? (

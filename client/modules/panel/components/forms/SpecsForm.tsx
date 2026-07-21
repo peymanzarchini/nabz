@@ -9,7 +9,7 @@ interface Props {
   handleSpecChange: (key: string, value: string | number | boolean | null) => void;
 }
 
-export default function SpecsForm({ generalSpecsSchema, specs, handleSpecChange }: Props) {
+const SpecsForm = ({ generalSpecsSchema, specs, handleSpecChange }: Props) => {
   const inputClass =
     "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
   const selectClass = inputClass + " w-full px-3 appearance-none cursor-pointer";
@@ -63,4 +63,6 @@ export default function SpecsForm({ generalSpecsSchema, specs, handleSpecChange 
       </div>
     </section>
   );
-}
+};
+
+export default SpecsForm;

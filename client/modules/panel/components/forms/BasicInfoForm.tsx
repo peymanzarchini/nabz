@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { FormValues } from "../types";
+import { FormValues } from "../../types";
 
 interface Props {
   register: UseFormRegister<FormValues>;
@@ -12,7 +12,7 @@ interface Props {
   setValue: (name: "isNegotiable", value: boolean) => void;
 }
 
-export default function BasicInfoForm({ register, errors, isNegotiable, setValue }: Props) {
+const BasicInfoForm = ({ register, errors, isNegotiable, setValue }: Props) => {
   const inputClass =
     "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
 
@@ -74,4 +74,6 @@ export default function BasicInfoForm({ register, errors, isNegotiable, setValue
       </div>
     </section>
   );
-}
+};
+
+export default BasicInfoForm;
