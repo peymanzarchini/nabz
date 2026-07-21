@@ -100,7 +100,7 @@ const Topbar = ({
               <Link
                 href="/dashboard/settings"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               >
                 <Settings className="h-4 w-4" />
                 تنظیمات حساب
@@ -110,9 +110,9 @@ const Topbar = ({
                   setIsMenuOpen(false);
                   setIsLogoutOpen(true);
                 }}
-                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-right"
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-right cursor-pointer"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4 rotate-180" />
                 خروج از حساب
               </button>
             </div>

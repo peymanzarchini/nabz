@@ -8,7 +8,7 @@ const RegisterPage = () => {
   const form = useRegisterForm();
 
   return (
-    <div className="w-full bg-white rounded-xl overflow-y-auto p-8 shadow-2xl shadow-black/10">
+    <div className="w-full bg-white rounded-sm overflow-y-auto p-8 shadow-2xl shadow-black/10">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-black text-gray-900">
           {form.step === 1 ? "ثبت‌نام در نبض" : "تایید حساب کاربری"}

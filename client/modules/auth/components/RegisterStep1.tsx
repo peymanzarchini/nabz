@@ -121,7 +121,6 @@ const RegisterStep1 = ({
         </div>
       </div>
 
-      {/* کپچا */}
       <div className="bg-gray-100 p-4 rounded-sm border border-gray-200 mt-2">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-sm font-bold text-gray-800">

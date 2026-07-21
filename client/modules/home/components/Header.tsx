@@ -3,11 +3,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Logo from "@/components/ui/Logo";
 import { Button } from "@/components/ui/button";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import {
-  Search,
   ChevronDown,
   Menu,
   X,
@@ -18,10 +17,10 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { useCategories } from "@/modules/home/hooks/useGetCategories";
-import { Input } from "@/components/ui/input";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { getCategoryIcon } from "@/utils/icon-map";
+import SearchWithPreview from "./SearchWithPreview";
 
 const Header = () => {
   const { data: categories, isLoading } = useCategories();
@@ -67,12 +66,15 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-1000 w-full bg-background/70 backdrop-blur-xl border-b border-border/30 dark:border-white/30 transition-all duration-300 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        {/* لوگو */}
         <div className="flex shrink-0">
           <Logo width={70} height={70} />
         </div>
 
-        <div className="hidden md:flex flex-1 items-center gap-2 h-12 mx-4">
-          <div className="relative h-full">
+        {/* بخش دسکتاپ: دسته‌بندی‌ها و سرچ */}
+        <div className="hidden md:flex flex-1 items-center gap-4 h-12 mx-4">
+          {/* منوی مگا دسته‌بندی‌ها */}
+          <div className="relative h-full shrink-0">
             <Button
               variant="outline"
               className="h-full gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 hover:border-primary/40 text-primary font-medium transition-colors cursor-pointer rounded-sm"
@@ -169,18 +171,11 @@ const Header = () => {
             )}
           </div>
 
-          <InputGroup className="h-full rounded-sm">
-            <InputGroupAddon>
-              <Search className="h-5 w-5 text-muted-foreground mr-5" />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="text"
-              placeholder="جستجو در نبض..."
-              className="bg-secondary/50 border-border/30 focus:border-primary transition-colors text-base rounded-xl"
-            />
-          </InputGroup>
+          {/* سرچ هوشمند دسکتاپ */}
+          <SearchWithPreview />
         </div>
 
+        {/* بخش دسکتاپ: دکمه‌های سمت چپ */}
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-3">
             {mounted && (
@@ -240,6 +235,7 @@ const Header = () => {
               ))}
           </div>
 
+          {/* دکمه همبرگر موبایل */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden flex items-center justify-center w-12 h-12 rounded-xl border border-border/30 bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm text-foreground hover:bg-secondary transition-all duration-200 cursor-pointer"
@@ -250,17 +246,13 @@ const Header = () => {
         </div>
       </div>
 
+      {/* منوی موبایل */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-background/95 backdrop-blur-2xl border-t border-border/30 shadow-xl animate-slide-up max-h-[calc(100vh-5rem)] overflow-y-auto overscroll-contain">
           <div className="p-5 space-y-5">
+            {/* سرچ موبایل */}
             <div className="flex items-center gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="جستجو در نبض..."
-                  className="pr-10 bg-secondary/50 border-border/30 focus:border-primary transition-colors h-12 rounded-lg text-base"
-                />
-              </div>
+              <SearchWithPreview isMobile onClose={() => setMobileMenuOpen(false)} />
 
               {mounted && (
                 <button
@@ -284,6 +276,7 @@ const Header = () => {
               )}
             </div>
 
+            {/* دسته‌بندی‌های موبایل */}
             <div className="space-y-1">
               <p className="text-xs text-muted-foreground font-semibold px-3 mb-2">دسته‌بندی‌ها</p>
               {isLoading && <p className="text-sm text-muted-foreground p-3">در حال بارگذاری...</p>}
@@ -347,13 +340,25 @@ const Header = () => {
               })}
             </div>
 
+            {/* احراز هویت موبایل */}
             <div className="flex flex-col gap-3 pt-4 border-t border-border/30">
               {!loading &&
                 (user ? (
                   <>
                     <div className="flex items-center gap-3 bg-secondary/50 rounded-lg p-3 mb-2">
-                      <div className="w-10 h-10 rounded-full bg-linear-to-tr from-violet-600 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                        {user.firstName.charAt(0)}
+                      <div className="w-10 h-10 rounded-full bg-linear-to-tr from-violet-600 to-teal-500 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
+                        {user.avatar ? (
+                          <Image
+                            src={`http://localhost:5000${user.avatar}`}
+                            alt="avatar"
+                            width={40}
+                            height={40}
+                            className="w-full h-full object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          user.firstName.charAt(0)
+                        )}
                       </div>
                       <div>
                         <p className="font-bold text-foreground text-sm">

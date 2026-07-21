@@ -40,7 +40,7 @@ const ForgotPasswordPage = () => {
 
   if (isEmailSent) {
     return (
-      <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-2xl shadow-black/10 text-center">
+      <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10 text-center">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600">
             <Mail className="h-8 w-8" />

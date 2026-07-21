@@ -39,6 +39,7 @@ const router = Router();
 router.get("/categories", categoryController.getAllCategories);
 router.get("/locations", locationController.getAllLocations);
 router.get("/listings", validate(getListingQuerySchema), listingController.getAllListings);
+router.get("/listings/search-suggestions", listingController.searchSuggestions);
 router.get("/listings/:id", validate(idOrSlugParamSchema), listingController.getListingById);
 router.get("/listings/:id/reviews", reviewController.getListingReviews);
 
