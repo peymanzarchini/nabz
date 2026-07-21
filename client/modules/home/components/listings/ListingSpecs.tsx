@@ -1,6 +1,6 @@
 "use client";
 
-import { SpecValue, SpecsSchema } from "../types";
+import { SpecValue, SpecsSchema } from "../../types";
 
 interface ListingSpecsProps {
   specs: Record<string, SpecValue>;

@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ListingVariant, SpecsSchema } from "../types";
+import { ListingVariant, SpecsSchema } from "../../types";
 
 interface ListingVariantsProps {
   variants: ListingVariant[];

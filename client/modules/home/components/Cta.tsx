@@ -5,10 +5,8 @@ const CtaSection = () => {
   return (
     <section className="py-20 px-4 relative overflow-hidden">
       <div className="max-w-4xl mx-auto relative rounded-sm p-10 md:p-16 text-center shadow-2xl animate-slide-up overflow-hidden">
-        {/* پس‌زمینه گرادیانت متحرک */}
         <div className="absolute inset-0 bg-linear-to-r from-primary via-purple-600 to-accent animate-gradient-bg z-0"></div>
 
-        {/* لایه شیشه‌ای روی گرادیانت برای خوانایی بهتر متن */}
         <div className="absolute inset-0 bg-white/10 backdrop-blur-sm z-0"></div>
 
         <div className="relative z-10 space-y-6">

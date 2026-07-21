@@ -16,7 +16,7 @@ import {
 import { ListingFilters } from "@/modules/home/types";
 import { useListings } from "@/modules/home/hooks/useListings";
 import Filters from "@/modules/home/components/Filters";
-import ListingCard from "@/modules/home/components/ListingCard";
+import ListingCard from "@/modules/home/components/listings/ListingCard";
 import Pagination from "@/modules/home/components/Pagination";
 
 const sortOptions = [

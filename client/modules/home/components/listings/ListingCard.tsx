@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Star, BadgeCheck, Tag, Zap } from "lucide-react";
-import { GetListing } from "../types";
+import { GetListing } from "../../types";
 
 const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: number }) => {
   const numericPrice = Number(listing.minPrice || 0);

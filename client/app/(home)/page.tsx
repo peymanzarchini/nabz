@@ -1,8 +1,8 @@
-import { AmazingOffersSection } from "@/modules/home/components/AmazingOffer";
+import AmazingOffersSection from "@/modules/home/components/amazing/AmazingOffer";
 import CategoriesSection from "@/modules/home/components/Categories";
 import CtaSection from "@/modules/home/components/Cta";
-import FeaturesSection from "@/modules/home/components/Features";
-import HeroSection from "@/modules/home/components/Hero";
+import FeaturesSection from "@/modules/home/components/features/Features";
+import HeroSection from "@/modules/home/components/hero/Hero";
 
 const HomePage = () => {
   return (
