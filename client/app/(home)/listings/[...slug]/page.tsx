@@ -6,9 +6,9 @@ import { MapPin, Star, BadgeCheck, PackageSearch, ShieldCheck, MessageCircle } f
 import { Button } from "@/components/ui/button";
 import { useListingDetails } from "@/modules/home/hooks/useListings";
 import { ListingVariant } from "@/modules/home/types";
-import ListingGallery from "@/modules/home/components/ListingGallery";
-import ListingSpecs from "@/modules/home/components/ListingSpecs";
-import ListingVariants from "@/modules/home/components/ListingVariants";
+import ListingGallery from "@/modules/home/components/listings/ListingGallery";
+import ListingSpecs from "@/modules/home/components/listings/ListingSpecs";
+import ListingVariants from "@/modules/home/components/listings/ListingVariants";
 import ReviewsSection from "@/modules/home/components/ReviewsSection";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import { AxiosError } from "axios";
 
-const ListingMap = dynamic(() => import("@/modules/home/components/ListingMap"), {
+const ListingMap = dynamic(() => import("@/modules/home/components/listings/ListingMap"), {
   ssr: false,
   loading: () => <div className="h-75 bg-zinc-50 dark:bg-zinc-800 rounded-2xl animate-pulse" />,
 });
