@@ -31,17 +31,12 @@ interface UiSpecField {
   key: string;
   label: string;
   type: "string" | "number" | "dropdown" | "boolean";
-  options: string[];
+  options: string;
   required: boolean;
   isVariant: boolean;
 }
 
-export default function CategoryFormModal({
-  category,
-  parentCategories,
-  onClose,
-  onSuccess,
-}: Props) {
+const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [specFields, setSpecFields] = useState<UiSpecField[]>([]);
 
@@ -67,10 +62,11 @@ export default function CategoryFormModal({
       ) {
         const schema = category.specsSchema as SpecsSchema;
         const fields: UiSpecField[] = Object.entries(schema).map(([key, val]) => ({
+          id: Math.random().toString(36).substring(7),
           key,
           label: val.label,
           type: val.type,
-          options: val.options || [],
+          options: val.options ? val.options.join(", ") : "",
           required: val.required || false,
           isVariant: val.isVariant || false,
         }));
@@ -93,11 +89,10 @@ export default function CategoryFormModal({
     setValue("slug", slug);
   };
 
-  // توابع مدیریت فیلدهای داینامیک
   const addSpecField = () => {
     setSpecFields([
+      { key: "", label: "", type: "string", options: "", required: false, isVariant: false },
       ...specFields,
-      { key: "", label: "", type: "string", options: [], required: false, isVariant: false },
     ]);
   };
 
@@ -130,7 +125,13 @@ export default function CategoryFormModal({
           parsedSpecs[field.key] = {
             label: field.label,
             type: field.type,
-            options: field.type === "dropdown" ? field.options : undefined,
+            options:
+              field.type === "dropdown"
+                ? field.options
+                    .split(",")
+                    .map((opt) => opt.trim())
+                    .filter(Boolean)
+                : undefined,
             required: field.required,
             isVariant: field.isVariant,
           };
@@ -298,14 +299,8 @@ export default function CategoryFormModal({
                     <div>
                       <Label className="text-xs">گزینه‌ها (با کاما جدا کنید)</Label>
                       <Input
-                        value={field.options.join(", ")}
-                        onChange={(e) =>
-                          updateSpecField(
-                            index,
-                            "options",
-                            e.target.value.split(",").map((opt) => opt.trim()),
-                          )
-                        }
+                        value={field.options}
+                        onChange={(e) => updateSpecField(index, "options", e.target.value)}
                         className={inputClass + " h-10"}
                         placeholder="قرمز, آبی, مشکی"
                       />
@@ -354,4 +349,6 @@ export default function CategoryFormModal({
       </div>
     </div>
   );
-}
+};
+
+export default CategoryFormModal;

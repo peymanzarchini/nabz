@@ -144,7 +144,7 @@ const CreateListingPage = () => {
             type="button"
             variant="ghost"
             onClick={() => router.back()}
-            className="dark:text-zinc-300"
+            className="dark:text-zinc-300 rounded-sm cursor-pointer"
             disabled={form.isSubmitting}
           >
             انصراف
@@ -152,7 +152,7 @@ const CreateListingPage = () => {
           <Button
             type="submit"
             disabled={form.isSubmitting}
-            className="bg-linear-to-r from-violet-600 to-teal-500 text-white"
+            className="bg-linear-to-r from-violet-600 to-teal-500 text-white rounded-sm cursor-pointer"
           >
             {form.isSubmitting && <Loader2 className="animate-spin ml-2" />}
             ثبت آگهی

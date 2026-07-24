@@ -72,7 +72,7 @@ const ListingVariants = ({ variants, specsSchema, onVariantChange }: ListingVari
                   key={option}
                   variant={selectedSpecs[key] === option ? "default" : "outline"}
                   size="sm"
-                  className="h-10 px-4"
+                  className="h-10 px-4 cursor-pointer"
                   onClick={() => handleSelect(key, option)}
                 >
                   {option}

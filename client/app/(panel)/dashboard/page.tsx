@@ -84,7 +84,7 @@ const MainPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card, idx) => (
           <Link href={card.link} key={idx}>
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+            <div className="bg-white dark:bg-zinc-900 rounded-sm p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
               <div className="flex items-center justify-between mb-4">
                 <div
                   className={`w-12 h-12 rounded-xl bg-linear-to-br ${card.color} flex items-center justify-center text-white shadow-lg`}
@@ -107,7 +107,7 @@ const MainPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {adminCards.map((card, idx) => (
               <Link href={card.link} key={idx}>
-                <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group cursor-pointer flex items-center justify-between">
+                <div className="bg-white dark:bg-zinc-900 rounded-sm p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow group cursor-pointer flex items-center justify-between">
                   <div>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">{card.label}</p>
                     <p className="text-2xl font-black text-zinc-800 dark:text-white">
@@ -126,7 +126,7 @@ const MainPage = () => {
         </div>
       )}
 
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm">
+      <div className="bg-white dark:bg-zinc-900 rounded-sm p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm">
         <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 mb-4">دسترسی سریع</h2>
         <div className="flex flex-wrap gap-3">
           <Link href="/dashboard/create-listing">

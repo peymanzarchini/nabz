@@ -37,7 +37,11 @@ export default function RootLayout({
                 position="top-center"
                 dir="rtl"
                 closeButton
-                className="font-iransans"
+                toastOptions={{
+                  style: {
+                    fontFamily: "var(--font-iransans), sans-serif",
+                  },
+                }}
               />
             </AuthProvider>
           </QueryProvider>

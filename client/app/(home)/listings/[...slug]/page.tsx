@@ -94,21 +94,60 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
     }
   };
 
-  const getNumericPrice = () => {
+  const currentPriceInfo = (() => {
     if (selectedVariant) {
-      const vPrice =
-        Number(selectedVariant.finalPrice) > 0
+      const hasDiscount =
+        selectedVariant.discountPercentage > 0 &&
+        (!selectedVariant.discountExpiry || new Date(selectedVariant.discountExpiry) > new Date());
+      const finalPrice =
+        hasDiscount && Number(selectedVariant.finalPrice) > 0
           ? Number(selectedVariant.finalPrice)
           : Number(selectedVariant.price);
-      return vPrice > 0 ? vPrice : Number(listing.minPrice);
+      return {
+        finalPrice,
+        originalPrice: Number(selectedVariant.price),
+        discount: hasDiscount ? selectedVariant.discountPercentage : 0,
+      };
     }
-    return Number(listing.minPrice);
-  };
 
-  const numericPrice = getNumericPrice();
-  const hasVariants = listing.variants && listing.variants.length > 1;
-  const isFree = numericPrice === 0;
+    if (listing.variants && listing.variants.length > 0) {
+      const validVariants = listing.variants.filter(
+        (v) => !v.discountExpiry || new Date(v.discountExpiry) > new Date(),
+      );
+      if (validVariants.length > 0) {
+        const cheapest = validVariants.reduce(
+          (min, v) => {
+            const fPrice = Number(v.finalPrice) > 0 ? Number(v.finalPrice) : Number(v.price);
+            return fPrice < min.finalPrice ? { variant: v, finalPrice: fPrice } : min;
+          },
+          {
+            variant: validVariants[0],
+            finalPrice:
+              Number(validVariants[0].finalPrice) > 0
+                ? Number(validVariants[0].finalPrice)
+                : Number(validVariants[0].price),
+          },
+        );
+
+        const hasDiscount = cheapest.variant.discountPercentage > 0;
+        return {
+          finalPrice: cheapest.finalPrice,
+          originalPrice: Number(cheapest.variant.price),
+          discount: hasDiscount ? cheapest.variant.discountPercentage : 0,
+        };
+      }
+    }
+
+    return {
+      finalPrice: Number(listing.minPrice),
+      originalPrice: Number(listing.minPrice),
+      discount: 0,
+    };
+  })();
+
+  const isFree = currentPriceInfo.finalPrice === 0;
   const isNew = listing.condition === "new";
+  const hasVariants = listing.variants && listing.variants.length > 0;
   const locationText = [listing.city?.name, listing.district?.name].filter(Boolean).join("، ");
   const lat = Number(listing.latitude);
   const lng = Number(listing.longitude);
@@ -132,7 +171,6 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
           <div className="space-y-6 lg:col-span-3">
             <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 shadow-sm sticky top-28">
-              {/* عنوان و امتیاز */}
               <div className="mb-4">
                 <h1 className="text-xl font-black text-zinc-900 dark:text-white mb-2 leading-8">
                   {listing.title}
@@ -177,18 +215,34 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
               )}
 
               <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4 mb-6">
-                <div className="flex items-end gap-1">
-                  {isFree ? (
+                {isFree ? (
+                  <div className="flex items-end gap-1">
                     <span className="text-2xl font-black text-primary">توافقی</span>
-                  ) : (
-                    <>
-                      <span className="text-2xl font-black text-zinc-900 dark:text-white">
-                        {numericPrice.toLocaleString("fa-IR")}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-end gap-1">
+                    {currentPriceInfo.discount > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-zinc-400 line-through">
+                          {currentPriceInfo.originalPrice.toLocaleString("fa-IR")}
+                        </span>
+                        <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-md">
+                          {currentPriceInfo.discount}% تخفیف
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-end gap-1">
+                      <span
+                        className={`text-2xl font-black ${currentPriceInfo.discount > 0 ? "text-red-500 dark:text-red-400" : "text-zinc-900 dark:text-white"}`}
+                      >
+                        {currentPriceInfo.finalPrice.toLocaleString("fa-IR")}
                       </span>
                       <span className="text-xs font-normal text-zinc-500 mb-1.5">تومان</span>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </div>
+                )}
+
                 {selectedVariant && (
                   <p className="text-xs text-zinc-500 mt-1">
                     موجودی: {selectedVariant.stock > 0 ? `${selectedVariant.stock} عدد` : "ناموجود"}

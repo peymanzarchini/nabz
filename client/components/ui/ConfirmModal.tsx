@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, X, AlertTriangle } from "lucide-react";
+import { Loader2, X, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ConfirmModalProps {
@@ -10,6 +10,9 @@ interface ConfirmModalProps {
   title: string;
   message: string;
   isLoading?: boolean;
+  confirmText?: string;
+  confirmButtonClass?: string;
+  variant?: "danger" | "success";
 }
 
 export default function ConfirmModal({
@@ -19,6 +22,9 @@ export default function ConfirmModal({
   title,
   message,
   isLoading,
+  confirmText = "تایید",
+  confirmButtonClass = "",
+  variant = "danger",
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
@@ -35,8 +41,18 @@ export default function ConfirmModal({
         </button>
 
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-4">
-            <AlertTriangle className="h-8 w-8 text-red-500" />
+          <div
+            className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+              variant === "danger"
+                ? "bg-red-100 dark:bg-red-500/10"
+                : "bg-green-100 dark:bg-green-500/10"
+            }`}
+          >
+            {variant === "danger" ? (
+              <AlertTriangle className="h-8 w-8 text-red-500" />
+            ) : (
+              <CheckCircle2 className="h-8 w-8 text-green-500" />
+            )}
           </div>
 
           <h2 className="text-xl font-bold text-zinc-800 dark:text-white mb-2">{title}</h2>
@@ -52,13 +68,16 @@ export default function ConfirmModal({
               انصراف
             </Button>
             <Button
-              variant="destructive"
-              className="flex-1 h-11 rounded-sm cursor-pointer"
+              className={`flex-1 h-11 rounded-sm cursor-pointer text-white ${
+                variant === "danger"
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-green-600 hover:bg-green-700"
+              } ${confirmButtonClass}`}
               onClick={onConfirm}
               disabled={isLoading}
             >
               {isLoading ? <Loader2 className="animate-spin ml-2" /> : null}
-              حذف آگهی
+              {confirmText}
             </Button>
           </div>
         </div>

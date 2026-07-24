@@ -170,6 +170,11 @@ class ListingService {
           as: "user",
           attributes: ["id", "firstName", "lastName", "avatar", "phoneNumber"],
         },
+        {
+          model: ListingVariant,
+          as: "variants",
+          attributes: ["price", "finalPrice", "discountPercentage", "discountExpiry"],
+        },
       ],
     });
 

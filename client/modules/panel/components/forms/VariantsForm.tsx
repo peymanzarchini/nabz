@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SpecsSchema, SpecFieldSchema, ListingVariant } from "@/modules/home/types";
+import { formatPriceInput, numberToPersianWords, parsePriceInput } from "@/utils/formatNumber";
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import DateObject from "react-date-object"; // این خط اضافه شود
 
 interface Props {
   variantSpecsSchema: SpecsSchema;
@@ -90,13 +95,20 @@ const VariantsForm = ({
           <div>
             <Label className="text-xs text-zinc-600 dark:text-zinc-300">قیمت پایه (تومان) *</Label>
             <Input
-              type="number"
-              className={inputClass + " text-sm h-10"}
-              value={currentVariant.price || ""}
+              type="text"
+              inputMode="numeric"
+              dir="ltr"
+              className={inputClass + " text-sm h-10 text-left"}
+              value={formatPriceInput(currentVariant.price)}
               onChange={(e) =>
-                setCurrentVariant((prev) => ({ ...prev, price: Number(e.target.value) }))
+                setCurrentVariant((prev) => ({ ...prev, price: parsePriceInput(e.target.value) }))
               }
             />
+            {currentVariant.price > 0 && (
+              <p className="text-xs text-violet-600 dark:text-violet-400 mt-1 font-medium">
+                {numberToPersianWords(currentVariant.price)} تومان
+              </p>
+            )}
           </div>
           <div>
             <Label className="text-xs text-zinc-600 dark:text-zinc-300">موجودی *</Label>
@@ -133,20 +145,23 @@ const VariantsForm = ({
           </div>
           <div>
             <Label className="text-xs text-zinc-600 dark:text-zinc-300">تاریخ پایان تخفیف</Label>
-            <Input
-              type="date"
-              className={inputClass + " text-sm h-10"}
-              value={
-                currentVariant.discountExpiry
-                  ? new Date(currentVariant.discountExpiry).toISOString().split("T")[0]
-                  : ""
-              }
-              onChange={(e) =>
-                setCurrentVariant((prev) => ({
-                  ...prev,
-                  discountExpiry: e.target.value ? new Date(e.target.value).toISOString() : null,
-                }))
-              }
+
+            <DatePicker
+              calendar={persian}
+              locale={persian_fa}
+              calendarPosition="bottom-right"
+              format="YYYY/MM/DD"
+              value={currentVariant.discountExpiry ? new Date(currentVariant.discountExpiry) : ""}
+              onChange={(dateObject: DateObject | null) => {
+                if (dateObject) {
+                  const isoString = dateObject.toDate().toISOString();
+                  setCurrentVariant((prev) => ({ ...prev, discountExpiry: isoString }));
+                } else {
+                  setCurrentVariant((prev) => ({ ...prev, discountExpiry: null }));
+                }
+              }}
+              inputClass="mt-1.5 h-10 w-full bg-gray-50 border border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-md text-sm px-3 cursor-pointer outline-none"
+              containerClassName="w-full"
             />
           </div>
         </div>
@@ -156,7 +171,7 @@ const VariantsForm = ({
           variant="outline"
           size="sm"
           onClick={addVariant}
-          className="w-full dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+          className="w-full dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 rounded-sm cursor-pointer"
         >
           <PlusCircle className="h-4 w-4 ml-2" /> افزودن واریانت
         </Button>
