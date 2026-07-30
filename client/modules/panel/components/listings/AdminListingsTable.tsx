@@ -83,14 +83,16 @@ const AdminListingsTable = ({
                   </td>
                   <td className="p-4">
                     <div className="flex items-center justify-end gap-2">
-                      <Link
-                        href={`/listings/${listing.category?.slug || "unknown"}/${listing.slug}`}
-                        target="_blank"
-                      >
-                        <button className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer">
-                          <Eye className="h-4 w-4" />
-                        </button>
-                      </Link>
+                      {listing.status === "active" && (
+                        <Link
+                          href={`/listings/${listing.category?.slug || "unknown"}/${listing.slug}`}
+                          target="_blank"
+                        >
+                          <button className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer">
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        </Link>
+                      )}
 
                       {(listing.status === "pending" || listing.status === "rejected") && (
                         <button

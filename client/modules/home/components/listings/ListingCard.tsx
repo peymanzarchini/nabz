@@ -6,8 +6,39 @@ import { MapPin, Star, BadgeCheck, Tag, Zap } from "lucide-react";
 import { GetListing } from "../../types";
 
 const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: number }) => {
-  const numericPrice = Number(listing.minPrice || 0);
-  const isFree = numericPrice === 0;
+  let maxDiscount = 0;
+  let minFinalPrice = Number(listing.minPrice || 0);
+  let originalPriceForDisplay = Number(listing.minPrice || 0);
+
+  if (listing.variants && listing.variants.length > 0) {
+    const validVariants = listing.variants.filter(
+      (v) =>
+        v.discountPercentage > 0 && (!v.discountExpiry || new Date(v.discountExpiry) > new Date()),
+    );
+
+    if (validVariants.length > 0) {
+      maxDiscount = Math.max(...validVariants.map((v) => v.discountPercentage));
+      const bestVariant = validVariants.reduce(
+        (min, v) => (v.discountPercentage > min.discountPercentage ? v : min),
+        validVariants[0],
+      );
+      minFinalPrice =
+        Number(bestVariant.finalPrice) > 0
+          ? Number(bestVariant.finalPrice)
+          : Number(bestVariant.price);
+      originalPriceForDisplay = Number(bestVariant.price);
+    } else {
+      minFinalPrice = Math.min(
+        ...listing.variants.map((v) =>
+          Number(v.finalPrice) > 0 ? Number(v.finalPrice) : Number(v.price),
+        ),
+      );
+      originalPriceForDisplay = minFinalPrice;
+    }
+  }
+
+  const isFree = minFinalPrice === 0;
+  const hasDiscount = maxDiscount > 0 && originalPriceForDisplay > minFinalPrice;
   const isNew = listing.condition === "new";
   const locationText = [listing.city?.name, listing.district?.name].filter(Boolean).join("، ");
 
@@ -32,11 +63,18 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
           </div>
         )}
 
-        {listing.isAmazingOffer && (
-          <span className="absolute top-3 right-3 bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-1">
-            <Zap className="h-3 w-3" /> شگفت‌انگیز
-          </span>
-        )}
+        <div className="absolute top-3 right-3 flex flex-col gap-1.5">
+          {listing.isAmazingOffer && (
+            <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm flex items-center gap-1">
+              <Zap className="h-3 w-3" /> شگفت‌انگیز
+            </span>
+          )}
+          {hasDiscount && (
+            <span className="bg-orange-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+              {maxDiscount}% تخفیف
+            </span>
+          )}
+        </div>
 
         <span
           className={`absolute top-3 left-3 text-[11px] font-medium px-2.5 py-1 rounded-md backdrop-blur-md ${isNew ? "bg-emerald-500/90 text-white" : "bg-zinc-900/70 text-zinc-100"}`}
@@ -80,19 +118,25 @@ const ListingCard = ({ listing, index = 0 }: { listing: GetListing; index?: numb
           </div>
 
           <div className="flex flex-col items-end gap-0.5">
-            <div className="flex items-end gap-1">
-              {isFree ? (
-                <span className="font-extrabold text-lg text-primary">توافقی</span>
-              ) : (
-                <>
-                  <span className="font-extrabold text-lg text-zinc-900 dark:text-white">
-                    {numericPrice.toLocaleString("fa-IR")}
+            {isFree ? (
+              <span className="font-extrabold text-lg text-primary">توافقی</span>
+            ) : (
+              <>
+                {hasDiscount && (
+                  <span className="text-xs text-zinc-400 line-through">
+                    {originalPriceForDisplay.toLocaleString("fa-IR")}
+                  </span>
+                )}
+                <div className="flex items-end gap-1">
+                  <span
+                    className={`font-extrabold text-lg ${hasDiscount ? "text-red-500 dark:text-red-400" : "text-zinc-900 dark:text-white"}`}
+                  >
+                    {minFinalPrice.toLocaleString("fa-IR")}
                   </span>
                   <span className="text-[10px] font-normal text-zinc-500 mb-1">تومان</span>
-                </>
-              )}
-            </div>
-            {!isFree && <span className="text-[10px] text-zinc-400">حداقل قیمت</span>}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
