@@ -12,6 +12,7 @@ import { ListingVariant } from "./variant.model.js";
 import { Category } from "./category.model.js";
 import { Location } from "./location.model.js";
 import { Auth } from "@/modules/auth/model/auth.model.js";
+import { Review } from "./review.model.js";
 
 export class Listing extends Model<InferAttributes<Listing>, InferCreationAttributes<Listing>> {
   declare id: CreationOptional<string>;
@@ -50,6 +51,8 @@ export class Listing extends Model<InferAttributes<Listing>, InferCreationAttrib
   declare city?: NonAttribute<Location>;
   declare district?: NonAttribute<Location | null>;
   declare user?: NonAttribute<Auth>;
+
+  declare reviews?: NonAttribute<Review[]>;
 }
 
 Listing.init(

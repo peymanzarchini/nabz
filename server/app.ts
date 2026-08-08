@@ -21,6 +21,7 @@ import { setupSwagger } from "./config/swagger/index.js";
 import { Auth } from "./modules/auth/model/auth.model.js";
 import { Conversation } from "./modules/marketplace/models/conversation.model.js";
 import { Op } from "@sequelize/core";
+import { startAiCronJobs } from "./modules/ai/utils/ai.scheduler.js";
 
 const app: Application = express();
 
@@ -165,6 +166,8 @@ const startServer = async (): Promise<void> => {
       logger.info(`🚀 Server running on port ${env.port}`);
       logger.info(`📍 Environment: ${env.nodeEnv}`);
       logger.info(`🔗 API URL: http://localhost:${env.port}/api`);
+
+      startAiCronJobs();
     });
   } catch (error) {
     logger.error("Failed to start server:", error);

@@ -1,4 +1,5 @@
 import {
+  Bot,
   LayoutDashboard,
   ListOrdered,
   MessageSquare,
@@ -46,6 +47,12 @@ export const panelLinks = [
     label: "مدیریت دیدگاه‌ها",
     icon: MessageSquare,
     roles: ["admin"],
+  },
+  {
+    href: "/dashboard/ai-assistant",
+    label: "دستیار هوشمند",
+    icon: Bot,
+    roles: ["admin", "seller", "customer"],
   },
 
   {

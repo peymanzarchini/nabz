@@ -23,6 +23,9 @@ const envSchema = z.object({
   CLIENT_URL: z.string().default("http://localhost:3000"),
   EMAIL_USER: z.string().default("peymanzarchini@outlook.com"),
   EMAIL_PASSWORD: z.string().min(10, "EMAIL_PASSWORD must be at least 10 characters"),
+
+  AI_API_KEY: z.string().optional(),
+  AI_PROXY_URL: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -59,6 +62,10 @@ export const env = {
   email: {
     user: parsedEnv.data.EMAIL_USER,
     password: parsedEnv.data.EMAIL_PASSWORD,
+  },
+  ai: {
+    apiKey: parsedEnv.data.AI_API_KEY,
+    proxyUrl: parsedEnv.data.AI_PROXY_URL,
   },
   isDev: parsedEnv.data.NODE_ENV === "development",
   isProd: parsedEnv.data.NODE_ENV === "production",
