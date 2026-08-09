@@ -4,7 +4,7 @@ import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
 import { aiTools, executeTool } from "../utils/ai.tools.js";
 
-const genAI = new GoogleGenerativeAI(env.ai.apiKey || "dummy_key_for_dev");
+const genAI = new GoogleGenerativeAI(env.ai.apiKey!);
 
 interface ChatMessage {
   role: "user" | "assistant";
