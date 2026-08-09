@@ -6,7 +6,7 @@ import { logger } from "@/config/logger.js";
 import { env } from "@/config/env.js";
 import { Op } from "@sequelize/core";
 
-const genAI = new GoogleGenerativeAI(env.ai.apiKey || "dummy_key_for_dev");
+const genAI = new GoogleGenerativeAI(env.ai.apiKey!);
 
 export const runReviewSummaryCron = async (): Promise<void> => {
   logger.info("🕒 [Cron Job] شروع پردازش خلاصه نظرات با Gemini...");
