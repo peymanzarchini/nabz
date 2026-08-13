@@ -15,6 +15,7 @@ import api from "@/lib/api";
 import { toast } from "sonner";
 import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import { AxiosError } from "axios";
+import { useAuth } from "@/lib/providers/AuthProvider";
 
 const ListingMap = dynamic(() => import("@/modules/home/components/listings/ListingMap"), {
   ssr: false,
@@ -46,6 +47,7 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
   const [showContact, setShowContact] = useState<boolean>(false);
 
   const router = useRouter();
+  const { user } = useAuth();
 
   if (isLoading) {
     return (
@@ -78,6 +80,11 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
   }
 
   const handleStartChat = async () => {
+    if (!user) {
+      toast.info("برای شروع گفتگو، ابتدا وارد حساب کاربری خود شوید.");
+      return;
+    }
+
     try {
       await api.post("/marketplace/conversations", {
         listingId: listing.id,
