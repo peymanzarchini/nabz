@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { Search, PackageSearch, SlidersHorizontal, X } from "lucide-react";
+import { Search, PackageSearch, SlidersHorizontal, X, Loader2 } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,7 @@ const sortOptions = [
   { value: "top_rated", label: "محبوب‌ترین" },
 ];
 
-const ListingsPage = () => {
+function ListingsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -213,6 +213,18 @@ const ListingsPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ListingsPage;
+export default function ListingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen pt-28 pb-16 flex justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <ListingsContent />
+    </Suspense>
+  );
+}
