@@ -3,14 +3,14 @@ import { MySqlDialect } from "@sequelize/mysql";
 import { env } from "./env.js";
 import { logger } from "./logger.js";
 
-export const sequelize = new Sequelize({
+const dbConfig = {
   dialect: MySqlDialect,
   host: env.db.host,
   port: env.db.port,
   database: env.db.name,
   user: env.db.user,
   password: env.db.password,
-  logging: false,
+  logging: false as const,
   pool: {
     max: 10,
     min: 0,
@@ -21,7 +21,14 @@ export const sequelize = new Sequelize({
     underscored: false,
     freezeTableName: true,
   },
-});
+
+  ssl: {
+    require: true,
+    rejectUnauthorized: false,
+  },
+};
+
+export const sequelize = new Sequelize(dbConfig);
 
 export async function connectDB(): Promise<void> {
   try {
