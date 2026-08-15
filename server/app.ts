@@ -25,6 +25,8 @@ import express, { type Express } from "express";
 
 const app: Express = express();
 
+app.set("trust proxy", 1);
+
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(
   cors({
