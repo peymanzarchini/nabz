@@ -1,7 +1,7 @@
 import { UserRole, UserStatus } from "@/types/index.js";
 
 export interface AuthResponse {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;

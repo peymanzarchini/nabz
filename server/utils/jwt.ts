@@ -8,7 +8,7 @@ export interface TokenPair {
 }
 
 interface JwtPayload {
-  id: number;
+  id: string;
   email: string;
   role: UserRole;
 }
