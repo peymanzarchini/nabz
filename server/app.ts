@@ -2,7 +2,6 @@ import { createServer } from "http";
 import { Server as SocketServer } from "socket.io";
 import jwt from "jsonwebtoken";
 import { AuthenticatedJwtPayload } from "./types/index.js";
-import express, { Express } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
@@ -22,6 +21,7 @@ import { Auth } from "./modules/auth/model/auth.model.js";
 import { Conversation } from "./modules/marketplace/models/conversation.model.js";
 import { Op } from "@sequelize/core";
 import { startAiCronJobs } from "./modules/ai/utils/ai.scheduler.js";
+import express, { type Express } from "express";
 
 const app: Express = express();
 
