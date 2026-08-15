@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ import { ResetPasswordData, resetPasswordSchema } from "@/modules/auth/validatio
 import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import { PasswordInput } from "@/components/ui/password-input";
 
-const ResetPasswordPage = () => {
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -48,13 +48,13 @@ const ResetPasswordPage = () => {
   };
 
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50";
+    "mt-1.5 h-11 bg-muted/40 border-input text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-lg";
 
   if (!token) {
     return (
-      <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10 text-center">
+      <div className="w-full max-w-md text-center">
         <h1 className="text-2xl font-black text-red-600 mb-3">لینک نامعتبر است</h1>
-        <p className="text-sm text-gray-500 mb-8">
+        <p className="text-sm text-zinc-500 mb-8">
           لینک بازیابی رمز عبور وجود ندارد یا خراب است. لطفاً دوباره درخواست دهید.
         </p>
         <Link href="/forgot-password">
@@ -66,14 +66,16 @@ const ResetPasswordPage = () => {
 
   if (isSuccess) {
     return (
-      <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10 text-center">
+      <div className="w-full max-w-md text-center">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600">
             <ShieldCheck className="h-8 w-8" />
           </div>
         </div>
-        <h1 className="text-2xl font-black text-gray-900 mb-3">رمز عبور تغییر کرد!</h1>
-        <p className="text-sm text-gray-500 leading-7 mb-8">
+        <h1 className="text-2xl font-black text-zinc-800 mb-3 dark:text-white">
+          رمز عبور تغییر کرد!
+        </h1>
+        <p className="text-sm text-zinc-500 leading-7 mb-8">
           رمز عبور شما با موفقیت بازیابی شد. در حال انتقال به صفحه ورود...
         </p>
         <Loader2 className="animate-spin text-violet-600 mx-auto" />
@@ -82,17 +84,19 @@ const ResetPasswordPage = () => {
   }
 
   return (
-    <div className="w-full max-w-md bg-white rounded-sm p-8 shadow-2xl shadow-black/10">
+    <div className="w-full max-w-md">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-black text-gray-900">رمز عبور جدید</h1>
-        <p className="text-sm text-gray-500 mt-2">رمز عبور جدید خود را وارد کنید</p>
+        <h1 className="text-2xl font-black text-gray-900 dark:text-white">رمز عبور جدید</h1>
+        <p className="text-sm text-zinc-500 mt-2 dark:text-zinc-400">
+          رمز عبور جدید خود را وارد کنید
+        </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input type="hidden" {...register("token")} />
 
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="newPassword" className="text-gray-700">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="newPassword" className="text-gray-700 dark:text-zinc-200">
             رمز عبور جدید
           </Label>
           <PasswordInput
@@ -107,8 +111,8 @@ const ResetPasswordPage = () => {
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="confirmPassword" className="text-gray-700">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-zinc-200">
             تکرار رمز عبور جدید
           </Label>
           <PasswordInput
@@ -126,7 +130,7 @@ const ResetPasswordPage = () => {
         <Button
           type="submit"
           size="lg"
-          className="w-full h-12 text-base font-bold cursor-pointer bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg"
+          className="w-full h-12 text-base font-bold cursor-pointer rounded-lg shadow-sm hover:shadow-md"
           disabled={isSubmitting}
         >
           {isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
@@ -135,6 +139,18 @@ const ResetPasswordPage = () => {
       </form>
     </div>
   );
-};
+}
 
-export default ResetPasswordPage;
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-40">
+          <Loader2 className="h-8 w-8 animate-spin text-violet-600" />
+        </div>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
