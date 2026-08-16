@@ -23,6 +23,7 @@ const envSchema = z.object({
   CLIENT_URL: z.string().default("http://localhost:3000"),
   EMAIL_USER: z.string().default("peymanzarchini@outlook.com"),
   EMAIL_PASSWORD: z.string().min(10, "EMAIL_PASSWORD must be at least 10 characters"),
+  DB_SSL_CA: z.string().optional(),
 
   AI_API_KEY: z.string().optional(),
   AI_PROXY_URL: z.string().optional(),
@@ -44,6 +45,7 @@ export const env = {
     name: parsedEnv.data.DB_NAME,
     user: parsedEnv.data.DB_USER,
     password: parsedEnv.data.DB_PASS,
+    db_ssl_ca: parsedEnv.data.DB_SSL_CA,
   },
   jwt: {
     secret: parsedEnv.data.JWT_SECRET,

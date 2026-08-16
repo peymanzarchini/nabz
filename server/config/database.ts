@@ -25,6 +25,7 @@ const dbConfig = {
   ssl: {
     require: true,
     rejectUnauthorized: false,
+    ca: env.db.db_ssl_ca || undefined,
   },
 };
 
