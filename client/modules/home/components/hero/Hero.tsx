@@ -33,7 +33,7 @@ const HeroSection = () => {
             <Link href="/register">
               <Button
                 size="default"
-                className="w-full sm:w-auto text-lg px-8 py-7 bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0 rounded-sm"
+                className="w-full sm:w-auto text-base px-8 py-6 bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0 rounded-sm"
               >
                 شروع کنید
                 <ArrowLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
@@ -43,7 +43,7 @@ const HeroSection = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto text-lg px-8 py-7 border-primary/30 hover:bg-primary/10 backdrop-blur-sm rounded-sm cursor-pointer bg-white/40 dark:bg-gray-900/40 hover:border-primary/60 transition-all"
+                className="w-full sm:w-auto text-base px-8 py-6 border-primary/30 hover:bg-primary/10 backdrop-blur-sm rounded-sm cursor-pointer bg-white/40 dark:bg-gray-900/40 hover:border-primary/60 transition-all"
               >
                 مشاهده آگهی‌ها
               </Button>

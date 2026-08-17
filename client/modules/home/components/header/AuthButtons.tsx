@@ -65,14 +65,14 @@ const AuthButtons = ({ user, loading, logout, isMobile = false, onNavigate }: Au
             <Link
               href="/login"
               onClick={onNavigate}
-              className="block w-full px-6 py-3.5 rounded-lg border border-primary text-primary text-center font-semibold transition-all duration-200 hover:bg-primary/5 cursor-pointer text-base"
+              className="block w-full px-6 py-3.5 rounded-sm border border-primary text-primary text-center font-semibold transition-all duration-200 hover:bg-primary/5 cursor-pointer text-base"
             >
               ورود
             </Link>
             <Link
               href="/register"
               onClick={onNavigate}
-              className="block w-full px-6 py-3.5 rounded-lg bg-primary text-primary-foreground text-center font-bold shadow-md shadow-primary/20 transition-all duration-200 hover:shadow-lg hover:shadow-primary/40 cursor-pointer text-base"
+              className="block w-full px-6 py-3.5 rounded-sm bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0 text-center font-bold duration-200 hover:shadow-lg hover:shadow-primary/40 text-base"
             >
               ثبت‌نام
             </Link>
@@ -82,7 +82,6 @@ const AuthButtons = ({ user, loading, logout, isMobile = false, onNavigate }: Au
     );
   }
 
-  // Desktop
   return (
     <div className="hidden md:flex items-center gap-3">
       {user ? (
@@ -104,13 +103,13 @@ const AuthButtons = ({ user, loading, logout, isMobile = false, onNavigate }: Au
         <>
           <Link
             href="/login"
-            className="px-6 py-2.5 rounded-md border border-primary text-primary transition-all duration-200 hover:border-primary hover:bg-primary/5 cursor-pointer"
+            className="px-6 py-2.5 rounded-sm border border-primary text-primary transition-all duration-200 hover:border-primary hover:bg-primary/5 cursor-pointer"
           >
             ورود
           </Link>
           <Link
             href="/register"
-            className="px-6 py-2.5 rounded-md bg-primary text-primary-foreground shadow-md shadow-primary/20 transition-all duration-200 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm cursor-pointer"
+            className="px-6 py-2.5 rounded-sm bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0"
           >
             ثبت‌نام
           </Link>

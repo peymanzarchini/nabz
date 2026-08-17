@@ -6,7 +6,7 @@ import { SendOtpFormProps } from "../types";
 
 const SendOtpForm = ({ phoneForm, onSendOtpSubmit }: SendOtpFormProps) => {
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50";
+    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50 text-sm rounded-sm placeholder:text-gray-400 placeholder:text-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50";
 
   return (
     <form onSubmit={phoneForm.handleSubmit(onSendOtpSubmit)} className="space-y-4">
@@ -32,7 +32,7 @@ const SendOtpForm = ({ phoneForm, onSendOtpSubmit }: SendOtpFormProps) => {
       <Button
         type="submit"
         size="lg"
-        className="w-full h-12 text-base font-bold cursor-pointer bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg rounded-sm"
+        className="w-full h-12 text-base cursor-pointer text-white shadow-lg rounded-sm"
         disabled={phoneForm.formState.isSubmitting}
       >
         {phoneForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}

@@ -66,7 +66,7 @@ const RegisterStep2 = ({
       <Button
         type="submit"
         size="lg"
-        className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base font-bold bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg cursor-pointer rounded-sm"
+        className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base text-white shadow-lg cursor-pointer rounded-sm"
         disabled={verifyForm.formState.isSubmitting || !isTimerActive}
       >
         {verifyForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}

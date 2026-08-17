@@ -34,7 +34,7 @@ const Header = () => {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center w-12 h-12 rounded-xl border border-border/30 bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm text-foreground hover:bg-secondary transition-all duration-200 cursor-pointer"
+            className="md:hidden flex items-center justify-center w-12 h-12 rounded-sm border border-border/30 bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm text-foreground hover:bg-secondary transition-all duration-200 cursor-pointer"
             aria-label="منو"
           >
             {mobileMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
