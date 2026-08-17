@@ -6,7 +6,6 @@ import { ChevronDown, ChevronLeft } from "lucide-react";
 import { GetCategory } from "@/modules/home/types";
 import { getCategoryIcon } from "@/utils/icon-map";
 import SearchWithPreview from "./SearchWithPreview";
-import ThemeToggle from "./ThemeToggle";
 import AuthButtons from "./AuthButtons";
 import { User } from "@/modules/auth/types";
 
@@ -38,7 +37,6 @@ const MobileMenu = ({
       <div className="p-5 space-y-5">
         <div className="flex items-center gap-3">
           <SearchWithPreview isMobile onClose={onClose} />
-          <ThemeToggle isMobile />
         </div>
 
         <div className="space-y-1">

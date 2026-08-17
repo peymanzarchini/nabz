@@ -259,7 +259,7 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
               <Button
                 size="lg"
-                className="w-full h-12 text-base mb-3 cursor-pointer rounded-sm"
+                className="w-full h-12 text-base mb-3 bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0 rounded-sm"
                 disabled={selectedVariant?.stock === 0}
                 onClick={handleStartChat}
               >

@@ -35,10 +35,10 @@ export async function connectDB(): Promise<void> {
     await sequelize.authenticate();
     logger.info("✅ Database connection established successfully");
 
-    // if (env.isDev) {
-    await sequelize.sync({ alter: true });
-    logger.info("🔄 Database synchronized (development mode)");
-    // }
+    if (env.isDev) {
+      await sequelize.sync({ alter: true });
+      logger.info("🔄 Database synchronized (development mode)");
+    }
   } catch (error) {
     logger.error("❌ Unable to connect to database:", error);
     process.exit(1);

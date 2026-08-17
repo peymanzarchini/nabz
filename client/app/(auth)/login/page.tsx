@@ -42,7 +42,7 @@ const LoginPage = () => {
 
       <p className="text-center text-sm text-gray-600 mt-6">
         حساب کاربری ندارید؟{" "}
-        <Link href="/register" className="text-violet-600 font-bold hover:underline">
+        <Link href="/register" className="text-violet-600 font-medium hover:underline">
           ثبت‌نام کنید
         </Link>
       </p>

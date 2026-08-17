@@ -155,7 +155,7 @@ const RegisterStep1 = ({
       <Button
         type="submit"
         size="lg"
-        className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base font-bold cursor-pointer bg-linear-to-r from-violet-600 to-teal-500 hover:from-violet-700 hover:to-teal-600 text-white shadow-lg rounded-sm mt-10"
+        className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base cursor-pointer text-white shadow-lg rounded-sm mt-10"
         disabled={registerForm.formState.isSubmitting}
       >
         {registerForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
@@ -164,7 +164,7 @@ const RegisterStep1 = ({
 
       <p className="text-center text-sm text-gray-600 mt-4">
         قبلاً ثبت‌نام کرده‌اید؟{" "}
-        <Link href="/login" className="text-violet-600 font-bold hover:underline">
+        <Link href="/login" className="text-violet-600 font-medium hover:underline">
           وارد شوید
         </Link>
       </p>
