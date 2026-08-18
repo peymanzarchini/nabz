@@ -15,9 +15,9 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
   family: 4,
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
+  connectionTimeout: 20000,
+  greetingTimeout: 20000,
+  socketTimeout: 20000,
 } as any);
 
 export const sendVerificationEmail = async (to: string, code: string) => {
