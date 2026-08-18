@@ -14,7 +14,7 @@ export const sendVerificationEmail = async (to: string, code: string) => {
   }
 
   try {
-    const transporter = nodemailer.createTransport({
+    const config = {
       host: "smtp.office365.com",
       port: 587,
       secure: false,
@@ -23,7 +23,10 @@ export const sendVerificationEmail = async (to: string, code: string) => {
         pass: env.email.password,
       },
       tls: { ciphers: "SSLv3" },
-    });
+      family: 4,
+    };
+
+    const transporter = nodemailer.createTransport(config);
 
     const mailOptions = {
       from: `"Nabz SuperApp" <${env.email.user}>`,
@@ -39,6 +42,7 @@ export const sendVerificationEmail = async (to: string, code: string) => {
         </div>
       `,
     };
+
     const info = await transporter.sendMail(mailOptions);
     logger.info(`📧 Email sent: ${info.messageId}`);
   } catch (error) {
