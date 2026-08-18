@@ -1,33 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import nodemailer from "nodemailer";
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
-import { HttpError } from "./httpError.js";
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.mail.yahoo.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: env.email.user,
+    pass: env.email.password,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+  family: 4,
+  connectionTimeout: 15000,
+} as any);
 
 export const sendVerificationEmail = async (to: string, code: string) => {
-  if (env.isDev) {
-    logger.info(`\n========================================`);
-    logger.info(`📧 [DEV MODE] Verification Code`);
-    logger.info(`To: ${to}`);
-    logger.info(`🔢 Code: ${code}`);
-    logger.info(`========================================\n`);
-    return;
-  }
-
   try {
-    const config = {
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: env.email.user,
-        pass: env.email.password,
-      },
-      tls: { ciphers: "SSLv3" },
-      family: 4,
-    };
-
-    const transporter = nodemailer.createTransport(config);
-
     const mailOptions = {
       from: `"Nabz SuperApp" <${env.email.user}>`,
       to,
@@ -44,64 +36,29 @@ export const sendVerificationEmail = async (to: string, code: string) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    logger.info(`📧 Email sent: ${info.messageId}`);
+    logger.info(`📧 Email sent successfully to ${to}: ${info.messageId}`);
   } catch (error) {
     logger.error("❌ Failed to send email:", error);
-    throw HttpError.badRequest("Failed to send email");
   }
 };
 
 export const sendPasswordResetEmail = async (to: string, resetLink: string) => {
-  if (env.isDev) {
-    logger.info(`\n========================================`);
-    logger.info(`📧 [DEV MODE] Password Reset Link`);
-    logger.info(`To: ${to}`);
-    logger.info(`🔗 Link: ${resetLink}`);
-    logger.info(`========================================\n`);
-    return;
-  }
-
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false,
-      auth: { user: env.email.user, pass: env.email.password },
-      tls: { ciphers: "SSLv3" },
-    });
-
     const mailOptions = {
       from: `"Nabz SuperApp" <${env.email.user}>`,
       to,
       subject: "بازیابی رمز عبور - نبض",
       html: `<div style="direction: rtl; font-family: Tahoma; text-align: center;"><a href="${resetLink}" style="background-color: #2196F3; color: white; padding: 10px 20px; text-decoration: none;">بازیابی رمز عبور</a></div>`,
     };
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`📧 Reset email sent: ${info.messageId}`);
+    await transporter.sendMail(mailOptions);
+    logger.info(`📧 Reset email sent to ${to}`);
   } catch (error) {
     logger.error("❌ Failed to send reset email:", error);
-    throw HttpError.badRequest("Failed to send reset email");
   }
 };
 
 export const sendPasswordChangedNotification = async (to: string) => {
-  if (env.isDev) {
-    logger.info(`\n========================================`);
-    logger.info(`📧 [DEV MODE] Password Changed Notification`);
-    logger.info(`To: ${to}`);
-    logger.info(`========================================\n`);
-    return;
-  }
-
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false,
-      auth: { user: env.email.user, pass: env.email.password },
-      tls: { ciphers: "SSLv3" },
-    });
-
     const mailOptions = {
       from: `"Nabz SuperApp" <${env.email.user}>`,
       to,
