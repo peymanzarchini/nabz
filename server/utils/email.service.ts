@@ -5,7 +5,7 @@ import { logger } from "@/config/logger.js";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.mail.yahoo.com",
-  port: 587,
+  port: env.isDev ? 587 : 2525,
   secure: false,
   auth: {
     user: env.email.user,
@@ -15,7 +15,9 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
   family: 4,
-  connectionTimeout: 15000,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 } as any);
 
 export const sendVerificationEmail = async (to: string, code: string) => {
@@ -39,6 +41,7 @@ export const sendVerificationEmail = async (to: string, code: string) => {
     logger.info(`📧 Email sent successfully to ${to}: ${info.messageId}`);
   } catch (error) {
     logger.error("❌ Failed to send email:", error);
+    throw new Error("Failed to send email");
   }
 };
 

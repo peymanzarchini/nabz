@@ -68,7 +68,14 @@ class AuthService {
       });
     }
 
-    await sendVerificationEmail(data.email, otpCode);
+    try {
+      await sendVerificationEmail(data.email, otpCode);
+    } catch (emailError) {
+      console.log(emailError);
+      throw HttpError.serviceUnavailable(
+        "سرویس ایمیل در حال حاضر در دسترس نیست. لطفاً چند دقیقه دیگر تلاش کنید.",
+      );
+    }
 
     return { message: "کد تایید با موفقیت به ایمیل شما ارسال شد." };
   }
