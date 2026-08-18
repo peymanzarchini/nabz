@@ -21,7 +21,7 @@ const envSchema = z.object({
   COOKIE_DOMAIN: z.string().optional(),
 
   CLIENT_URL: z.string().default("http://localhost:3000"),
-  EMAIL_USER: z.string().default("peymanzarchini@outlook.com"),
+  EMAIL_USER: z.string().default("peyman.zarchini@yahoo.com"),
   EMAIL_PASSWORD: z.string().min(10, "EMAIL_PASSWORD must be at least 10 characters"),
 
   AI_API_KEY: z.string().optional(),

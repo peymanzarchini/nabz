@@ -5,6 +5,7 @@ import {
   InferCreationAttributes,
   Model,
   NonAttribute,
+  sql,
 } from "@sequelize/core";
 import bcrypt from "bcrypt";
 import { UserRole, UserStatus } from "@/types/index.js";
@@ -38,7 +39,7 @@ Auth.init(
   {
     id: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: sql.uuidV4,
       primaryKey: true,
     },
     firstName: {
