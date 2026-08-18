@@ -5,8 +5,8 @@ import { logger } from "@/config/logger.js";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.mail.yahoo.com",
-  port: env.isDev ? 587 : 2525,
-  secure: false,
+  port: env.isDev ? 587 : 465,
+  secure: env.isDev ? false : true,
   auth: {
     user: env.email.user,
     pass: env.email.password,
