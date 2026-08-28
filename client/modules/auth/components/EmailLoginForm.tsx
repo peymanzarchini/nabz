@@ -8,12 +8,12 @@ import { EmailLoginFormProps } from "../types";
 
 const EmailLoginForm = ({ emailForm, onEmailSubmit }: EmailLoginFormProps) => {
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50 text-sm";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-lg placeholder:text-muted-foreground/60";
 
   return (
     <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
       <div className="flex flex-col gap-1">
-        <Label htmlFor="identifier" className="text-gray-700">
+        <Label htmlFor="identifier" className="text-foreground">
           ایمیل
         </Label>
         <Input
@@ -25,7 +25,7 @@ const EmailLoginForm = ({ emailForm, onEmailSubmit }: EmailLoginFormProps) => {
           placeholder="example@mail.com"
         />
         {emailForm.formState.errors.identifier && (
-          <p className="text-xs text-red-500 mt-1">
+          <p className="text-xs text-destructive mt-1">
             {emailForm.formState.errors.identifier.message}
           </p>
         )}
@@ -33,12 +33,12 @@ const EmailLoginForm = ({ emailForm, onEmailSubmit }: EmailLoginFormProps) => {
 
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password" className="text-gray-700">
+          <Label htmlFor="password" className="text-foreground">
             رمز عبور
           </Label>
           <Link
             href="/forgot-password"
-            className="text-xs text-violet-600 hover:underline font-medium"
+            className="text-xs text-primary hover:underline font-medium"
           >
             فراموشی رمز؟
           </Link>
@@ -50,14 +50,16 @@ const EmailLoginForm = ({ emailForm, onEmailSubmit }: EmailLoginFormProps) => {
           className={inputClass}
         />
         {emailForm.formState.errors.password && (
-          <p className="text-xs text-red-500 mt-1">{emailForm.formState.errors.password.message}</p>
+          <p className="text-xs text-destructive mt-1">
+            {emailForm.formState.errors.password.message}
+          </p>
         )}
       </div>
 
       <Button
         type="submit"
         size="lg"
-        className="w-full h-12 text-base cursor-pointer text-white shadow-lg rounded-sm"
+        className="w-full h-12 text-base font-bold cursor-pointer rounded-lg"
         disabled={emailForm.formState.isSubmitting}
       >
         {emailForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}

@@ -121,12 +121,14 @@ class ListingService {
     }
 
     if (query.userId) {
-      where = { userId: query.userId };
+      where = { ...where, userId: query.userId };
+
       if (query.status) {
         where = { ...where, status: query.status };
+      } else {
+        delete (where as Record<string, unknown>).status;
       }
     } else {
-      where = { status: ListingStatus.ACTIVE };
       if (query.status) {
         where = { ...where, status: query.status };
       }

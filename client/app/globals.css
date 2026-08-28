@@ -1,93 +1,184 @@
 @import "tailwindcss";
+
 @import "tw-animate-css";
 
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* =========================
+   Light Theme
+========================= */
+
 :root {
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
+  /* Base */
+  --background: 210 40% 98%; /* #F8FAFC */
+  --foreground: 220 29% 28%; /* #33415C */
 
+  /* Card */
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --card-foreground: 220 29% 28%;
 
+  /* Popover */
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
+  --popover-foreground: 220 29% 28%;
 
-  --primary: 265 80% 55%;
+  /* =========================
+     Primary
+     #0466C8
+  ========================= */
+
+  --primary: 210 96% 40%; /* #0466C8 */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222 47% 11%;
+  /* =========================
+     Secondary
+     Light Blue Background
+  ========================= */
 
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215 16% 47%;
+  --secondary: 213 48% 95%;
+  --secondary-foreground: 214 61% 31%; /* #1F487E */
 
-  --accent: 195 90% 45%;
-  --accent-foreground: 0 0% 100%;
+  /* =========================
+     Muted
+  ========================= */
 
-  --destructive: 335 80% 55%;
+  --muted: 210 40% 96%; /* #F1F5F9 */
+  --muted-foreground: 220 15% 43%; /* #5C677D */
+
+  /* =========================
+     Accent
+     Complementary Blue
+  ========================= */
+
+  --accent: 213 48% 90%;
+  --accent-foreground: 211 97% 25%; /* #023E7D */
+
+  /* =========================
+     Destructive
+  ========================= */
+
+  --destructive: 0 72% 51%; /* #DC2626 */
   --destructive-foreground: 0 0% 100%;
 
-  --border: 214 32% 91%;
+  /* =========================
+     Borders / Inputs
+  ========================= */
+
+  --border: 214 32% 91%; /* #E2E8F0 */
   --input: 214 32% 91%;
-  --ring: 265 80% 55%;
+
+  /* Focus */
+  --ring: 210 96% 40%; /* #0466C8 */
 
   --radius: 0.75rem;
 }
 
-.dark {
-  --background: 222 47% 6%;
-  --foreground: 210 40% 98%;
+/* =========================
+   Dark Theme
+========================= */
 
-  --card: 222 47% 8%;
+.dark {
+  /* Base */
+  --background: 219 100% 10%; /* #001233 */
+  --foreground: 210 40% 98%; /* #F8FAFC */
+
+  /* Card */
+  --card: 219 100% 14%; /* #001845 */
   --card-foreground: 210 40% 98%;
 
-  --popover: 222 47% 8%;
+  /* Popover */
+  --popover: 219 100% 14%;
   --popover-foreground: 210 40% 98%;
 
-  --primary: 265 80% 65%;
-  --primary-foreground: 222 47% 6%;
+  /* =========================
+     Primary
+  ========================= */
 
-  --secondary: 217 33% 17%;
+  --primary: 210 96% 50%;
+  --primary-foreground: 219 100% 10%;
+
+  /* =========================
+     Secondary
+  ========================= */
+
+  --secondary: 220 54% 25%; /* #1D3461 */
   --secondary-foreground: 210 40% 98%;
 
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
+  /* =========================
+     Muted
+  ========================= */
 
-  --accent: 195 90% 55%;
-  --accent-foreground: 222 47% 6%;
+  --muted: 212 100% 17%; /* #002855 */
+  --muted-foreground: 223 11% 63%; /* #979DAC */
 
-  --destructive: 335 80% 60%;
-  --destructive-foreground: 222 47% 6%;
+  /* =========================
+     Accent
+  ========================= */
 
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --ring: 265 80% 65%;
+  --accent: 214 61% 31%; /* #1F487E */
+  --accent-foreground: 210 40% 98%;
+
+  /* =========================
+     Destructive
+  ========================= */
+
+  --destructive: 0 72% 55%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* =========================
+     Borders / Inputs
+  ========================= */
+
+  --border: 220 54% 25%; /* #1D3461 */
+  --input: 220 54% 25%;
+
+  /* Focus */
+  --ring: 210 96% 50%;
 }
+
+/* =========================
+   Tailwind Theme Mapping
+========================= */
 
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
+
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
+
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
+
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
+
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+
+/* =========================
+   Base Styles
+========================= */
 
 body {
   background-color: hsl(var(--background));
@@ -95,16 +186,22 @@ body {
   font-family: var(--font-iransans), sans-serif;
 }
 
+/* =========================
+   Animations
+========================= */
+
 @keyframes slide-up-fade {
   from {
     opacity: 0;
     transform: translateY(20px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
+
 .animate-slide-up {
   animation: slide-up-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -113,13 +210,16 @@ body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
 }
+
 .animate-gradient-bg {
   background-size: 200% 200%;
   animation: gradient-shift 10s ease infinite;
@@ -131,11 +231,13 @@ body {
     opacity: 0.6;
     transform: scale(1);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.05);
   }
 }
+
 .animate-pulse-slow {
   animation: pulse-slow 4s ease-in-out infinite;
 }
@@ -145,10 +247,12 @@ body {
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
 }
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -157,10 +261,12 @@ body {
   animation-delay: 0.2s;
   opacity: 0;
 }
+
 .animate-delay-400 {
   animation-delay: 0.4s;
   opacity: 0;
 }
+
 .animate-delay-600 {
   animation-delay: 0.6s;
   opacity: 0;

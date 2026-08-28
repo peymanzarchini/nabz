@@ -18,24 +18,24 @@ const RegisterStep2 = ({
   return (
     <form onSubmit={verifyForm.handleSubmit(onVerifySubmit)} className="space-y-6">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-16 h-16 bg-violet-50 rounded-full flex items-center justify-center text-violet-600">
+        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
           <MailCheck className="h-8 w-8" />
         </div>
 
         {isTimerActive ? (
           <div className="text-center">
-            <p className="text-sm text-gray-500">زمان باقی‌مانده تا انقضای کد:</p>
-            <p className="text-2xl font-black text-gray-900 mt-1 tracking-wider" dir="ltr">
+            <p className="text-sm text-muted-foreground">زمان باقی‌مانده تا انقضای کد:</p>
+            <p className="text-2xl font-black text-foreground mt-1 tracking-wider" dir="ltr">
               {formatTime(timeLeft)}
             </p>
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-sm text-red-500 font-medium">کد تایید منقضی شده است!</p>
+            <p className="text-sm text-destructive font-medium">کد تایید منقضی شده است!</p>
             <button
               type="button"
               onClick={handleResendCode}
-              className="text-sm text-violet-600 font-bold hover:underline mt-2 cursor-pointer"
+              className="text-sm text-primary font-bold hover:underline mt-2 cursor-pointer"
             >
               ارسال مجدد کد
             </button>
@@ -44,7 +44,7 @@ const RegisterStep2 = ({
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor="code" className="text-center block text-gray-700">
+        <Label htmlFor="code" className="text-center block text-foreground">
           کد ۶ رقمی تایید
         </Label>
         <Input
@@ -53,11 +53,11 @@ const RegisterStep2 = ({
           dir="ltr"
           maxLength={6}
           placeholder="- - - - - -"
-          className="mt-1.5 h-12 text-center text-2xl font-bold tracking-[1em] bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-gray-50 rounded-sm"
+          className="mt-1.5 h-12 text-center text-2xl font-bold tracking-[1em] bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-lg"
           {...verifyForm.register("code")}
         />
         {verifyForm.formState.errors.code && (
-          <p className="text-xs text-red-500 mt-1 text-center">
+          <p className="text-xs text-destructive mt-1 text-center">
             {verifyForm.formState.errors.code.message}
           </p>
         )}
@@ -66,7 +66,7 @@ const RegisterStep2 = ({
       <Button
         type="submit"
         size="lg"
-        className="w-full max-w-50 flex justify-center! mx-auto h-12 text-base text-white shadow-lg cursor-pointer rounded-sm"
+        className="w-full h-12 text-base font-bold cursor-pointer rounded-lg"
         disabled={verifyForm.formState.isSubmitting || !isTimerActive}
       >
         {verifyForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
@@ -76,7 +76,7 @@ const RegisterStep2 = ({
       <button
         type="button"
         onClick={onBack}
-        className="w-full text-center text-sm text-gray-500 hover:text-gray-900 transition-colors mt-2 cursor-pointer"
+        className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors mt-2 cursor-pointer"
       >
         بازگشت به مرحله قبل
       </button>
