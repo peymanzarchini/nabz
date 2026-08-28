@@ -1,28 +1,38 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const CtaSection = () => {
   return (
-    <section className="py-20 px-4 relative overflow-hidden">
-      <div className="max-w-4xl mx-auto relative rounded-sm p-10 md:p-16 text-center shadow-2xl animate-slide-up overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-r from-primary via-purple-600 to-accent animate-gradient-bg z-0"></div>
-
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm z-0"></div>
-
-        <div className="relative z-10 space-y-6">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+    <section className="py-16 px-4">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-card border border-border rounded-2xl p-8 md:p-12 shadow-sm flex flex-col items-center text-center gap-5">
+          <h2 className="text-2xl md:text-3xl font-black text-foreground">
             همین امروز به نبض بپیوندید!
           </h2>
-          <p className="text-white/90 mb-8 text-lg max-w-xl mx-auto">
-            از هزاران آگهی، حمل‌ونقل سریع و خدمات بی‌نظیر بهره‌مند شوید. ثبت‌نام رایگان است!
+
+          <p className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed">
+            از بازارچه‌ای با هزاران آگهی، حمل‌ونقل سریع و خدمات بی‌نظیر بهره‌مند شوید. ثبت‌نام
+            رایگان است!
           </p>
 
-          <Link href="/register">
-            <button className="bg-white text-primary hover:bg-white/90 font-bold shadow-xl transition-transform hover:scale-105 px-10 py-4 rounded-sm text-lg cursor-pointer group flex items-center gap-2 mx-auto">
-              ثبت‌نام رایگان
-              <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-            </button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 mt-2">
+            <Button asChild size="lg" className="h-12 px-8 text-base cursor-pointer rounded-lg">
+              <Link href="/register">
+                ثبت‌نام رایگان
+                <ArrowLeft className="mr-2 h-5 w-5" />
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="h-12 px-8 text-base cursor-pointer rounded-lg"
+            >
+              <Link href="/listings">مشاهده آگهی‌ها</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </section>

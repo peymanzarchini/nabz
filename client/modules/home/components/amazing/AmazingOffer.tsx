@@ -29,13 +29,11 @@ const AmazingOffersSection = () => {
   }, [isError, error]);
 
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-primary/10 via-accent/5 to-background dark:from-primary/20 dark:via-accent/10 dark:to-background"></div>
-
+    <section className="py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4 animate-slide-up">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <Zap className="h-6 w-6" />
             </div>
             <div>
@@ -48,41 +46,43 @@ const AmazingOffersSection = () => {
             </div>
           </div>
 
-          <Link href="/listings?isAmazingOffer=true">
-            <Button
-              variant="outline"
-              className="border-primary/30 hover:bg-primary/10 rounded-sm group cursor-pointer"
-            >
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="rounded-sm cursor-pointer font-semibold"
+          >
+            <Link href="/listings?isAmazingOffer=true">
               مشاهده همه
-              <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            </Button>
-          </Link>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+            </Link>
+          </Button>
         </div>
 
         {isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="bg-white/50 dark:bg-gray-900/50 rounded-2xl h-72 animate-pulse"
+                className="bg-card border border-border rounded-2xl h-72 animate-pulse"
               ></div>
             ))}
           </div>
         )}
 
         {!isLoading && (isError || !offers || offers.length === 0) && (
-          <div className="text-center py-16 bg-white/30 dark:bg-gray-900/30 backdrop-blur-sm rounded-2xl border border-border/30">
+          <div className="text-center py-16 bg-card border border-border rounded-2xl flex flex-col items-center justify-center">
             <div className="flex justify-center mb-4">
               {isError ? (
                 <AlertCircle className="h-12 w-12 text-destructive" />
               ) : (
-                <Percent className="h-12 w-12 text-muted-foreground" />
+                <Percent className="h-12 w-12 text-muted-foreground/50" />
               )}
             </div>
             <p className="text-foreground font-bold text-lg mb-1">
               {isError ? "خطا در بارگذاری اطلاعات" : "فعلاً پیشنهاد ویژه‌ای نداریم"}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">
               {isError
                 ? "لطفاً کمی بعد دوباره تلاش کنید."
                 : "به زودی تخفیف‌های استثنایی به این بخش اضافه خواهند شد."}

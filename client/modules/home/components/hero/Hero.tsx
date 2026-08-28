@@ -19,7 +19,8 @@ const HeroSection = () => {
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-normal text-foreground leading-tight">
             <span className="whitespace-nowrap">هر کاری داری،</span>
             <br className="hidden md:block" />
-            <span className="bg-linear-to-l from-primary via-purple-500 to-accent bg-clip-text text-transparent whitespace-nowrap">
+            {/* ✅ گرادیانت متن با پالت آبی جدید */}
+            <span className="bg-linear-to-l from-primary to-secondary-foreground bg-clip-text text-transparent whitespace-nowrap">
               یه نبض کافیه!
             </span>
           </h1>
@@ -30,20 +31,21 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Link href="/register">
+            <Link href="/register" className="w-full sm:w-auto">
               <Button
-                size="default"
-                className="w-full sm:w-auto text-base px-8 py-6 bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0 rounded-sm"
+                size="lg"
+                className="w-full text-base h-12 transition-all hover:scale-105 group cursor-pointer rounded-sm"
               >
                 شروع کنید
                 <ArrowLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
               </Button>
             </Link>
-            <Link href="/listings">
+
+            <Link href="/listings" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto text-base px-8 py-6 border-primary/30 hover:bg-primary/10 backdrop-blur-sm rounded-sm cursor-pointer bg-white/40 dark:bg-gray-900/40 hover:border-primary/60 transition-all"
+                className="w-full text-base h-12 border-primary/30 hover:bg-primary/10 backdrop-blur-sm rounded-sm cursor-pointer bg-white/40 dark:bg-gray-900/40 hover:border-primary/60 transition-all"
               >
                 مشاهده آگهی‌ها
               </Button>

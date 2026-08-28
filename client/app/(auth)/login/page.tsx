@@ -11,10 +11,10 @@ const LoginPage = () => {
   const form = useLoginForm();
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-sm p-8 shadow-2xl shadow-black/10">
+    <div className="w-full max-w-md mx-auto bg-card border border-border rounded-2xl p-8 shadow-xl">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-black text-gray-900">ورود به نبض</h1>
-        <p className="text-sm text-gray-500 mt-2">به حساب کاربری خود وارد شوید</p>
+        <h1 className="text-2xl font-black text-foreground">ورود به نبض</h1>
+        <p className="text-sm text-muted-foreground mt-2">به حساب کاربری خود وارد شوید</p>
       </div>
 
       <LoginTabs loginMethod={form.loginMethod} switchMethod={form.switchMethod} />
@@ -40,9 +40,9 @@ const LoginPage = () => {
         />
       )}
 
-      <p className="text-center text-sm text-gray-600 mt-6">
+      <p className="text-center text-sm text-muted-foreground mt-6">
         حساب کاربری ندارید؟{" "}
-        <Link href="/register" className="text-violet-600 font-medium hover:underline">
+        <Link href="/register" className="text-primary font-medium hover:underline">
           ثبت‌نام کنید
         </Link>
       </p>
