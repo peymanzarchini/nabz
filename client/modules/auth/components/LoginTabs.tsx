@@ -7,11 +7,11 @@ interface LoginTabsProps {
 
 const LoginTabs = ({ loginMethod, switchMethod }: LoginTabsProps) => {
   return (
-    <div className="flex bg-muted/50 rounded-lg p-1 mb-6">
+    <div className="flex bg-muted/50 rounded-sm p-1 mb-6">
       <button
         type="button"
         onClick={() => switchMethod("email")}
-        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-md cursor-pointer text-sm font-medium transition-all ${
+        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-sm cursor-pointer text-sm font-medium transition-all ${
           loginMethod === "email"
             ? "bg-card text-primary shadow-sm"
             : "text-muted-foreground hover:text-foreground"

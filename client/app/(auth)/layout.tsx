@@ -2,19 +2,29 @@ import Logo from "@/components/ui/Logo";
 
 const AuthLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 px-4 py-8 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 dark:bg-accent/10 rounded-full blur-3xl"></div>
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-8 overflow-hidden bg-background">
+      <div className="absolute inset-0 -z-10 bg-linear-to-b from-background via-background to-muted/30"></div>
+
+      <div className="absolute top-[-10%] right-[-10%] w-160 h-160 rounded-full bg-primary/10 dark:bg-primary/20 blur-[120px] -z-10 animate-pulse-slow"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-160 h-160 rounded-full bg-accent/10 dark:bg-accent/20 blur-[120px] -z-10 animate-pulse-slow"></div>
+
+      <div
+        className="absolute inset-0 -z-10 opacity-[0.02] dark:opacity-[0.05]"
+        style={{
+          backgroundImage: "radial-gradient(hsl(var(--foreground)) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      ></div>
 
       <div className="w-full max-w-xl z-10 space-y-5">
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-2">
           <Logo width={90} height={90} />
         </div>
 
         {children}
 
-        <p className="text-center text-zinc-400 dark:text-zinc-500 text-xs mt-8">
-          8 © {new Date().getFullYear()} نبض. تمامی حقوق محفوظ است.
+        <p className="text-center text-muted-foreground text-xs mt-8">
+          © {new Date().getFullYear()} نبض. تمامی حقوق محفوظ است.
         </p>
       </div>
     </div>

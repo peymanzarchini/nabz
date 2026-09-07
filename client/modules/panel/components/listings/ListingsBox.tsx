@@ -19,7 +19,7 @@ const ListingsBox = ({
   handleDeleteConfirm,
 }: ListingsBoxProps) => {
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-sm shadow-sm border border-zinc-100 dark:border-zinc-800 overflow-hidden">
+    <div className="bg-card rounded-sm shadow-sm border border-border overflow-hidden">
       {isLoading ? (
         <div className="flex justify-center items-center h-40">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -27,18 +27,14 @@ const ListingsBox = ({
       ) : filteredListings && filteredListings.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full text-right">
-            <thead className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-100 dark:border-zinc-800">
+            <thead className="bg-muted/40 border-b border-border">
               <tr>
-                <th className="p-4 text-sm font-bold text-zinc-600 dark:text-zinc-300">
-                  تصویر و عنوان
-                </th>
-                <th className="p-4 text-sm font-bold text-zinc-600 dark:text-zinc-300 hidden md:table-cell">
+                <th className="p-4 text-sm font-bold text-muted-foreground">تصویر و عنوان</th>
+                <th className="p-4 text-sm font-bold text-muted-foreground hidden md:table-cell">
                   قیمت
                 </th>
-                <th className="p-4 text-sm font-bold text-zinc-600 dark:text-zinc-300">وضعیت</th>
-                <th className="p-4 text-sm font-bold text-zinc-600 dark:text-zinc-300 text-left">
-                  عملیات
-                </th>
+                <th className="p-4 text-sm font-bold text-muted-foreground">وضعیت</th>
+                <th className="p-4 text-sm font-bold text-muted-foreground text-left">عملیات</th>
               </tr>
             </thead>
             <tbody>
@@ -47,11 +43,11 @@ const ListingsBox = ({
                 return (
                   <tr
                     key={listing.id}
-                    className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/30"
+                    className="border-b border-border hover:bg-muted/20 transition-colors"
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
+                        <div className="w-14 h-14 rounded-sm bg-muted overflow-hidden shrink-0">
                           {listing.thumbnail && (
                             <Image
                               src={`http://localhost:5000${listing.thumbnail}`}
@@ -64,10 +60,10 @@ const ListingsBox = ({
                           )}
                         </div>
                         <div className="max-w-50 sm:max-w-xs">
-                          <p className="text-sm font-bold text-zinc-800 dark:text-zinc-100 truncate">
+                          <p className="text-sm font-bold text-foreground truncate">
                             {listing.title}
                           </p>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 md:hidden">
+                          <p className="text-xs text-muted-foreground mt-1 md:hidden">
                             {listing.minPrice > 0
                               ? Number(listing.minPrice).toLocaleString("fa-IR") + " ت"
                               : "توافقی"}
@@ -76,7 +72,7 @@ const ListingsBox = ({
                       </div>
                     </td>
                     <td className="p-4 hidden md:table-cell">
-                      <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                      <span className="text-sm font-medium text-foreground">
                         {listing.minPrice > 0
                           ? Number(listing.minPrice).toLocaleString("fa-IR") + " تومان"
                           : "توافقی"}
@@ -84,7 +80,7 @@ const ListingsBox = ({
                     </td>
                     <td className="p-4">
                       <span
-                        className={`text-xs font-bold px-3 py-1.5 rounded-full ${statusInfo.color}`}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-sm ${statusInfo.color}`}
                       >
                         {statusInfo.label}
                       </span>
@@ -95,19 +91,19 @@ const ListingsBox = ({
                           href={`/listings/${listing.category?.slug || "unknown"}/${listing.slug}`}
                           target="_blank"
                         >
-                          <button className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer">
+                          <button className="p-2 text-primary hover:bg-primary/10 rounded-sm transition-colors cursor-pointer">
                             <Eye className="h-4 w-4" />
                           </button>
                         </Link>
                         <Link href={`/dashboard/edit-listing/${listing.id}`}>
-                          <button className="p-2 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition-colors cursor-pointer">
+                          <button className="p-2 text-muted-foreground hover:bg-muted rounded-sm transition-colors cursor-pointer">
                             <Pencil className="h-4 w-4" />
                           </button>
                         </Link>
                         <button
                           onClick={handleDeleteConfirm}
                           disabled={isDeleting}
-                          className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                          className="p-2 text-destructive hover:bg-destructive/10 rounded-sm transition-colors disabled:opacity-50 cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -121,18 +117,14 @@ const ListingsBox = ({
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <PackageSearch className="h-16 w-16 text-zinc-300 dark:text-zinc-700 mb-4" />
-          <p className="text-lg font-bold text-zinc-800 dark:text-white mb-2">
-            هنوز آگهی ثبت نکرده‌اید
-          </p>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+          <PackageSearch className="h-16 w-16 text-muted-foreground/50 mb-4" />
+          <p className="text-lg font-bold text-foreground mb-2">هنوز آگهی ثبت نکرده‌اید</p>
+          <p className="text-sm text-muted-foreground mb-6">
             برای شروع فروش، اولین آگهی خود را ایجاد کنید.
           </p>
-          <Link href="/dashboard/create-listing">
-            <Button className="bg-linear-to-r from-violet-600 to-teal-500 text-white py-5 rounded-sm cursor-pointer">
-              ثبت اولین آگهی
-            </Button>
-          </Link>
+          <Button asChild className="py-5 rounded-sm cursor-pointer">
+            <Link href="/dashboard/create-listing">ثبت اولین آگهی</Link>
+          </Button>
         </div>
       )}
     </div>

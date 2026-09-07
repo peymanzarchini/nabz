@@ -32,7 +32,7 @@ const SendOtpForm = ({ phoneForm, onSendOtpSubmit }: SendOtpFormProps) => {
       <Button
         type="submit"
         size="lg"
-        className="w-full h-12 text-base font-bold cursor-pointer rounded-lg"
+        className="w-full h-12 text-base font-bold cursor-pointer rounded-sm mt-5"
         disabled={phoneForm.formState.isSubmitting}
       >
         {phoneForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}

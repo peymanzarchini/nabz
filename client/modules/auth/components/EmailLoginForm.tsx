@@ -8,7 +8,7 @@ import { EmailLoginFormProps } from "../types";
 
 const EmailLoginForm = ({ emailForm, onEmailSubmit }: EmailLoginFormProps) => {
   const inputClass =
-    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-lg placeholder:text-muted-foreground/60";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm placeholder:text-muted-foreground/60";
 
   return (
     <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
@@ -59,7 +59,7 @@ const EmailLoginForm = ({ emailForm, onEmailSubmit }: EmailLoginFormProps) => {
       <Button
         type="submit"
         size="lg"
-        className="w-full h-12 text-base font-bold cursor-pointer rounded-lg"
+        className="w-full h-12 text-base font-bold cursor-pointer rounded-sm mt-5"
         disabled={emailForm.formState.isSubmitting}
       >
         {emailForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}

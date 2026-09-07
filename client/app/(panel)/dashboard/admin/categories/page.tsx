@@ -68,11 +68,8 @@ const AdminCategoriesPage = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-black text-zinc-800 dark:text-white">مدیریت دسته‌بندی‌ها</h1>
-        <Button
-          onClick={openCreateModal}
-          className="bg-linear-to-r from-violet-600 to-teal-500 text-white py-4 rounded-sm cursor-pointer"
-        >
+        <h1 className="text-2xl font-black text-foreground">مدیریت دسته‌بندی‌ها</h1>
+        <Button onClick={openCreateModal} size="lg" className="rounded-sm cursor-pointer">
           <PlusCircle className="h-4 w-4 ml-2" />
           افزودن دسته جدید
         </Button>

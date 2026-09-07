@@ -29,52 +29,77 @@ import {
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
 import bcrypt from "bcrypt";
+import { sequelize } from "@/config/database.js";
 
 class AuthService {
   async register(data: RegisterInput): Promise<{ message: string }> {
-    const existingUser = await Auth.findOne({ where: { email: data.email } });
-
-    if (existingUser && existingUser.isVerified) {
+    const existingUserByEmail = await Auth.findOne({ where: { email: data.email } });
+    if (existingUserByEmail && existingUserByEmail.isVerified) {
       throw HttpError.conflict("این ایمیل قبلاً تایید شده و فعال است.");
+    }
+
+    const existingUserByPhone = await Auth.findOne({ where: { phoneNumber: data.phoneNumber } });
+    if (
+      existingUserByPhone &&
+      existingUserByPhone.email !== data.email &&
+      existingUserByPhone.isVerified
+    ) {
+      throw HttpError.conflict("این شماره موبایل قبلاً ثبت و تایید شده است. لطفاً وارد شوید.");
     }
 
     const otpCode: string = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt: Date = new Date(Date.now() + 2 * 60 * 1000);
 
-    const otpRecord = await Otp.findOne({ where: { email: data.email } });
-    if (otpRecord) {
-      await otpRecord.update({
-        code: otpCode,
-        expiresAt,
-        attempts: 1,
-      });
-    } else {
-      await Otp.create({ email: data.email, code: otpCode, expiresAt, attempts: 1 });
-    }
-
-    if (existingUser) {
-      await existingUser.update({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        password: data.password,
-        phoneNumber: data.phoneNumber,
-        status: UserStatus.PENDING,
-      });
-    } else {
-      await Auth.create({
-        ...data,
-        status: UserStatus.PENDING,
-        isVerified: false,
-      });
-    }
-
     try {
-      await sendVerificationEmail(data.email, otpCode);
-    } catch (emailError) {
-      console.log(emailError);
-      throw HttpError.serviceUnavailable(
-        "سرویس ایمیل در حال حاضر در دسترس نیست. لطفاً چند دقیقه دیگر تلاش کنید.",
-      );
+      await sequelize.transaction(async (t) => {
+        const otpRecord = await Otp.findOne({ where: { email: data.email }, transaction: t });
+        if (otpRecord) {
+          await otpRecord.update({ code: otpCode, expiresAt, attempts: 1 }, { transaction: t });
+        } else {
+          await Otp.create(
+            { email: data.email, code: otpCode, expiresAt, attempts: 1 },
+            { transaction: t },
+          );
+        }
+
+        if (existingUserByEmail) {
+          await existingUserByEmail.update(
+            {
+              firstName: data.firstName,
+              lastName: data.lastName,
+              password: data.password,
+              phoneNumber: data.phoneNumber,
+              status: UserStatus.PENDING,
+            },
+            { transaction: t },
+          );
+        } else if (existingUserByPhone) {
+          await existingUserByPhone.update(
+            {
+              firstName: data.firstName,
+              lastName: data.lastName,
+              email: data.email,
+              password: data.password,
+              status: UserStatus.PENDING,
+            },
+            { transaction: t },
+          );
+        } else {
+          await Auth.create(
+            { ...data, status: UserStatus.PENDING, isVerified: false },
+            { transaction: t },
+          );
+        }
+
+        await sendVerificationEmail(data.email, otpCode);
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message === "Failed to send email") {
+        throw HttpError.serviceUnavailable(
+          "سرویس ایمیل در حال حاضر در دسترس نیست. لطفاً چند دقیقه دیگر تلاش کنید.",
+        );
+      }
+      throw error;
     }
 
     return { message: "کد تایید با موفقیت به ایمیل شما ارسال شد." };

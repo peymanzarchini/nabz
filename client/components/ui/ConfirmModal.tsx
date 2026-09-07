@@ -30,12 +30,12 @@ export default function ConfirmModal({
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white dark:bg-zinc-900 rounded-sm shadow-2xl w-full max-w-md p-6 animate-slide-up">
+      <div className="relative bg-card rounded-sm shadow-2xl w-full max-w-md p-6 animate-slide-up border border-border">
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+          className="absolute top-4 left-4 text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
@@ -43,36 +43,31 @@ export default function ConfirmModal({
         <div className="flex flex-col items-center text-center">
           <div
             className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
-              variant === "danger"
-                ? "bg-red-100 dark:bg-red-500/10"
-                : "bg-green-100 dark:bg-green-500/10"
+              variant === "danger" ? "bg-destructive/10" : "bg-emerald-500/10"
             }`}
           >
             {variant === "danger" ? (
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <AlertTriangle className="h-8 w-8 text-destructive" />
             ) : (
-              <CheckCircle2 className="h-8 w-8 text-green-500" />
+              <CheckCircle2 className="h-8 w-8 text-emerald-500" />
             )}
           </div>
 
-          <h2 className="text-xl font-bold text-zinc-800 dark:text-white mb-2">{title}</h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6 leading-6">{message}</p>
+          <h2 className="text-xl font-bold text-foreground mb-2">{title}</h2>
+          <p className="text-sm text-muted-foreground mb-6 leading-6">{message}</p>
 
           <div className="flex gap-3 w-full">
             <Button
               variant="outline"
-              className="flex-1 h-11 rounded-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 cursor-pointer"
+              className="flex-1 h-11 rounded-sm cursor-pointer"
               onClick={onClose}
               disabled={isLoading}
             >
               انصراف
             </Button>
             <Button
-              className={`flex-1 h-11 rounded-sm cursor-pointer text-white ${
-                variant === "danger"
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-600 hover:bg-green-700"
-              } ${confirmButtonClass}`}
+              variant={variant === "danger" ? "destructive" : "default"}
+              className={`flex-1 h-11 rounded-sm cursor-pointer ${confirmButtonClass}`}
               onClick={onConfirm}
               disabled={isLoading}
             >

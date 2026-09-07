@@ -14,37 +14,37 @@ interface Props {
 
 const BasicInfoForm = ({ register, errors, isNegotiable, setValue }: Props) => {
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm placeholder:text-muted-foreground/60";
 
   return (
     <section className="space-y-4">
-      <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
+      <h2 className="text-lg font-bold text-foreground border-b border-border pb-2">
         اطلاعات اصلی
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label className="text-zinc-700 dark:text-zinc-200">عنوان آگهی *</Label>
+          <Label className="text-foreground">عنوان آگهی *</Label>
           <Input {...register("title", { required: "عنوان الزامی است" })} className={inputClass} />
-          {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
+          {errors.title && <p className="text-xs text-destructive mt-1">{errors.title.message}</p>}
         </div>
         <div>
-          <Label className="text-zinc-700 dark:text-zinc-200">وضعیت کالا *</Label>
+          <Label className="text-foreground">وضعیت کالا *</Label>
           <div className="flex gap-4 mt-4">
-            <label className="flex items-center gap-2 cursor-pointer text-zinc-600 dark:text-zinc-300">
+            <label className="flex items-center gap-2 cursor-pointer text-muted-foreground">
               <input
                 type="radio"
                 value="new"
                 {...register("condition")}
-                className="accent-violet-600"
+                className="accent-primary"
               />{" "}
               نو
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-zinc-600 dark:text-zinc-300">
+            <label className="flex items-center gap-2 cursor-pointer text-muted-foreground">
               <input
                 type="radio"
                 value="used"
                 {...register("condition")}
-                className="accent-violet-600"
+                className="accent-primary"
               />{" "}
               دست دوم
             </label>
@@ -52,14 +52,14 @@ const BasicInfoForm = ({ register, errors, isNegotiable, setValue }: Props) => {
         </div>
       </div>
       <div>
-        <Label className="text-zinc-700 dark:text-zinc-200">توضیحات *</Label>
+        <Label className="text-foreground">توضیحات *</Label>
         <Textarea
           {...register("description", { required: "توضیحات الزامی است" })}
           className={inputClass}
-          rows={5}
+          rows={3}
         />
         {errors.description && (
-          <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
+          <p className="text-xs text-destructive mt-1">{errors.description.message}</p>
         )}
       </div>
       <div className="flex items-center gap-3 pt-2">
@@ -68,7 +68,7 @@ const BasicInfoForm = ({ register, errors, isNegotiable, setValue }: Props) => {
           checked={isNegotiable}
           onCheckedChange={(checked) => setValue("isNegotiable", checked)}
         />
-        <Label htmlFor="isNegotiable" className="text-zinc-700 dark:text-zinc-200 cursor-pointer">
+        <Label htmlFor="isNegotiable" className="text-foreground cursor-pointer">
           قیمت توافقی است
         </Label>
       </div>

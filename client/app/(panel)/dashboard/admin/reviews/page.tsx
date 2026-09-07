@@ -24,7 +24,7 @@ const AdminReviewsPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-zinc-800 dark:text-white mb-6">مدیریت دیدگاه‌ها</h1>
+      <h1 className="text-2xl font-black text-foreground mb-6">مدیریت دیدگاه‌ها</h1>
 
       <AdminReviewsTable
         isLoading={isLoading}
