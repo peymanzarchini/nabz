@@ -7,7 +7,7 @@ import { formatPriceInput, numberToPersianWords, parsePriceInput } from "@/utils
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import DateObject from "react-date-object"; // این خط اضافه شود
+import DateObject from "react-date-object";
 
 interface Props {
   variantSpecsSchema: SpecsSchema;
@@ -29,12 +29,12 @@ const VariantsForm = ({
   removeVariant,
 }: Props) => {
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm placeholder:text-muted-foreground/60";
   const selectClass = inputClass + " w-full px-3 appearance-none cursor-pointer";
 
   return (
     <section className="space-y-4">
-      <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
+      <h2 className="text-lg font-bold text-foreground border-b border-border pb-2">
         واریانت‌ها و قیمت‌ها
       </h2>
 
@@ -43,15 +43,15 @@ const VariantsForm = ({
           {variants.map((v) => (
             <div
               key={v.id}
-              className="flex items-center justify-between bg-gray-50 dark:bg-zinc-800 p-3 rounded-lg border border-gray-100 dark:border-zinc-700"
+              className="flex items-center justify-between bg-muted/40 p-3 rounded-sm border border-border"
             >
-              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">
+              <span className="text-sm font-medium text-foreground">
                 {Object.values(v.specs).join(" / ") || "نوع اصلی"} -
-                <span className="text-violet-600 dark:text-violet-400 font-bold mr-1">
+                <span className="text-primary font-bold mr-1">
                   {v.price.toLocaleString("fa-IR")} تومان
                 </span>
                 {v.discountPercentage > 0 && (
-                  <span className="text-xs text-red-500 mr-2">
+                  <span className="text-xs text-destructive mr-2">
                     (با {v.discountPercentage}% تخفیف تا{" "}
                     {v.discountExpiry
                       ? new Date(v.discountExpiry).toLocaleDateString("fa-IR")
@@ -63,7 +63,7 @@ const VariantsForm = ({
               <button
                 type="button"
                 onClick={() => removeVariant(v.id)}
-                className="text-red-500 hover:text-red-600"
+                className="text-destructive hover:text-destructive/80"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -72,11 +72,11 @@ const VariantsForm = ({
         </div>
       )}
 
-      <div className="border border-gray-200 dark:border-zinc-700 rounded-xl p-4 space-y-3">
+      <div className="border border-border rounded-sm p-4 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {Object.entries(variantSpecsSchema).map(([key, schema]: [string, SpecFieldSchema]) => (
             <div key={key}>
-              <Label className="text-xs text-zinc-600 dark:text-zinc-300">{schema.label}</Label>
+              <Label className="text-xs text-muted-foreground">{schema.label}</Label>
               <select
                 className={selectClass + " text-sm h-10"}
                 value={(currentVariant.specs[key] as string) || ""}
@@ -93,7 +93,7 @@ const VariantsForm = ({
           ))}
 
           <div>
-            <Label className="text-xs text-zinc-600 dark:text-zinc-300">قیمت پایه (تومان) *</Label>
+            <Label className="text-xs text-muted-foreground">قیمت پایه (تومان) *</Label>
             <Input
               type="text"
               inputMode="numeric"
@@ -105,13 +105,13 @@ const VariantsForm = ({
               }
             />
             {currentVariant.price > 0 && (
-              <p className="text-xs text-violet-600 dark:text-violet-400 mt-1 font-medium">
+              <p className="text-xs text-primary mt-1 font-medium">
                 {numberToPersianWords(currentVariant.price)} تومان
               </p>
             )}
           </div>
           <div>
-            <Label className="text-xs text-zinc-600 dark:text-zinc-300">موجودی *</Label>
+            <Label className="text-xs text-muted-foreground">موجودی *</Label>
             <Input
               type="number"
               className={inputClass + " text-sm h-10"}
@@ -123,11 +123,9 @@ const VariantsForm = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-zinc-100 dark:border-zinc-700 mt-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-border mt-3">
           <div>
-            <Label className="text-xs text-zinc-600 dark:text-zinc-300">
-              درصد تخفیف (۰ تا ۱۰۰)
-            </Label>
+            <Label className="text-xs text-muted-foreground">درصد تخفیف (۰ تا ۱۰۰)</Label>
             <Input
               type="number"
               min={0}
@@ -144,7 +142,7 @@ const VariantsForm = ({
             />
           </div>
           <div>
-            <Label className="text-xs text-zinc-600 dark:text-zinc-300">تاریخ پایان تخفیف</Label>
+            <Label className="text-xs text-muted-foreground">تاریخ پایان تخفیف</Label>
 
             <DatePicker
               calendar={persian}
@@ -160,7 +158,7 @@ const VariantsForm = ({
                   setCurrentVariant((prev) => ({ ...prev, discountExpiry: null }));
                 }
               }}
-              inputClass="mt-1.5 h-10 w-full bg-gray-50 border border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-md text-sm px-3 cursor-pointer outline-none"
+              inputClass="mt-1.5 h-10 w-full bg-muted/40 border border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm text-sm px-3 cursor-pointer outline-none"
               containerClassName="w-full"
             />
           </div>
@@ -171,7 +169,7 @@ const VariantsForm = ({
           variant="outline"
           size="sm"
           onClick={addVariant}
-          className="w-full dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 rounded-sm cursor-pointer"
+          className="w-full rounded-sm cursor-pointer"
         >
           <PlusCircle className="h-4 w-4 ml-2" /> افزودن واریانت
         </Button>

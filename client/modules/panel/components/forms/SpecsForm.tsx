@@ -11,18 +11,16 @@ interface Props {
 
 const SpecsForm = ({ generalSpecsSchema, specs, handleSpecChange }: Props) => {
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm placeholder:text-muted-foreground/60";
   const selectClass = inputClass + " w-full px-3 appearance-none cursor-pointer";
 
   return (
     <section className="space-y-4">
-      <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
-        مشخصات کالا
-      </h2>
+      <h2 className="text-lg font-bold text-foreground border-b border-border pb-2">مشخصات کالا</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {Object.entries(generalSpecsSchema).map(([key, schema]: [string, SpecFieldSchema]) => (
           <div key={key}>
-            <Label className="text-zinc-700 dark:text-zinc-200">
+            <Label className="text-foreground">
               {schema.label} {schema.required && "*"}
             </Label>
             {schema.type === "dropdown" ? (

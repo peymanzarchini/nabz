@@ -33,12 +33,10 @@ const MyListingsPage = () => {
   return (
     <>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <h1 className="text-2xl font-black text-zinc-800 dark:text-white">آگهی‌های من</h1>
-        <Link href="/dashboard/create-listing">
-          <Button className="bg-linear-to-r from-violet-600 to-teal-500 text-white py-5 rounded-sm cursor-pointer">
-            ثبت آگهی جدید
-          </Button>
-        </Link>
+        <h1 className="text-2xl font-black text-foreground">آگهی‌های من</h1>
+        <Button asChild className="py-5 rounded-sm cursor-pointer">
+          <Link href="/dashboard/create-listing">ثبت آگهی جدید</Link>
+        </Button>
       </div>
 
       <ListingsTabs filterStatus={filterStatus} setFilterStatus={setFilterStatus} />

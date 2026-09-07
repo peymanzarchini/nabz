@@ -165,18 +165,18 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
   };
 
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-sm";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm placeholder:text-muted-foreground/60";
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-sm shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-zinc-100 dark:border-zinc-800 sticky top-0 bg-white dark:bg-zinc-900 z-10">
-          <h2 className="text-xl font-bold text-zinc-800 dark:text-white">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-card rounded-sm shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-border">
+        <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
+          <h2 className="text-xl font-bold text-foreground">
             {category ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی جدید"}
           </h2>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+            className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             <X className="h-6 w-6" />
           </button>
@@ -185,7 +185,7 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>نام دسته‌بندی *</Label>
+              <Label className="text-foreground">نام دسته‌بندی *</Label>
               <Input
                 {...register("name", {
                   required: "نام الزامی است",
@@ -195,7 +195,7 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
               />
             </div>
             <div>
-              <Label>اسلاگ (انگلیسی) *</Label>
+              <Label className="text-foreground">اسلاگ (انگلیسی) *</Label>
               <Input
                 {...register("slug", { required: "اسلاگ الزامی است" })}
                 className={inputClass}
@@ -203,7 +203,7 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
               />
             </div>
             <div>
-              <Label className="text-zinc-700 dark:text-zinc-200">دسته والد (اختیاری)</Label>
+              <Label className="text-foreground">دسته والد (اختیاری)</Label>
               <select
                 {...register("parentId")}
                 className={inputClass + " w-full px-3 cursor-pointer"}
@@ -217,47 +217,49 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
               </select>
             </div>
             <div>
-              <Label>آیکون (اختیاری)</Label>
+              <Label className="text-foreground">آیکون (اختیاری)</Label>
               <IconPicker value={iconValue} onChange={(val) => setValue("icon", val)} />
             </div>
           </div>
 
-          <div className="border border-zinc-200 dark:border-zinc-800 rounded-sm p-4 space-y-4">
+          <div className="border border-border rounded-sm p-4 space-y-4 bg-muted/20">
             <div className="flex items-center justify-between">
-              <h3 className="text-md font-bold text-zinc-700 dark:text-zinc-200">
-                فیلدهای مشخصات کالا
-              </h3>
+              <h3 className="text-md font-bold text-foreground">فیلدهای مشخصات کالا</h3>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={addSpecField}
-                className="rounded-sm! py-5 text-xs cursor-pointer"
+                className="rounded-sm cursor-pointer"
               >
                 <PlusCircle className="h-4 w-4 ml-2" /> افزودن فیلد
               </Button>
             </div>
 
             {specFields.length === 0 && (
-              <p className="text-center text-sm text-zinc-500 py-4">هیچ فیلدی تعریف نشده است.</p>
+              <p className="text-center text-sm text-muted-foreground py-4">
+                هیچ فیلدی تعریف نشده است.
+              </p>
             )}
 
             {specFields.map((field, index) => (
               <div
                 key={index}
-                className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-lg space-y-3 relative"
+                className="bg-card border border-border p-4 rounded-sm space-y-3 relative"
               >
                 <button
                   type="button"
                   onClick={() => removeSpecField(index)}
-                  className="absolute top-3 left-3 text-red-500 hover:bg-red-100 dark:hover:bg-red-500/10 p-1 rounded"
+                  className="absolute top-3 left-3 text-destructive hover:bg-destructive/10 p-1 rounded-sm transition-colors"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-xs">عنوان فارسی (مثال: رنگ) *</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      عنوان فارسی (مثال: رنگ) *
+                    </Label>
                     <Input
                       value={field.label}
                       onChange={(e) => updateSpecField(index, "label", e.target.value)}
@@ -265,7 +267,9 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                     />
                   </div>
                   <div>
-                    <Label className="text-xs">کلید انگلیسی (مثال: color) *</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      کلید انگلیسی (مثال: color) *
+                    </Label>
                     <Input
                       value={field.key}
                       onChange={(e) =>
@@ -283,7 +287,7 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-xs">نوع فیلد</Label>
+                    <Label className="text-xs text-muted-foreground">نوع فیلد</Label>
                     <select
                       value={field.type}
                       onChange={(e) => updateSpecField(index, "type", e.target.value)}
@@ -297,7 +301,9 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                   </div>
                   {field.type === "dropdown" && (
                     <div>
-                      <Label className="text-xs">گزینه‌ها (با کاما جدا کنید)</Label>
+                      <Label className="text-xs text-muted-foreground">
+                        گزینه‌ها (با کاما جدا کنید)
+                      </Label>
                       <Input
                         value={field.options}
                         onChange={(e) => updateSpecField(index, "options", e.target.value)}
@@ -309,21 +315,21 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                 </div>
 
                 <div className="flex items-center gap-6 pt-2">
-                  <label className="flex items-center gap-2 cursor-pointer text-sm text-zinc-600 dark:text-zinc-300">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-muted-foreground">
                     <input
                       type="checkbox"
                       checked={field.required}
                       onChange={(e) => updateSpecField(index, "required", e.target.checked)}
-                      className="accent-violet-600 w-4 h-4"
+                      className="accent-primary w-4 h-4 cursor-pointer"
                     />
                     اجباری باشد
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer text-sm text-zinc-600 dark:text-zinc-300">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-muted-foreground">
                     <input
                       type="checkbox"
                       checked={field.isVariant}
                       onChange={(e) => updateSpecField(index, "isVariant", e.target.checked)}
-                      className="accent-violet-600 w-4 h-4"
+                      className="accent-primary w-4 h-4 cursor-pointer"
                     />
                     به عنوان واریانت (مثل رنگ/حافظه)
                   </label>
@@ -332,14 +338,19 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
             ))}
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-            <Button type="button" variant="ghost" onClick={onClose} className="cursor-pointer py-4">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              className="cursor-pointer py-4 rounded-sm"
+            >
               انصراف
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="bg-linear-to-r from-violet-600 to-teal-500 text-white cursor-pointer rounded-sm py-4"
+              className="cursor-pointer rounded-sm py-4"
             >
               {isSubmitting && <Loader2 className="animate-spin ml-2" />}
               ذخیره دسته‌بندی

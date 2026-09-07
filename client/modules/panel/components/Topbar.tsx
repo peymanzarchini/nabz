@@ -30,7 +30,7 @@ const Topbar = ({
   menuRef,
 }: TopbarProps) => {
   return (
-    <header className="h-20 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-40">
+    <header className="h-20 bg-card/80 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 sm:px-8 sticky top-0 z-40">
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
@@ -44,9 +44,7 @@ const Topbar = ({
           <Logo width={40} height={40} />
         </div>
         <div className="hidden lg:block">
-          <h2 className="text-lg font-bold text-zinc-800 dark:text-white">
-            خوش آمدی، {user.firstName}!
-          </h2>
+          <h2 className="text-lg font-bold text-foreground">خوش آمدی، {user.firstName}!</h2>
         </div>
       </div>
 
@@ -54,7 +52,7 @@ const Topbar = ({
         {mounted && (
           <button
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
             aria-label="تغییر تم"
           >
             {resolvedTheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -70,9 +68,10 @@ const Topbar = ({
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-muted transition-colors cursor-pointer"
           >
-            <div className="w-9 h-9 rounded-full bg-linear-to-tr from-primary to-accent flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+            {/* ✅ آواتار با رنگ primary ساده (بدون گرادیانت) */}
+            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm overflow-hidden">
               {user.avatar ? (
                 <Image
                   src={`http://localhost:5000${user.avatar}`}
@@ -86,21 +85,21 @@ const Topbar = ({
                 user.firstName.charAt(0)
               )}
             </div>
-            <ChevronDown className="h-4 w-4 text-zinc-500 hidden sm:block" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground hidden sm:block" />
           </button>
 
           {isMenuOpen && (
-            <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg py-2 animate-slide-up z-50">
-              <div className="px-4 py-2 border-b border-zinc-100 dark:border-zinc-700 mb-1">
-                <p className="font-semibold text-sm text-zinc-800 dark:text-white">
+            <div className="absolute left-0 mt-2 w-56 bg-popover border border-border rounded-sm shadow-lg py-2 animate-slide-up z-50">
+              <div className="px-4 py-2 border-b border-border mb-1">
+                <p className="font-semibold text-sm text-foreground">
                   {user.firstName} {user.lastName}
                 </p>
-                <p className="text-xs text-zinc-500 truncate">{user.email}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
               <Link
                 href="/dashboard/settings"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
               >
                 <Settings className="h-4 w-4" />
                 تنظیمات حساب
@@ -110,7 +109,7 @@ const Topbar = ({
                   setIsMenuOpen(false);
                   setIsLogoutOpen(true);
                 }}
-                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-right cursor-pointer"
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors text-right cursor-pointer"
               >
                 <LogOut className="h-4 w-4 rotate-180" />
                 خروج از حساب

@@ -53,7 +53,7 @@ const RegisterStep2 = ({
           dir="ltr"
           maxLength={6}
           placeholder="- - - - - -"
-          className="mt-1.5 h-12 text-center text-2xl font-bold tracking-[1em] bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-lg"
+          className="mt-1.5 h-12 text-center text-2xl font-bold tracking-[1em] bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm"
           {...verifyForm.register("code")}
         />
         {verifyForm.formState.errors.code && (
@@ -66,7 +66,7 @@ const RegisterStep2 = ({
       <Button
         type="submit"
         size="lg"
-        className="w-full h-12 text-base font-bold cursor-pointer rounded-lg"
+        className="w-full h-12 text-base font-bold cursor-pointer rounded-sm mt-5"
         disabled={verifyForm.formState.isSubmitting || !isTimerActive}
       >
         {verifyForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}

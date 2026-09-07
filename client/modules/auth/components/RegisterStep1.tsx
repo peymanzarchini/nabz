@@ -19,7 +19,7 @@ const RegisterStep1 = ({
   generateCaptcha,
 }: RegisterStep1Props) => {
   const inputClass =
-    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-lg placeholder:text-muted-foreground/60";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm placeholder:text-muted-foreground/60";
 
   return (
     <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
@@ -155,7 +155,7 @@ const RegisterStep1 = ({
       <Button
         type="submit"
         size="lg"
-        className="w-full h-12 text-base font-bold cursor-pointer rounded-lg mt-6"
+        className="w-full h-12 text-base font-bold cursor-pointer rounded-sm mt-6"
         disabled={registerForm.formState.isSubmitting}
       >
         {registerForm.formState.isSubmitting ? <Loader2 className="animate-spin ml-2" /> : null}
