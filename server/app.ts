@@ -170,6 +170,7 @@ const startServer = async (): Promise<void> => {
       logger.info(`🔗 API URL: http://localhost:${env.port}/api`);
 
       startAiCronJobs();
+      startAiCronJobs();
     });
   } catch (error) {
     logger.error("Failed to start server:", error);

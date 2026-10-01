@@ -36,9 +36,7 @@ const AdminListingsPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-zinc-800 dark:text-white mb-6">
-        مدیریت و تایید آگهی‌ها
-      </h1>
+      <h1 className="text-2xl font-black text-foreground mb-6">مدیریت و تایید آگهی‌ها</h1>
 
       <AdminListingsTabs filterStatus={filterStatus} setFilterStatus={setFilterStatus} />
 

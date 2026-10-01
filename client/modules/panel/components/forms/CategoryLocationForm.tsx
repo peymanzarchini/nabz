@@ -30,7 +30,7 @@ const CategoryLocationForm = (props: Props) => {
   const [citySearch, setCitySearch] = useState("");
 
   const inputClass =
-    "mt-1.5 h-11 bg-gray-50 border-gray-200 text-gray-900 focus:border-violet-500 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder:text-zinc-400 rounded-md";
+    "mt-1.5 h-11 bg-muted/40 border-input text-foreground focus:border-primary focus:ring-primary/50 rounded-sm";
   const selectClass = inputClass + " w-full px-3 appearance-none cursor-pointer";
 
   const provinces = [...(props.locations?.filter((l) => !l.parentId) || [])].sort((a, b) =>
@@ -49,13 +49,13 @@ const CategoryLocationForm = (props: Props) => {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
+      <h2 className="text-lg font-bold text-foreground border-b border-border pb-2">
         دسته‌بندی و موقعیت
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <Label className="text-zinc-700 dark:text-zinc-200">دسته اصلی *</Label>
+          <Label className="text-foreground">دسته اصلی *</Label>
           <select
             className={selectClass}
             value={props.cat1}
@@ -74,7 +74,7 @@ const CategoryLocationForm = (props: Props) => {
           props.selectedCat1.subcategories &&
           props.selectedCat1.subcategories.length > 0 && (
             <div>
-              <Label className="text-zinc-700 dark:text-zinc-200">زیردسته ۱ *</Label>
+              <Label className="text-foreground">زیردسته ۱ *</Label>
               <select
                 className={selectClass}
                 value={props.cat2}
@@ -94,7 +94,7 @@ const CategoryLocationForm = (props: Props) => {
           props.selectedCat2.subcategories &&
           props.selectedCat2.subcategories.length > 0 && (
             <div>
-              <Label className="text-zinc-700 dark:text-zinc-200">زیردسته ۲ *</Label>
+              <Label className="text-foreground">زیردسته ۲ *</Label>
               <select
                 className={selectClass}
                 value={props.cat3}
@@ -113,7 +113,7 @@ const CategoryLocationForm = (props: Props) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
-          <Label className="text-zinc-700 dark:text-zinc-200 mb-1.5 block">استان *</Label>
+          <Label className="text-foreground mb-1.5 block">استان *</Label>
           <Combobox
             value={props.selectedCityId || ""}
             onValueChange={(val) => {
@@ -125,12 +125,12 @@ const CategoryLocationForm = (props: Props) => {
             <ComboboxTrigger
               className={selectClass + " flex items-center justify-between text-right"}
             >
-              <span className={props.selectedCityId ? "" : "text-zinc-400 dark:text-zinc-500"}>
+              <span className={props.selectedCityId ? "" : "text-muted-foreground/60"}>
                 {selectedProvince?.name || "انتخاب استان..."}
               </span>
             </ComboboxTrigger>
-            <ComboboxContent className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-              <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
+            <ComboboxContent className="bg-popover border border-border rounded-sm">
+              <div className="p-2 border-b border-border">
                 <Input
                   placeholder="جستجوی استان..."
                   value={provSearch}
@@ -146,7 +146,9 @@ const CategoryLocationForm = (props: Props) => {
                     </ComboboxItem>
                   ))
                 ) : (
-                  <div className="p-4 text-center text-sm text-zinc-500">استانی یافت نشد</div>
+                  <div className="p-4 text-center text-sm text-muted-foreground">
+                    استانی یافت نشد
+                  </div>
                 )}
               </ComboboxList>
             </ComboboxContent>
@@ -154,7 +156,7 @@ const CategoryLocationForm = (props: Props) => {
         </div>
 
         <div>
-          <Label className="text-zinc-700 dark:text-zinc-200 mb-1.5 block">شهر *</Label>
+          <Label className="text-foreground mb-1.5 block">شهر *</Label>
           <Combobox
             value={props.selectedDistrictId || ""}
             onValueChange={(val) => props.setValue("districtId", val!)}
@@ -166,12 +168,12 @@ const CategoryLocationForm = (props: Props) => {
                 " flex items-center justify-between text-right disabled:opacity-50 disabled:cursor-not-allowed"
               }
             >
-              <span className={props.selectedDistrictId ? "" : "text-zinc-400 dark:text-zinc-500"}>
+              <span className={props.selectedDistrictId ? "" : "text-muted-foreground/60"}>
                 {selectedCityName || "انتخاب شهر..."}
               </span>
             </ComboboxTrigger>
-            <ComboboxContent className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-              <div className="p-2 border-b border-zinc-100 dark:border-zinc-800">
+            <ComboboxContent className="bg-popover border border-border rounded-sm">
+              <div className="p-2 border-b border-border">
                 <Input
                   placeholder="جستجوی شهر..."
                   value={citySearch}
@@ -187,7 +189,7 @@ const CategoryLocationForm = (props: Props) => {
                     </ComboboxItem>
                   ))
                 ) : (
-                  <div className="p-4 text-center text-sm text-zinc-500">شهری یافت نشد</div>
+                  <div className="p-4 text-center text-sm text-muted-foreground">شهری یافت نشد</div>
                 )}
               </ComboboxList>
             </ComboboxContent>

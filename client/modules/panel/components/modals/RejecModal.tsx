@@ -26,33 +26,29 @@ const RejectModal = ({ isLoading, isOpen, onClose, onConfirm }: RejectModalProps
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white dark:bg-zinc-900 rounded-sm shadow-2xl w-full max-w-md p-6 animate-slide-up">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-card rounded-sm shadow-2xl w-full max-w-md p-6 animate-slide-up border border-border">
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+          className="absolute top-4 left-4 text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="h-5 w-5" />
         </button>
-        <h2 className="text-xl font-bold text-zinc-800 dark:text-white mb-4">رد آگهی</h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+        <h2 className="text-xl font-bold text-foreground mb-4">رد آگهی</h2>
+        <p className="text-sm text-muted-foreground mb-4">
           لطفاً دلیل رد شدن این آگهی را بنویسید تا به فروشنده اطلاع داده شود.
         </p>
         <Textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           placeholder="مثال: تصویر آگهی نامناسب است یا قیمت وارد شده اشتباه است."
-          className="bg-gray-50 dark:bg-zinc-800 border-gray-200 dark:border-zinc-700 min-h-25"
+          className="bg-muted/40 border-input min-h-25 rounded-sm placeholder:text-muted-foreground/60"
         />
         {reason.trim().length > 0 && reason.trim().length < 5 && (
-          <p className="text-xs text-red-500 mt-2">دلیل باید حداقل ۵ کاراکتر باشد.</p>
+          <p className="text-xs text-destructive mt-2">دلیل باید حداقل ۵ کاراکتر باشد.</p>
         )}
         <div className="flex gap-3 mt-6">
-          <Button
-            variant="outline"
-            className="flex-1 dark:border-zinc-700 dark:text-zinc-200 rounded-sm"
-            onClick={onClose}
-          >
+          <Button variant="outline" className="flex-1 rounded-sm cursor-pointer" onClick={onClose}>
             انصراف
           </Button>
           <Button

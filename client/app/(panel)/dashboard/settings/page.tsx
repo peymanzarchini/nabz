@@ -10,8 +10,10 @@ const SettingsPage = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-black text-zinc-800 dark:text-white">تنظیمات حساب کاربری</h1>
-        <p className="text-sm text-zinc-500 mt-1">اطلاعات پروفایل و امنیت خود را مدیریت کنید</p>
+        <h1 className="text-2xl font-black text-foreground">تنظیمات حساب کاربری</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          اطلاعات پروفایل و امنیت خود را مدیریت کنید
+        </p>
       </div>
 
       <ProfileForm

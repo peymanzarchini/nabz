@@ -1,28 +1,23 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { env } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.mail.yahoo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: env.email.user,
-    pass: env.email.password,
-  },
-  requireTLS: true,
-  family: 4,
-  connectionTimeout: 20000,
-  greetingTimeout: 20000,
-  socketTimeout: 20000,
-} as any);
+const resend = new Resend(env.email.password);
+const SENDER_EMAIL = "Nabz SuperApp <onboarding@resend.dev>";
 
 export const sendVerificationEmail = async (to: string, code: string) => {
+  if (env.isDev) {
+    logger.info(`\n========================================`);
+    logger.info(`📧 [DEV MODE] Verification Code`);
+    logger.info(`To: ${to}`);
+    logger.info(`🔢 Code: ${code}`);
+    logger.info(`========================================\n`);
+    return;
+  }
   try {
-    const mailOptions = {
-      from: `"Nabz SuperApp" <${env.email.user}>`,
-      to,
+    const { data, error } = await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: [to],
       subject: "کد تایید حساب کاربری - نبض",
       html: `
         <div style="direction: rtl; font-family: Tahoma, Geneva, sans-serif; text-align: center; border: 1px solid #e0e0e0; padding: 20px; border-radius: 10px;">
@@ -33,41 +28,65 @@ export const sendVerificationEmail = async (to: string, code: string) => {
           </div>
         </div>
       `,
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`📧 Email sent successfully to ${to}: ${info.messageId}`);
+    if (error) {
+      logger.error("❌ Resend API Error:", error);
+      throw new Error("Failed to send email");
+    }
+
+    logger.info(`📧 Email sent successfully to ${to} via Resend. ID: ${data?.id}`);
   } catch (error) {
-    logger.error("❌ Failed to send email:", error);
+    logger.error("❌ Failed to send email via Resend:", error);
     throw new Error("Failed to send email");
   }
 };
 
 export const sendPasswordResetEmail = async (to: string, resetLink: string) => {
+  if (env.isDev) {
+    logger.info(`[DEV MODE] Reset Link for ${to}: ${resetLink}`);
+    return;
+  }
+
   try {
-    const mailOptions = {
-      from: `"Nabz SuperApp" <${env.email.user}>`,
-      to,
+    const { data, error } = await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: [to],
       subject: "بازیابی رمز عبور - نبض",
       html: `<div style="direction: rtl; font-family: Tahoma; text-align: center;"><a href="${resetLink}" style="background-color: #2196F3; color: white; padding: 10px 20px; text-decoration: none;">بازیابی رمز عبور</a></div>`,
-    };
-    await transporter.sendMail(mailOptions);
-    logger.info(`📧 Reset email sent to ${to}`);
+    });
+
+    if (error) {
+      logger.error("❌ Resend API Error (Reset):", error);
+      throw new Error("Failed to send reset email");
+    }
+    logger.info(`📧 Reset email sent to ${to} via Resend. ID: ${data?.id}`);
   } catch (error) {
-    logger.error("❌ Failed to send reset email:", error);
+    logger.error("❌ Failed to send reset email via Resend:", error);
+    throw new Error("Failed to send reset email");
   }
 };
 
 export const sendPasswordChangedNotification = async (to: string) => {
+  if (env.isDev) {
+    logger.info(`[DEV MODE] Password changed notification for ${to}`);
+    return;
+  }
+
   try {
-    const mailOptions = {
-      from: `"Nabz SuperApp" <${env.email.user}>`,
-      to,
+    const { error } = await resend.emails.send({
+      from: SENDER_EMAIL,
+      to: [to],
       subject: "تغییر موفقیت‌آمیز رمز عبور - نبض",
-      html: `<div style="direction: rtl; font-family: Tahoma; text-align: center;"><h2>رمز عبور شما تغییر کرد</h2></div>`,
-    };
-    await transporter.sendMail(mailOptions);
+      html: `<div style="direction: rtl; font-family: Tahoma; text-align: center;"><h2>رمز عبور شما با موفقیت تغییر کرد</h2></div>`,
+    });
+
+    if (error) {
+      logger.error("❌ Resend API Error (Notify):", error);
+      throw new Error("Failed to send notification email");
+    }
   } catch (error) {
-    logger.error("❌ Failed to send notification email:", error);
+    logger.error("❌ Failed to send notification email via Resend:", error);
+    throw new Error("Failed to send notification email");
   }
 };

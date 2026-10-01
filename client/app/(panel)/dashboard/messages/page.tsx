@@ -8,7 +8,7 @@ const MessagesPage = () => {
   const chat = useChatRoom();
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800 overflow-hidden relative">
+    <div className="h-[calc(100vh-8rem)] flex bg-card rounded-sm shadow-sm border border-border overflow-hidden relative">
       <ChatSidebar
         conversations={chat.conversations}
         loadingConvs={chat.loadingConvs || false}

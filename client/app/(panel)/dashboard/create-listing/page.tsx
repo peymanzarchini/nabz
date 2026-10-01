@@ -18,9 +18,7 @@ import { useListingForm } from "@/modules/panel/hooks/useListingForm";
 
 const LocationMap = dynamic(() => import("@/modules/panel/components/LocationMap"), {
   ssr: false,
-  loading: () => (
-    <div className="h-full w-full bg-gray-50 dark:bg-zinc-800 animate-pulse rounded-xl" />
-  ),
+  loading: () => <div className="h-72 w-full bg-muted/40 animate-pulse rounded-sm" />,
 });
 
 const CreateListingPage = () => {
@@ -65,8 +63,8 @@ const CreateListingPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white dark:bg-zinc-900 rounded-lg p-6 sm:p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 h-[80vh] overflow-y-scroll">
-      <h1 className="text-2xl font-black text-zinc-800 dark:text-white mb-6">ثبت آگهی جدید</h1>
+    <div className="max-w-4xl mx-auto bg-card border border-border rounded-sm shadow-sm p-6 sm:p-8 max-h-[calc(100vh-8rem)] overflow-y-auto">
+      <h1 className="text-2xl font-black text-foreground mb-6">ثبت آگهی جدید</h1>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <BasicInfoForm
@@ -91,13 +89,13 @@ const CreateListingPage = () => {
         />
 
         <section className="space-y-4">
-          <h2 className="text-lg font-bold text-zinc-700 dark:text-zinc-200 border-b border-zinc-100 dark:border-zinc-800 pb-2">
+          <h2 className="text-lg font-bold text-foreground border-b border-border pb-2">
             موقعیت دقیق روی نقشه
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             برای تعیین موقعیت دقیق، روی نقشه کلیک کنید.
           </p>
-          <div className="h-100 w-full rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 z-0 relative">
+          <div className="h-72 w-full rounded-sm overflow-hidden border border-border z-0 relative">
             <LocationMap
               position={form.position}
               setPosition={form.setPosition}
@@ -106,7 +104,7 @@ const CreateListingPage = () => {
             />
           </div>
           {form.position && (
-            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+            <div className="flex items-center gap-2 text-sm text-primary">
               <MapPin className="h-4 w-4" />
               مختصات انتخاب شد: {form.position.lat.toFixed(4)}, {form.position.lng.toFixed(4)}
             </div>
@@ -139,21 +137,17 @@ const CreateListingPage = () => {
           />
         )}
 
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-end gap-3 pt-4 bg-card pb-2">
           <Button
             type="button"
             variant="ghost"
             onClick={() => router.back()}
-            className="dark:text-zinc-300 rounded-sm cursor-pointer"
+            className="rounded-sm cursor-pointer"
             disabled={form.isSubmitting}
           >
             انصراف
           </Button>
-          <Button
-            type="submit"
-            disabled={form.isSubmitting}
-            className="bg-linear-to-r from-violet-600 to-teal-500 text-white rounded-sm cursor-pointer"
-          >
+          <Button type="submit" disabled={form.isSubmitting} className="rounded-sm cursor-pointer">
             {form.isSubmitting && <Loader2 className="animate-spin ml-2" />}
             ثبت آگهی
           </Button>

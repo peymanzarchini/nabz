@@ -32,7 +32,7 @@ const PanelContent = ({ children }: { children: React.ReactNode }) => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
@@ -40,8 +40,10 @@ const PanelContent = ({ children }: { children: React.ReactNode }) => {
 
   if (!user) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4">
-        <p className="text-lg font-semibold">لطفاً ابتدا وارد حساب کاربری خود شوید.</p>
+      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-background">
+        <p className="text-lg font-semibold text-foreground">
+          لطفاً ابتدا وارد حساب کاربری خود شوید.
+        </p>
         <Link href="/login">
           <Button>ورود به نبض</Button>
         </Link>
@@ -52,7 +54,7 @@ const PanelContent = ({ children }: { children: React.ReactNode }) => {
   const filteredLinks = panelLinks.filter((link) => link.roles.includes(user.role));
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex">
+    <div className="min-h-screen bg-background flex">
       <SidebarDesktop
         pathname={pathname}
         filteredLinks={filteredLinks}

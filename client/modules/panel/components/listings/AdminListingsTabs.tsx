@@ -21,7 +21,7 @@ const AdminListingsTabs = ({ filterStatus, setFilterStatus }: AdminListingsTabsP
           className={`px-4 py-2 rounded-sm text-sm font-medium whitespace-nowrap transition-colors cursor-pointer ${
             filterStatus === filter.key
               ? "bg-primary text-primary-foreground"
-              : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700"
+              : "bg-card text-muted-foreground border border-border hover:bg-muted hover:text-foreground"
           }`}
         >
           {filter.label}

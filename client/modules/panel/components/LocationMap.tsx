@@ -108,7 +108,7 @@ export default function LocationMap({
   };
 
   return (
-    <div className="relative h-100 w-full rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 z-0">
+    <div className="relative h-72 w-full rounded-sm overflow-hidden border border-border z-0">
       <MapContainer
         center={cityCenter ? [cityCenter.lat, cityCenter.lng] : [32.4279, 53.688]}
         zoom={cityCenter ? 13 : 5}
@@ -133,9 +133,9 @@ export default function LocationMap({
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             disabled={!cityName}
-            className="w-full h-11 pr-10 pl-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-gray-900 dark:text-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-60"
+            className="w-full h-11 pr-10 pl-4 bg-card border border-border text-foreground rounded-sm shadow-md focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-60"
           />
-          <div className="absolute top-3 right-3 text-zinc-400">
+          <div className="absolute top-3 right-3 text-muted-foreground">
             {isSearching ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
@@ -144,17 +144,15 @@ export default function LocationMap({
           </div>
 
           {searchResults.length > 0 && (
-            <div className="absolute top-12 right-0 left-0 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl max-h-60 overflow-y-auto z-1001">
+            <div className="absolute top-12 right-0 left-0 bg-popover border border-border rounded-sm shadow-xl max-h-60 overflow-y-auto z-1001">
               {searchResults.map((res, idx) => (
                 <div
                   key={idx}
                   onClick={() => handleSelectResult(res)}
-                  className="p-3 border-b border-zinc-100 dark:border-zinc-700 last:border-0 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-700 flex items-start gap-2"
+                  className="p-3 border-b border-border last:border-0 cursor-pointer hover:bg-muted/40 flex items-start gap-2"
                 >
-                  <MapPin className="h-4 w-4 text-violet-600 mt-1 shrink-0" />
-                  <span className="text-sm text-zinc-700 dark:text-zinc-200">
-                    {res.display_name}
-                  </span>
+                  <MapPin className="h-4 w-4 text-primary mt-1 shrink-0" />
+                  <span className="text-sm text-foreground">{res.display_name}</span>
                 </div>
               ))}
             </div>
