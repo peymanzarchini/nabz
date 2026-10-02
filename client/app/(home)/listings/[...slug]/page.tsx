@@ -19,7 +19,7 @@ import { useAuth } from "@/lib/providers/AuthProvider";
 
 const ListingMap = dynamic(() => import("@/modules/home/components/listings/ListingMap"), {
   ssr: false,
-  loading: () => <div className="h-75 bg-zinc-50 dark:bg-zinc-800 rounded-2xl animate-pulse" />,
+  loading: () => <div className="h-75 bg-muted/40 rounded-sm animate-pulse" />,
 });
 
 const RatingStars = ({ rating }: { rating: number }) => {
@@ -29,9 +29,7 @@ const RatingStars = ({ rating }: { rating: number }) => {
         <Star
           key={star}
           className={`h-4 w-4 ${
-            star <= Math.round(rating)
-              ? "text-yellow-400 fill-current"
-              : "text-zinc-300 dark:text-zinc-600"
+            star <= Math.round(rating) ? "text-amber-400 fill-current" : "text-muted-foreground/30"
           }`}
         />
       ))}
@@ -51,14 +49,14 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pt-28 pb-16 bg-zinc-50 dark:bg-zinc-950">
-        <div className="max-w-300 mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="min-h-screen pt-28 pb-16 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl h-100 animate-pulse" />
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl h-50 animate-pulse" />
+            <div className="bg-card rounded-sm h-100 animate-pulse border border-border" />
+            <div className="bg-card rounded-sm h-50 animate-pulse border border-border" />
           </div>
           <div className="space-y-6">
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl h-75 animate-pulse" />
+            <div className="bg-card rounded-sm h-75 animate-pulse border border-border" />
           </div>
         </div>
       </div>
@@ -67,11 +65,11 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen pt-28 pb-16 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm max-w-md w-full mx-4">
-          <PackageSearch className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <p className="text-zinc-800 dark:text-white font-bold text-lg">آگهی یافت نشد</p>
-          <p className="text-sm text-zinc-500 mt-2">
+      <div className="min-h-screen pt-28 pb-16 bg-background flex items-center justify-center">
+        <div className="text-center py-20 bg-card rounded-sm border border-border shadow-sm max-w-md w-full mx-4">
+          <PackageSearch className="h-16 w-16 text-destructive mx-auto mb-4" />
+          <p className="text-foreground font-bold text-lg">آگهی یافت نشد</p>
+          <p className="text-sm text-muted-foreground mt-2">
             ممکن است آگهی حذف شده باشد یا لینک اشتباه باشد.
           </p>
         </div>
@@ -160,14 +158,14 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
   const lng = Number(listing.longitude);
 
   return (
-    <div className="min-h-screen pt-28 pb-16 bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen pt-28 pb-16 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
           <div className="lg:col-span-3 space-y-6">
             <ListingGallery images={listing.images} title={listing.title} />
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100 mb-4">توضیحات</h2>
-              <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-7 whitespace-pre-line">
+            <div className="bg-card border border-border rounded-sm p-6 shadow-sm">
+              <h2 className="text-lg font-bold text-foreground mb-4">توضیحات</h2>
+              <p className="text-sm text-muted-foreground leading-7 whitespace-pre-line">
                 {listing.description}
               </p>
             </div>
@@ -177,42 +175,40 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
           </div>
 
           <div className="space-y-6 lg:col-span-3">
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 shadow-sm sticky top-28">
+            <div className="bg-card border border-border rounded-sm p-6 shadow-sm sticky top-28">
               <div className="mb-4">
-                <h1 className="text-xl font-black text-zinc-900 dark:text-white mb-2 leading-8">
+                <h1 className="text-xl font-black text-foreground mb-2 leading-8">
                   {listing.title}
                 </h1>
                 {listing.reviewCount > 0 ? (
                   <div className="flex items-center gap-2">
                     <RatingStars rating={listing.averageRating} />
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="text-xs text-muted-foreground">
                       ({listing.averageRating.toFixed(1)}) از {listing.reviewCount} نظر
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
                     <RatingStars rating={0} />
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                      هنوز نظری ثبت نشده است
-                    </span>
+                    <span className="text-xs text-muted-foreground">هنوز نظری ثبت نشده است</span>
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-zinc-100 dark:border-zinc-800">
-                <div className="flex items-center gap-1 text-sm text-zinc-500 dark:text-zinc-400">
-                  <MapPin className="h-4 w-4 shrink-0 text-zinc-400" />
+              <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4 shrink-0 text-muted-foreground/60" />
                   <span>{locationText || "نامشخص"}</span>
                 </div>
                 <span
-                  className={`text-xs font-medium px-2.5 py-1 rounded-md ${isNew ? "bg-emerald-500/90 text-white" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"}`}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-sm ${isNew ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}
                 >
                   {isNew ? "نو" : "دست دوم"}
                 </span>
               </div>
 
               {hasVariants && listing.variants && (
-                <div className="mb-6 pb-6 border-b border-zinc-100 dark:border-zinc-800">
+                <div className="mb-6 pb-6 border-b border-border">
                   <ListingVariants
                     variants={listing.variants}
                     specsSchema={listing.category?.specsSchema || null}
@@ -221,7 +217,7 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
                 </div>
               )}
 
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4 mb-6">
+              <div className="bg-muted/40 rounded-sm p-4 mb-6">
                 {isFree ? (
                   <div className="flex items-end gap-1">
                     <span className="text-2xl font-black text-primary">توافقی</span>
@@ -230,10 +226,10 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
                   <div className="flex flex-col items-end gap-1">
                     {currentPriceInfo.discount > 0 && (
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-zinc-400 line-through">
+                        <span className="text-sm text-muted-foreground line-through">
                           {currentPriceInfo.originalPrice.toLocaleString("fa-IR")}
                         </span>
-                        <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-md">
+                        <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-0.5 rounded-sm">
                           {currentPriceInfo.discount}% تخفیف
                         </span>
                       </div>
@@ -241,17 +237,19 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
                     <div className="flex items-end gap-1">
                       <span
-                        className={`text-2xl font-black ${currentPriceInfo.discount > 0 ? "text-red-500 dark:text-red-400" : "text-zinc-900 dark:text-white"}`}
+                        className={`text-2xl font-black ${currentPriceInfo.discount > 0 ? "text-destructive" : "text-foreground"}`}
                       >
                         {currentPriceInfo.finalPrice.toLocaleString("fa-IR")}
                       </span>
-                      <span className="text-xs font-normal text-zinc-500 mb-1.5">تومان</span>
+                      <span className="text-xs font-normal text-muted-foreground mb-1.5">
+                        تومان
+                      </span>
                     </div>
                   </div>
                 )}
 
                 {selectedVariant && (
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     موجودی: {selectedVariant.stock > 0 ? `${selectedVariant.stock} عدد` : "ناموجود"}
                   </p>
                 )}
@@ -259,13 +257,14 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
 
               <Button
                 size="lg"
-                className="w-full h-12 text-base mb-3 bg-linear-to-l from-primary via-purple-600 to-accent hover:brightness-110 shadow-xl shadow-primary/30 transition-all hover:scale-105 group cursor-pointer text-white border-0 rounded-sm"
+                className="w-full h-12 text-base mb-3 shadow-md transition-all hover:scale-[1.02] cursor-pointer rounded-sm"
                 disabled={selectedVariant?.stock === 0}
                 onClick={handleStartChat}
               >
                 <MessageCircle className="h-5 w-5 ml-2" />
                 شروع گفتگو با فروشنده
               </Button>
+
               <Button
                 variant="outline"
                 size="lg"
@@ -283,20 +282,18 @@ const ListingDetailsPage = ({ params }: { params: Promise<{ slug: string[] }> })
             </div>
 
             {listing.user && (
-              <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
-                <h3 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-4">
-                  اطلاعات فروشنده
-                </h3>
+              <div className="bg-card border border-border rounded-sm p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-muted-foreground mb-4">اطلاعات فروشنده</h3>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-linear-to-tr from-primary to-accent flex items-center justify-center text-white font-bold text-lg shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shrink-0">
                     {listing.user.firstName.charAt(0)}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-zinc-900 dark:text-white flex items-center gap-1">
+                    <span className="font-bold text-foreground flex items-center gap-1">
                       {listing.user.firstName} {listing.user.lastName}
-                      <BadgeCheck className="h-4 w-4 text-accent" />
+                      <BadgeCheck className="h-4 w-4 text-primary" />
                     </span>
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1">
+                    <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                       <ShieldCheck className="h-3.5 w-3.5" />
                       کاربر تایید شده نبض
                     </span>
