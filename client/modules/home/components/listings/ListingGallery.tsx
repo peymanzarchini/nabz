@@ -19,6 +19,7 @@ const ListingGallery = ({ images, title }: ListingGalleryProps) => {
           src={allImages[activeIndex]}
           alt={title}
           fill
+          loading="eager"
           className="object-contain"
           unoptimized
           priority

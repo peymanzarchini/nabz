@@ -24,11 +24,14 @@ const ListingsContent = () => {
   const pathname = usePathname();
   const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false);
 
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
+  const currentUrlSearch = searchParams.get("search") || "";
+  const [searchTerm, setSearchTerm] = useState(currentUrlSearch);
+  const [prevUrlSearch, setPrevUrlSearch] = useState(currentUrlSearch);
 
-  useEffect(() => {
-    setSearchTerm(searchParams.get("search") || "");
-  }, [searchParams]);
+  if (currentUrlSearch !== prevUrlSearch) {
+    setPrevUrlSearch(currentUrlSearch);
+    setSearchTerm(currentUrlSearch);
+  }
 
   const filters = useMemo<ListingFilters>(() => {
     return {
@@ -88,7 +91,7 @@ const ListingsContent = () => {
           <p className="text-muted-foreground mb-6">بهترین‌ها را اینجا پیدا کنید!</p>
 
           <div className="flex flex-col md:flex-row gap-4">
-            <InputGroup className="h-14 flex-1 bg-card border border-border rounded-lg">
+            <InputGroup className="h-14 flex-1 bg-card border border-border rounded-sm">
               <InputGroupAddon>
                 <Search className="h-5 w-5 text-muted-foreground mr-3" />
               </InputGroupAddon>
@@ -107,7 +110,7 @@ const ListingsContent = () => {
                 onChange={(e) =>
                   handleFilterChange({ sort: e.target.value as ListingFilters["sort"], page: 1 })
                 }
-                className="h-14 w-full appearance-none flex items-center justify-between px-4 bg-card border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted/50 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/50"
+                className="h-14 w-full appearance-none flex items-center justify-between px-4 bg-card border border-border rounded-sm text-sm font-medium text-foreground hover:bg-muted/50 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/50"
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -120,7 +123,7 @@ const ListingsContent = () => {
 
             <Button
               variant="outline"
-              className="h-14 md:hidden bg-card border-border shadow-sm"
+              className="h-14 md:hidden bg-card border-border shadow-sm rounded-sm"
               onClick={() => setShowMobileFilters(true)}
             >
               <SlidersHorizontal className="h-5 w-5" />
@@ -159,7 +162,7 @@ const ListingsContent = () => {
 
           <main className="flex-1 relative min-h-[50vh]">
             {isFetching && !isLoading && (
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-card border border-border shadow-md rounded-full p-2">
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-card border border-border shadow-md rounded-sm p-2">
                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
               </div>
             )}
@@ -169,14 +172,14 @@ const ListingsContent = () => {
                 {[...Array(8)].map((_, i) => (
                   <div
                     key={i}
-                    className="bg-card rounded-2xl h-100 animate-pulse border border-border"
+                    className="bg-card rounded-sm h-100 animate-pulse border border-border"
                   ></div>
                 ))}
               </div>
             )}
 
             {!isLoading && isError && (
-              <div className="text-center py-20 bg-card rounded-2xl border border-border shadow-sm">
+              <div className="text-center py-20 bg-card rounded-sm border border-border shadow-sm">
                 <PackageSearch className="h-16 w-16 text-destructive mx-auto mb-4" />
                 <p className="text-foreground font-bold text-lg">خطا در دریافت آگهی‌ها</p>
                 <p className="text-sm text-muted-foreground">لطفاً کمی بعد دوباره تلاش کنید.</p>
@@ -184,7 +187,7 @@ const ListingsContent = () => {
             )}
 
             {!isLoading && !isError && data?.items.length === 0 && (
-              <div className="text-center py-20 bg-card rounded-2xl border border-border shadow-sm flex flex-col items-center">
+              <div className="text-center py-20 bg-card rounded-sm border border-border shadow-sm flex flex-col items-center">
                 <PackageSearch className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
                 <p className="text-foreground font-bold text-lg">آگهی‌ای یافت نشد</p>
                 <p className="text-sm text-muted-foreground mt-2 max-w-xs">
