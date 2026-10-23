@@ -25,6 +25,7 @@ interface FormValues {
   slug: string;
   parentId: string | null;
   icon: string | null;
+  status: string;
 }
 
 interface UiSpecField {
@@ -36,13 +37,25 @@ interface UiSpecField {
   isVariant: boolean;
 }
 
-const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: Props) => {
+const CategoryFormModal = ({
+  category,
+  parentCategories,
+  onClose,
+  onSuccess,
+}: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [specFields, setSpecFields] = useState<UiSpecField[]>([]);
 
-  const { register, handleSubmit, reset, getValues, setValue, control } = useForm<FormValues>({
-    defaultValues: { name: "", slug: "", parentId: null, icon: null },
-  });
+  const { register, handleSubmit, reset, getValues, setValue, control } =
+    useForm<FormValues>({
+      defaultValues: {
+        name: "",
+        slug: "",
+        parentId: null,
+        icon: null,
+        status: "draft",
+      },
+    });
 
   const iconValue = useWatch({ control, name: "icon" });
 
@@ -53,6 +66,7 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
         slug: category.slug,
         parentId: category.parentId,
         icon: category.icon,
+        status: category.status || "draft",
       });
 
       if (
@@ -61,21 +75,29 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
         !("inheritFrom" in category.specsSchema)
       ) {
         const schema = category.specsSchema as SpecsSchema;
-        const fields: UiSpecField[] = Object.entries(schema).map(([key, val]) => ({
-          id: Math.random().toString(36).substring(7),
-          key,
-          label: val.label,
-          type: val.type,
-          options: val.options ? val.options.join(", ") : "",
-          required: val.required || false,
-          isVariant: val.isVariant || false,
-        }));
+        const fields: UiSpecField[] = Object.entries(schema).map(
+          ([key, val]) => ({
+            id: Math.random().toString(36).substring(7),
+            key,
+            label: val.label,
+            type: val.type,
+            options: val.options ? val.options.join(", ") : "",
+            required: val.required || false,
+            isVariant: val.isVariant || false,
+          }),
+        );
         setSpecFields(fields);
       } else {
         setSpecFields([]);
       }
     } else {
-      reset({ name: "", slug: "", parentId: null, icon: null });
+      reset({
+        name: "",
+        slug: "",
+        parentId: null,
+        icon: null,
+        status: "draft",
+      });
       setSpecFields([]);
     }
   }, [category, reset]);
@@ -91,7 +113,14 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
 
   const addSpecField = () => {
     setSpecFields([
-      { key: "", label: "", type: "string", options: "", required: false, isVariant: false },
+      {
+        key: "",
+        label: "",
+        type: "string",
+        options: "",
+        required: false,
+        isVariant: false,
+      },
       ...specFields,
     ]);
   };
@@ -143,6 +172,7 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
         slug: data.slug,
         parentId: data.parentId || null,
         icon: data.icon || null,
+        status: data.status,
         specsSchema: parsedSpecs,
         hasSpecs: !!parsedSpecs,
       };
@@ -189,7 +219,8 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
               <Input
                 {...register("name", {
                   required: "نام الزامی است",
-                  onBlur: (e) => !getValues("slug") && generateSlug(e.target.value),
+                  onBlur: (e) =>
+                    !getValues("slug") && generateSlug(e.target.value),
                 })}
                 className={inputClass}
               />
@@ -218,13 +249,29 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
             </div>
             <div>
               <Label className="text-foreground">آیکون (اختیاری)</Label>
-              <IconPicker value={iconValue} onChange={(val) => setValue("icon", val)} />
+              <IconPicker
+                value={iconValue}
+                onChange={(val) => setValue("icon", val)}
+              />
+            </div>
+            <div>
+              <Label className="text-foreground">وضعیت دسته‌بندی *</Label>
+              <select
+                {...register("status")}
+                className={inputClass + " w-full px-3 cursor-pointer"}
+              >
+                <option value="draft">پیش‌نویس (مخفی از کاربران)</option>
+                <option value="active">فعال (نمایش در سایت)</option>
+                <option value="archived">بایگانی</option>
+              </select>
             </div>
           </div>
 
           <div className="border border-border rounded-sm p-4 space-y-4 bg-muted/20">
             <div className="flex items-center justify-between">
-              <h3 className="text-md font-bold text-foreground">فیلدهای مشخصات کالا</h3>
+              <h3 className="text-md font-bold text-foreground">
+                فیلدهای مشخصات کالا
+              </h3>
               <Button
                 type="button"
                 size="sm"
@@ -262,7 +309,9 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                     </Label>
                     <Input
                       value={field.label}
-                      onChange={(e) => updateSpecField(index, "label", e.target.value)}
+                      onChange={(e) =>
+                        updateSpecField(index, "label", e.target.value)
+                      }
                       className={inputClass + " h-10"}
                     />
                   </div>
@@ -287,11 +336,17 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-xs text-muted-foreground">نوع فیلد</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      نوع فیلد
+                    </Label>
                     <select
                       value={field.type}
-                      onChange={(e) => updateSpecField(index, "type", e.target.value)}
-                      className={inputClass + " h-10 w-full px-3 cursor-pointer"}
+                      onChange={(e) =>
+                        updateSpecField(index, "type", e.target.value)
+                      }
+                      className={
+                        inputClass + " h-10 w-full px-3 cursor-pointer"
+                      }
                     >
                       <option value="string">متن کوتاه (String)</option>
                       <option value="number">عدد (Number)</option>
@@ -306,7 +361,9 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                       </Label>
                       <Input
                         value={field.options}
-                        onChange={(e) => updateSpecField(index, "options", e.target.value)}
+                        onChange={(e) =>
+                          updateSpecField(index, "options", e.target.value)
+                        }
                         className={inputClass + " h-10"}
                         placeholder="قرمز, آبی, مشکی"
                       />
@@ -319,7 +376,9 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                     <input
                       type="checkbox"
                       checked={field.required}
-                      onChange={(e) => updateSpecField(index, "required", e.target.checked)}
+                      onChange={(e) =>
+                        updateSpecField(index, "required", e.target.checked)
+                      }
                       className="accent-primary w-4 h-4 cursor-pointer"
                     />
                     اجباری باشد
@@ -328,7 +387,9 @@ const CategoryFormModal = ({ category, parentCategories, onClose, onSuccess }: P
                     <input
                       type="checkbox"
                       checked={field.isVariant}
-                      onChange={(e) => updateSpecField(index, "isVariant", e.target.checked)}
+                      onChange={(e) =>
+                        updateSpecField(index, "isVariant", e.target.checked)
+                      }
                       className="accent-primary w-4 h-4 cursor-pointer"
                     />
                     به عنوان واریانت (مثل رنگ/حافظه)

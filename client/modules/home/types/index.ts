@@ -18,6 +18,7 @@ export interface GetCategory {
   slug: string;
   parentId: string | null;
   icon: string;
+  status: string;
   specsSchema: SpecsSchema | null;
   subcategories: GetCategory[];
 }

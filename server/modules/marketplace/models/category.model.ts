@@ -6,14 +6,18 @@ import {
   Model,
 } from "@sequelize/core";
 import { sequelize } from "@/config/database.js";
-import { SpecsSchema } from "../types/index.js";
+import { CategoryStatus, SpecsSchema } from "../types/index.js";
 
-export class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
+export class Category extends Model<
+  InferAttributes<Category>,
+  InferCreationAttributes<Category>
+> {
   declare id: CreationOptional<string>;
   declare name: string;
   declare slug: string;
   declare parentId: CreationOptional<string | null>;
   declare icon: CreationOptional<string | null>;
+  declare status: CreationOptional<CategoryStatus>;
   declare specsSchema: CreationOptional<SpecsSchema | null>;
   declare hasSpecs: CreationOptional<boolean>;
   declare readonly createdAt: CreationOptional<Date>;
@@ -47,11 +51,21 @@ Category.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    status: {
+      type: DataTypes.ENUM(
+        CategoryStatus.DRAFT,
+        CategoryStatus.ACTIVE,
+        CategoryStatus.ARCHIVED,
+      ),
+      allowNull: false,
+      defaultValue: CategoryStatus.DRAFT,
+    },
     specsSchema: {
       type: DataTypes.JSON,
       allowNull: true,
       defaultValue: null,
-      comment: "تعریف فیلدهای اختصاصی این دسته بندی برای فرانت اند (فرم ساز داینامیک)",
+      comment:
+        "تعریف فیلدهای اختصاصی این دسته بندی برای فرانت اند (فرم ساز داینامیک)",
     },
     hasSpecs: {
       type: DataTypes.BOOLEAN,
