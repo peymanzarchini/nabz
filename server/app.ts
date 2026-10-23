@@ -1,14 +1,15 @@
+import express, { type Express } from "express";
 import { createServer } from "http";
 import { Server as SocketServer } from "socket.io";
-import jwt from "jsonwebtoken";
-import { AuthenticatedJwtPayload } from "./types/index.js";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import path from "path";
+import jwt from "jsonwebtoken";
 
+import { AuthenticatedJwtPayload } from "./types/index.js";
 import { env } from "./config/env.js";
 import { setupAssociations } from "./config/associations.js";
 import { closeDB, connectDB } from "./config/database.js";
@@ -21,7 +22,6 @@ import { Auth } from "./modules/auth/model/auth.model.js";
 import { Conversation } from "./modules/marketplace/models/conversation.model.js";
 import { Op } from "@sequelize/core";
 import { startAiCronJobs } from "./modules/ai/utils/ai.scheduler.js";
-import express, { type Express } from "express";
 
 const app: Express = express();
 

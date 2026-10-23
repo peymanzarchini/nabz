@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { panelLinks } from "@/modules/panel/data";
 import { usePanelLogic } from "../hooks/usePanelLogic";
 import SidebarDesktop from "./sidebar/SidebarDesktop";
@@ -29,29 +28,25 @@ const PanelContent = ({ children }: { children: React.ReactNode }) => {
   } = usePanelLogic();
 
   const pathname = usePathname();
+  const router = useRouter();
 
-  if (loading) {
+  const filteredLinks = panelLinks.filter((link) =>
+    link.roles.includes(user?.role || ""),
+  );
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading || (!loading && !user)) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
-
-  if (!user) {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-background">
-        <p className="text-lg font-semibold text-foreground">
-          لطفاً ابتدا وارد حساب کاربری خود شوید.
-        </p>
-        <Link href="/login">
-          <Button>ورود به نبض</Button>
-        </Link>
-      </div>
-    );
-  }
-
-  const filteredLinks = panelLinks.filter((link) => link.roles.includes(user.role));
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -74,7 +69,7 @@ const PanelContent = ({ children }: { children: React.ReactNode }) => {
           isMenuOpen={isMenuOpen}
           menuRef={menuRef}
           mounted={mounted}
-          user={user}
+          user={user!}
           resolvedTheme={resolvedTheme!}
           setIsLogoutOpen={setIsLogoutOpen}
           setIsMenuOpen={setIsMenuOpen}
@@ -85,7 +80,9 @@ const PanelContent = ({ children }: { children: React.ReactNode }) => {
         <main className="flex-1 p-4 sm:p-8 overflow-y-auto">{children}</main>
       </div>
 
-      {isLogoutOpen && <LogoutBox logout={logout} setIsLogoutOpen={setIsLogoutOpen} />}
+      {isLogoutOpen && (
+        <LogoutBox logout={logout} setIsLogoutOpen={setIsLogoutOpen} />
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { iransans } from "@/components/fonts/iransans";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/lib/providers/AuthProvider";
+import TokenScheduler from "@/lib/providers/TokenScheduler";
 
 export const metadata: Metadata = {
   title: "نبض",
@@ -31,6 +32,7 @@ export default function RootLayout({
         >
           <QueryProvider>
             <AuthProvider>
+              <TokenScheduler />
               {children}
               <Toaster
                 richColors

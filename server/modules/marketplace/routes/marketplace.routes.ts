@@ -15,7 +15,10 @@ import { locationController } from "../controller/location.controller.js";
 import { reviewController } from "../controller/review.controller.js";
 import { conversationController } from "../controller/conversation.controller.js";
 
-import { createCategorySchema, updateCategorySchema } from "../validations/category.schema.js";
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from "../validations/category.schema.js";
 import {
   createListingSchema,
   deleteListingImageSchema,
@@ -27,7 +30,10 @@ import {
   updateListingStatusSchema,
 } from "../validations/listing.schema.js";
 import { createLocationSchema } from "../validations/location.schema.js";
-import { createReviewSchema, updateReviewStatusSchema } from "../validations/review.schema.js";
+import {
+  createReviewSchema,
+  updateReviewStatusSchema,
+} from "../validations/review.schema.js";
 import {
   getConversationMessagesSchema,
   sendMessageSchema,
@@ -38,9 +44,17 @@ const router = Router();
 
 router.get("/categories", categoryController.getAllCategories);
 router.get("/locations", locationController.getAllLocations);
-router.get("/listings", validate(getListingQuerySchema), listingController.getAllListings);
+router.get(
+  "/listings",
+  validate(getListingQuerySchema),
+  listingController.getAllListings,
+);
 router.get("/listings/search-suggestions", listingController.searchSuggestions);
-router.get("/listings/:id", validate(idOrSlugParamSchema), listingController.getListingById);
+router.get(
+  "/listings/:id",
+  validate(idOrSlugParamSchema),
+  listingController.getListingById,
+);
 router.get("/listings/:id/reviews", reviewController.getListingReviews);
 
 router.use(authenticate);
@@ -63,7 +77,10 @@ router.get(
   conversationController.getConversationMessages,
 );
 
-router.get("/conversations/unread-count", conversationController.getUnreadCount);
+router.get(
+  "/conversations/unread-count",
+  conversationController.getUnreadCount,
+);
 
 router.post(
   "/listings",
@@ -92,7 +109,11 @@ router.delete(
   listingController.deleteListingImage,
 );
 
-router.post("/listings/:id/reviews", validate(createReviewSchema), reviewController.createReview);
+router.post(
+  "/listings/:id/reviews",
+  validate(createReviewSchema),
+  reviewController.createReview,
+);
 
 router.use(moderatorAccess);
 
@@ -111,8 +132,17 @@ router.patch(
 
 router.use(adminOnly);
 
-router.post("/categories", validate(createCategorySchema), categoryController.createCategory);
-router.patch("/categories/:id", validate(updateCategorySchema), categoryController.updateCategory);
+router.get("/categories/all", categoryController.getAllCategoriesForAdmin);
+router.post(
+  "/categories",
+  validate(createCategorySchema),
+  categoryController.createCategory,
+);
+router.patch(
+  "/categories/:id",
+  validate(updateCategorySchema),
+  categoryController.updateCategory,
+);
 router.delete("/categories/:id", categoryController.deleteCategory);
 
 router.patch(
@@ -121,6 +151,10 @@ router.patch(
   listingController.toggleAmazingOffer,
 );
 
-router.post("/locations", validate(createLocationSchema), locationController.createLocation);
+router.post(
+  "/locations",
+  validate(createLocationSchema),
+  locationController.createLocation,
+);
 
 export default router;

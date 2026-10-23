@@ -1,9 +1,13 @@
 import { z } from "zod";
+import { CategoryStatus } from "../types/index.js";
 
 const specFieldTypes = ["string", "number", "dropdown", "boolean"] as const;
 
 const inheritSchema = z.object({
-  inheritFrom: z.coerce.number().int().positive("آیدی دسته بندی برای ارث بری نامعتبر است."),
+  inheritFrom: z.coerce
+    .number()
+    .int()
+    .positive("آیدی دسته بندی برای ارث بری نامعتبر است."),
 });
 
 const specFieldSchema = z.object({
@@ -23,9 +27,20 @@ export const createCategorySchema = z.object({
       .string()
       .trim()
       .min(2, "اسلاگ الزامی است")
-      .regex(/^[a-z0-9-]+$/, "اسلاگ فقط می‌تواند شامل حروف کوچک، عدد و خط تیره باشد"),
+      .regex(
+        /^[a-z0-9-]+$/,
+        "اسلاگ فقط می‌تواند شامل حروف کوچک، عدد و خط تیره باشد",
+      ),
     parentId: z.uuid().optional().nullable(),
     icon: z.string().optional().nullable(),
+    status: z
+      .enum([
+        CategoryStatus.DRAFT,
+        CategoryStatus.ACTIVE,
+        CategoryStatus.ARCHIVED,
+      ])
+      .optional()
+      .default(CategoryStatus.DRAFT),
     specsSchema: z
       .union([z.record(z.string(), specFieldSchema), inheritSchema])
       .optional()
@@ -48,8 +63,18 @@ export const updateCategorySchema = z.object({
       .optional(),
     parentId: z.uuid().optional().nullable(),
     icon: z.string().optional().nullable(),
+    status: z
+      .enum([
+        CategoryStatus.DRAFT,
+        CategoryStatus.ACTIVE,
+        CategoryStatus.ARCHIVED,
+      ])
+      .optional(),
     specsSchema: z
-      .union([z.record(z.string(), z.union([specFieldSchema.partial(), z.null()])), inheritSchema])
+      .union([
+        z.record(z.string(), z.union([specFieldSchema.partial(), z.null()])),
+        inheritSchema,
+      ])
       .optional()
       .nullable(),
     hasSpecs: z.boolean().optional(),

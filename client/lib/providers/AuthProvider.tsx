@@ -1,6 +1,14 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+  useCallback,
+} from "react";
 import api from "../api";
 import { useRouter } from "next/navigation";
 import { AuthContextType, User } from "@/modules/auth/types";
@@ -12,31 +20,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const { data } = await api.get("/auth/profile");
-        if (data.success && data.body) {
-          setUser(data.body);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.log(error);
-        setUser(null);
-      } finally {
-        setLoading(false);
+  const fetchUser = useCallback(async () => {
+    let authenticated = false;
+
+    try {
+      const { data } = await api.get("/auth/profile");
+      if (data.success && data.body) {
+        setUser(data.body);
+        authenticated = true;
       }
-    };
+    } catch (error) {
+      console.log(error);
+      try {
+        await api.post("/auth/refresh");
+        const { data: retryData } = await api.get("/auth/profile");
+        if (retryData.success && retryData.body) {
+          setUser(retryData.body);
+          authenticated = true;
+        }
+      } catch (retryError) {
+        console.log(retryError);
+        setUser(null);
+      }
+    } finally {
+      setLoading(false);
+
+      if (!authenticated && typeof window !== "undefined") {
+        const currentPath = window.location.pathname;
+        if (currentPath.startsWith("/dashboard")) {
+          router.replace("/login");
+        }
+      }
+    }
+  }, [router]);
+
+  useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
 
   useEffect(() => {
     const handleForceLogout = () => {
       setUser(null);
-
-      if (typeof window !== "undefined" && window.location.pathname.startsWith("/dashboard")) {
-        router.push("/login");
+      if (typeof window !== "undefined") {
+        const currentPath = window.location.pathname;
+        if (currentPath.startsWith("/dashboard")) {
+          router.replace("/login");
+        }
       }
     };
 
@@ -51,12 +80,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout failed", error);
     } finally {
       setUser(null);
-
       if (typeof window !== "undefined") {
-        document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-        window.location.href = "/";
+        document.cookie =
+          "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        router.push("/");
       }
     }
   };

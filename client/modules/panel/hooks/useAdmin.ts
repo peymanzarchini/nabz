@@ -8,9 +8,18 @@ import {
   toggleAmazingOffer,
   getPendingReviews,
   updateReviewStatus,
+  getAdminCategories,
+  updateCategoryStatus,
 } from "../services/admin.service";
-import { GetListing } from "@/modules/home/types";
+import { GetCategory, GetListing } from "@/modules/home/types";
 import { Review, Stats } from "../types";
+
+export const useAdminCategories = () => {
+  return useQuery<GetCategory[], Error>({
+    queryKey: ["admin-categories"],
+    queryFn: getAdminCategories,
+  });
+};
 
 export const useDashboardStats = () => {
   return useQuery<Stats, Error>({
@@ -81,6 +90,20 @@ export const useUpdateReviewStatus = () => {
     onSuccess: () => {
       toast.success("وضعیت دیدگاه با موفقیت تغییر کرد.");
       queryClient.invalidateQueries({ queryKey: ["admin-reviews-pending"] });
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error)),
+  });
+};
+
+export const useUpdateCategoryStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      updateCategoryStatus(id, status),
+    onSuccess: () => {
+      toast.success("وضعیت دسته‌بندی با موفقیت تغییر کرد.");
+      queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
     onError: (error) => toast.error(getApiErrorMessage(error)),
   });

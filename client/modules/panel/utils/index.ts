@@ -1,17 +1,41 @@
 import { GetCategory } from "@/modules/home/types";
 import { GetLocation } from "../types";
 
+export const getCategoryStatusInfo = (status: string) => {
+  switch (status) {
+    case "active":
+      return {
+        label: "فعال",
+        color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+      };
+    case "draft":
+      return {
+        label: "پیش‌نویس",
+        color: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+      };
+    case "archived":
+      return {
+        label: "بایگانی",
+        color: "bg-muted text-muted-foreground",
+      };
+    default:
+      return { label: "نامشخص", color: "bg-muted text-muted-foreground" };
+  }
+};
+
 export const getStatusInfo = (status: string) => {
   switch (status) {
     case "active":
       return {
         label: "منتشر شده",
-        color: "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400",
+        color:
+          "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400",
       };
     case "pending":
       return {
         label: "در انتظار تایید",
-        color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
+        color:
+          "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
       };
     case "rejected":
       return {
@@ -52,7 +76,8 @@ export const findLocationPath = (
     if (prov.id === targetId) return { provinceId: prov.id, cityId: "" };
     if (prov.districts) {
       for (const city of prov.districts) {
-        if (city.id === targetId) return { provinceId: prov.id, cityId: city.id };
+        if (city.id === targetId)
+          return { provinceId: prov.id, cityId: city.id };
       }
     }
   }
