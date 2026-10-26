@@ -13,6 +13,7 @@ import {
 } from "../services/admin.service";
 import { GetCategory, GetListing } from "@/modules/home/types";
 import { Review, Stats } from "../types";
+import api from "@/lib/api";
 
 export const useAdminCategories = () => {
   return useQuery<GetCategory[], Error>({
@@ -102,6 +103,19 @@ export const useUpdateCategoryStatus = () => {
       updateCategoryStatus(id, status),
     onSuccess: () => {
       toast.success("وضعیت دسته‌بندی با موفقیت تغییر کرد.");
+      queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error)),
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/marketplace/categories/${id}`),
+    onSuccess: () => {
+      toast.success("دسته‌بندی با موفقیت حذف شد.");
       queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },

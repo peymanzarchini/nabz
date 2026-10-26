@@ -2,21 +2,23 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { PlusCircle } from "lucide-react";
-import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { GetCategory } from "@/modules/home/types";
-import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import CategoryFormModal from "@/modules/panel/components/modals/CategoryFormModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import AdminCategoryTable from "@/modules/panel/components/AdminCategoryTable";
-import { useAdminCategories } from "@/modules/panel/hooks/useAdmin";
+import {
+  useAdminCategories,
+  useDeleteCategory,
+} from "@/modules/panel/hooks/useAdmin";
 import CategoryStatusTabs from "@/modules/panel/components/listings/CategoryStatusTabs";
 
 const AdminCategoriesPage = () => {
   const { data: categories, isLoading } = useAdminCategories();
   const queryClient = useQueryClient();
+
+  const deleteMutation = useDeleteCategory();
 
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +27,7 @@ const AdminCategoriesPage = () => {
   );
 
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isDeleting] = useState<boolean>(false);
 
   const openCreateModal = () => {
     setEditingCategory(null);
@@ -39,17 +41,11 @@ const AdminCategoriesPage = () => {
 
   const handleDeleteConfirm = async () => {
     if (!deleteTargetId) return;
-    setIsDeleting(true);
-    try {
-      await api.delete(`/marketplace/categories/${deleteTargetId}`);
-      toast.success("دسته‌بندی حذف شد.");
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      setDeleteTargetId(null);
-    } catch (error) {
-      toast.error(getApiErrorMessage(error));
-    } finally {
-      setIsDeleting(false);
-    }
+    deleteMutation.mutate(deleteTargetId, {
+      onSuccess: () => {
+        setDeleteTargetId(null);
+      },
+    });
   };
 
   const flatCategories: { cat: GetCategory; level: number }[] = [];
