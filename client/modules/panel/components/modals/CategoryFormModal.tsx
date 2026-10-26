@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { GetCategory, SpecsSchema } from "@/modules/home/types";
 import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import IconPicker from "@/components/ui/IconPicker";
+import { generateEnglishSlug } from "@/utils/formatNumber";
 
 interface Props {
   category: GetCategory | null;
@@ -43,10 +44,11 @@ const CategoryFormModal = ({
   onClose,
   onSuccess,
 }: Props) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [specFields, setSpecFields] = useState<UiSpecField[]>([]);
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState<boolean>(false);
 
-  const { register, handleSubmit, reset, getValues, setValue, control } =
+  const { register, handleSubmit, reset, setValue, control } =
     useForm<FormValues>({
       defaultValues: {
         name: "",
@@ -68,6 +70,8 @@ const CategoryFormModal = ({
         icon: category.icon,
         status: category.status || "draft",
       });
+
+      setSlugManuallyEdited(true);
 
       if (
         category.specsSchema &&
@@ -98,18 +102,10 @@ const CategoryFormModal = ({
         icon: null,
         status: "draft",
       });
+      setSlugManuallyEdited(false);
       setSpecFields([]);
     }
   }, [category, reset]);
-
-  const generateSlug = (name: string) => {
-    const slug = name
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w\-]+/g, "");
-    setValue("slug", slug);
-  };
 
   const addSpecField = () => {
     setSpecFields([
@@ -219,16 +215,22 @@ const CategoryFormModal = ({
               <Input
                 {...register("name", {
                   required: "نام الزامی است",
-                  onBlur: (e) =>
-                    !getValues("slug") && generateSlug(e.target.value),
+                  onChange: (e) => {
+                    if (!slugManuallyEdited) {
+                      setValue("slug", generateEnglishSlug(e.target.value));
+                    }
+                  },
                 })}
                 className={inputClass}
               />
             </div>
             <div>
-              <Label className="text-foreground">اسلاگ (انگلیسی) *</Label>
+              <Label className="text-foreground">اسلاگ*</Label>
               <Input
-                {...register("slug", { required: "اسلاگ الزامی است" })}
+                {...register("slug", {
+                  required: "اسلاگ الزامی است",
+                  onChange: () => setSlugManuallyEdited(true),
+                })}
                 className={inputClass}
                 dir="ltr"
               />

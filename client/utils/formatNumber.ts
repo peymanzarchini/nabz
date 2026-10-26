@@ -8,6 +8,67 @@ export const toEnglishDigits = (str: string): string => {
   }
   return result;
 };
+const persianToEnglishMap: Record<string, string> = {
+  آ: "a",
+  ا: "a",
+  ب: "b",
+  پ: "p",
+  ت: "t",
+  ث: "s",
+  ج: "j",
+  چ: "ch",
+  ح: "h",
+  خ: "kh",
+  د: "d",
+  ذ: "z",
+  ر: "r",
+  ز: "z",
+  ژ: "zh",
+  س: "s",
+  ش: "sh",
+  ص: "s",
+  ض: "z",
+  ط: "t",
+  ظ: "z",
+  ع: "a",
+  غ: "gh",
+  ف: "f",
+  ق: "gh",
+  ک: "k",
+  گ: "g",
+  ل: "l",
+  م: "m",
+  ن: "n",
+  و: "v",
+  ه: "h",
+  ی: "y",
+  ئ: "y",
+  ء: "",
+  ك: "k",
+  ي: "y",
+  ى: "a",
+};
+
+export const generateEnglishSlug = (name: string): string => {
+  if (!name) return "";
+
+  const str = toEnglishDigits(name).trim().toLowerCase();
+
+  let result = "";
+  for (const char of str) {
+    if (persianToEnglishMap[char]) {
+      result += persianToEnglishMap[char];
+    } else if (/[a-z0-9\s-]/.test(char)) {
+      result += char;
+    }
+  }
+
+  result = result.replace(/\s+/g, "-");
+  result = result.replace(/-+/g, "-");
+  result = result.replace(/^-+|-+$/g, "");
+
+  return result;
+};
 
 export const formatPriceInput = (value: number | string): string => {
   const cleanValue = toEnglishDigits(String(value)).replace(/[^0-9]/g, "");
@@ -24,7 +85,18 @@ export const numberToPersianWords = (num: number): string => {
   if (num === 0) return "صفر";
 
   const yekan = ["", "یک", "دو", "سه", "چهار", "پنج", "شش", "هفت", "هشت", "نه"];
-  const dahgan = ["", "", "بیست", "سی", "چهل", "پنجاه", "شصت", "هفتاد", "هشتاد", "نود"];
+  const dahgan = [
+    "",
+    "",
+    "بیست",
+    "سی",
+    "چهل",
+    "پنجاه",
+    "شصت",
+    "هفتاد",
+    "هشتاد",
+    "نود",
+  ];
   const dahyek = [
     "ده",
     "یازده",
@@ -37,7 +109,18 @@ export const numberToPersianWords = (num: number): string => {
     "هجده",
     "نوزده",
   ];
-  const sadgan = ["", "صد", "دویست", "سیصد", "چهارصد", "پانصد", "ششصد", "هفتصد", "هشتصد", "نهصد"];
+  const sadgan = [
+    "",
+    "صد",
+    "دویست",
+    "سیصد",
+    "چهارصد",
+    "پانصد",
+    "ششصد",
+    "هفتصد",
+    "هشتصد",
+    "نهصد",
+  ];
 
   const getThreeDigit = (n: number): string => {
     let result = "";
@@ -71,9 +154,15 @@ export const numberToPersianWords = (num: number): string => {
   const baghi = num % 1000;
 
   if (hezargan > 0)
-    result += getThreeDigit(hezargan) + " میلیارد" + (num % 1000000000 > 0 ? " و " : "");
-  if (million > 0) result += getThreeDigit(million) + " میلیون" + (num % 1000000 > 0 ? " و " : "");
-  if (hezar > 0) result += getThreeDigit(hezar) + " هزار" + (num % 1000 > 0 ? " و " : "");
+    result +=
+      getThreeDigit(hezargan) +
+      " میلیارد" +
+      (num % 1000000000 > 0 ? " و " : "");
+  if (million > 0)
+    result +=
+      getThreeDigit(million) + " میلیون" + (num % 1000000 > 0 ? " و " : "");
+  if (hezar > 0)
+    result += getThreeDigit(hezar) + " هزار" + (num % 1000 > 0 ? " و " : "");
   if (baghi > 0) result += getThreeDigit(baghi);
 
   return (isNegative ? "منفی " : "") + result;
